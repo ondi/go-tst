@@ -1,5 +1,5 @@
 //
-//
+// go test -run Test_Tst3_02 -v -count=1
 //
 
 package tst
@@ -51,4 +51,15 @@ func Test_Tst3_01(t *testing.T) {
 
 	value, _, found = temp.Search("/metrics/page")
 	assert.Assert(t, value == "/metrics")
+}
+
+func Test_Tst3_02(t *testing.T) {
+	var res uint8
+	temp := NewState8()
+	for i := 0; i < 30; i++ {
+		res = temp.Get(i)
+		//_ = res
+		t.Logf("res(%v)=%v", i, res)
+	}
+	t.Logf("%+v", temp)
 }
