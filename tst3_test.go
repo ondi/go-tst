@@ -54,12 +54,13 @@ func Test_Tst3_01(t *testing.T) {
 }
 
 func Test_Tst3_02(t *testing.T) {
-	var res uint8
+	in := make([]byte, 1)
 	temp := NewState8()
 	for i := 0; i < 30; i++ {
-		res = temp.Get(i)
+		in[0] = byte(i)
+		in = temp.Replace(in)
 		//_ = res
-		t.Logf("res(%v)=%v", i, res)
+		t.Logf("res(%v)=%v", i, in)
 	}
 	t.Logf("%+v", temp)
 }
