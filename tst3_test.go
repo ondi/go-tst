@@ -57,26 +57,26 @@ func Test_Tst3_01(t *testing.T) {
 }
 
 func Test_Tst3_02(t *testing.T) {
-	state := NewState8()
+	state := NewState256()
 	for i := uint64(0); i < 10; i++ {
-		res := State8Uint64(state, i)
+		res := StateUint64(state, i)
 		t.Logf("res(%v)=%v", i, res)
 	}
 	t.Logf("%+v", state)
 }
 
 func Test_Tst3_03(t *testing.T) {
-	state := NewState8()
 	in := []byte{0}
+	state := NewState256()
 	for i := uint64(0); i < 10; i++ {
 		in[0] = byte(i)
-		in = state.Replace(in)
+		state.StateReplace(in)
 		t.Logf("res(%v)=%v", i, in)
 	}
 	t.Logf("%+v", state)
 }
 
-var Charset = []rune{
+var CHARSET = []rune{
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '~', '@', '#', '$', '%', '^', '&', '*', '-', '_', '/',
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
@@ -93,11 +93,13 @@ func Test_Tst3_04(t *testing.T) {
 	var repeat int
 	var buf bytes.Buffer
 	storage := map[uint64]string{}
+	salt := NewFnv64Salted()
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 1))
 	for i := 1; i < 1_000_000; i++ {
 		buf.Reset()
-		GenerateString(rnd, rnd.IntN(10)+10, Charset, &buf)
-		val := Fnv64Salted(buf.Bytes())
+		salt.Reset()
+		GenerateString(rnd, rnd.IntN(10)+10, CHARSET, &buf)
+		val := salt.Fnv64Salted(buf.Bytes())
 		if i%200_000 == 0 {
 			t.Logf("i=%v, repeat=%v, storage=%v, sample %v %q", i, repeat, len(storage), val, buf.Bytes())
 		}
