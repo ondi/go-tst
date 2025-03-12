@@ -56,7 +56,7 @@ func Test_Tst3_01(t *testing.T) {
 func Test_Tst3_02(t *testing.T) {
 	state := NewState8()
 	for i := uint64(0); i < 10; i++ {
-		res := ReplaceUint64(state, i)
+		res := State8Uint64(state, i)
 		t.Logf("res(%v)=%v", i, res)
 	}
 	t.Logf("%+v", state)
@@ -71,4 +71,13 @@ func Test_Tst3_03(t *testing.T) {
 		t.Logf("res(%v)=%v", i, in)
 	}
 	t.Logf("%+v", state)
+}
+
+func Test_Tst3_04(t *testing.T) {
+	storage := map[uint64]string{}
+	for _, v := range []string{"lalala", "bububu", "jujuju"} {
+
+		storage[Fnv64Salted(v)] = v
+	}
+	t.Logf("res=%v", storage)
 }
