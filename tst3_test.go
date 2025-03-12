@@ -54,13 +54,21 @@ func Test_Tst3_01(t *testing.T) {
 }
 
 func Test_Tst3_02(t *testing.T) {
-	in := make([]byte, 1)
-	temp := NewState8()
-	for i := 0; i < 30; i++ {
+	state := NewState8()
+	for i := uint64(0); i < 10; i++ {
+		res := ReplaceUint64(state, i)
+		t.Logf("res(%v)=%v", i, res)
+	}
+	t.Logf("%+v", state)
+}
+
+func Test_Tst3_03(t *testing.T) {
+	state := NewState8()
+	in := []byte{0}
+	for i := uint64(0); i < 10; i++ {
 		in[0] = byte(i)
-		in = temp.Replace(in)
-		//_ = res
+		in = state.Replace(in)
 		t.Logf("res(%v)=%v", i, in)
 	}
-	t.Logf("%+v", temp)
+	t.Logf("%+v", state)
 }
