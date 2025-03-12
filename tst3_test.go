@@ -1,11 +1,14 @@
 //
-// go test -run Test_Tst3_02 -v -count=1
+// go test -run Test_Tst3_04 -v -count=1
 //
 
 package tst
 
 import (
+	"bytes"
+	"math/rand/v2"
 	"testing"
+	"time"
 
 	"gotest.tools/assert"
 )
@@ -73,11 +76,41 @@ func Test_Tst3_03(t *testing.T) {
 	t.Logf("%+v", state)
 }
 
-func Test_Tst3_04(t *testing.T) {
-	storage := map[uint64]string{}
-	for _, v := range []string{"lalala", "bububu", "jujuju"} {
+var Charset = []rune{
+	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '~', '@', '#', '$', '%', '^', '&', '*', '-', '_', '/',
+	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+}
 
-		storage[Fnv64Salted(v)] = v
+// rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 1))
+func GenerateString(rnd *rand.Rand, length int, charset []rune, out *bytes.Buffer) {
+	for range length {
+		out.WriteRune(charset[rnd.IntN(len(charset))])
 	}
-	t.Logf("res=%v", storage)
+}
+
+func Test_Tst3_04(t *testing.T) {
+	var repeat int
+	var buf bytes.Buffer
+	storage := map[uint64]string{}
+	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 1))
+	for i := 1; i < 1_000_000; i++ {
+		buf.Reset()
+		GenerateString(rnd, rnd.IntN(10)+10, Charset, &buf)
+		val := Fnv64Salted(buf.Bytes())
+		if i%200_000 == 0 {
+			t.Logf("i=%v, repeat=%v, storage=%v, sample %v %q", i, repeat, len(storage), val, buf.Bytes())
+		}
+		if temp, ok := storage[val]; ok {
+			if temp == buf.String() {
+				repeat++
+				// t.Logf("repeat val=%v, temp=%q, buf=%q", val, temp, buf.Bytes())
+			} else {
+				t.Fatalf("collision val=%v, temp=%q, buf=%q", val, temp, buf.Bytes())
+			}
+		} else {
+			storage[val] = buf.String()
+		}
+	}
+	t.Logf("storage=%v", len(storage))
 }

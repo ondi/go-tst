@@ -134,7 +134,7 @@ func State8Uint64(state *State8_t, in uint64) uint64 {
 	return binary.BigEndian.Uint64(temp[:])
 }
 
-func Fnv64Salted(in string) (res uint64) {
+func Fnv64Salted(in []byte) (res uint64) {
 	state := NewState8()
 	res = FnvOffset64
 	for _, code := range in {

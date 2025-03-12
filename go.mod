@@ -1,6 +1,6 @@
 module github.com/ondi/go-tst
 
-go 1.21
+go 1.24
 
 require gotest.tools v2.2.0+incompatible
 
