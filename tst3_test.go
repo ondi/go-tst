@@ -59,7 +59,7 @@ func Test_Tst3_01(t *testing.T) {
 func Test_Tst3_02(t *testing.T) {
 	state := NewState256()
 	for i := uint64(0); i < 10; i++ {
-		res := StateUint64(state, i)
+		res := ReplaceUint64(state, i)
 		t.Logf("res(%v)=%v", i, res)
 	}
 	t.Logf("%+v", state)

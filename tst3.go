@@ -40,7 +40,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 		key.pos = int32(i)
 		key.hash ^= uint64(key.code)
 		key.hash *= FNVPRIME64
-		StateUint64(state, key.hash)
+		key.hash = ReplaceUint64(state, key.hash)
 		if temp, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -61,7 +61,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 		key.pos = int32(length)
 		key.hash ^= uint64(key.code)
 		key.hash *= FNVPRIME64
-		StateUint64(state, key.hash)
+		key.hash = ReplaceUint64(state, key.hash)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -131,7 +131,7 @@ func (self *State256_t) StateReplace(in []byte) {
 	}
 }
 
-func StateUint64(state StateReplacer, in uint64) uint64 {
+func ReplaceUint64(state StateReplacer, in uint64) uint64 {
 	var temp [8]byte
 	binary.BigEndian.PutUint64(temp[:], in)
 	state.StateReplace(temp[:])
@@ -159,7 +159,7 @@ func (self *Fnv64Salted_t) Fnv64Salted(in []byte) uint64 {
 	for _, code := range in {
 		self.hash ^= uint64(code)
 		self.hash *= FNVPRIME64
-		self.hash = StateUint64(self.state, self.hash)
+		self.hash = ReplaceUint64(self.state, self.hash)
 	}
 	return self.hash
 }
