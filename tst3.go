@@ -6,13 +6,8 @@ package tst
 
 import "encoding/binary"
 
-const (
-	FNVOFFSET64 = 14_695_981_039_346_656_037
-	FNVPRIME64  = 1_099_511_628_211
-)
-
 type key3_t struct {
-	hash uint64
+	hash [8]byte
 	pos  int32
 	code byte
 }
@@ -34,13 +29,11 @@ func NewTree3[Value_t any]() *Tree3_t[Value_t] {
 func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 	var i int
 	var temp *mapped3_t[Value_t]
+	key := key3_t{}
 	state := NewState256()
-	key := key3_t{hash: FNVOFFSET64}
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
-		key.hash ^= uint64(key.code)
-		key.hash *= FNVPRIME64
-		key.hash = ReplaceUint64(state, key.hash)
+		key.hash[i%8] ^= state.StateNext(key.code)
 		if temp, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -55,13 +48,11 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, found int) {
 	var ok bool
 	var temp *mapped3_t[Value_t]
+	key := key3_t{}
 	state := NewState256()
-	key := key3_t{hash: FNVOFFSET64}
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
-		key.hash ^= uint64(key.code)
-		key.hash *= FNVPRIME64
-		key.hash = ReplaceUint64(state, key.hash)
+		key.hash[length%8] ^= state.StateNext(key.code)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -71,11 +62,6 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 		}
 	}
 	return
-}
-
-type StateReplacer interface {
-	StateReset()
-	StateReplace([]byte)
 }
 
 type State256_t struct {
@@ -122,44 +108,42 @@ func (self *State256_t) StateReset() {
 	self.y = 170
 }
 
-func (self *State256_t) StateReplace(in []byte) {
-	for i := range in {
-		self.x = (self.x + 1) % 256
-		self.y = (self.y + int(self.state[self.x]+in[i]) + 1) % 256
-		self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
-		in[i] = self.state[(self.x+self.y)%256]
+func (self *State256_t) StateNext(in byte) byte {
+	self.x = (self.x + 1) % 256
+	self.y = (self.y + int(self.state[self.x]+in) + 1) % 256
+	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
+	return self.state[self.x]
+}
+
+func (self *State256_t) StateRead(out []byte) {
+	begin := (self.x + 256 - len(out)%256 + 1) % 256
+	for i := range out {
+		out[i] = self.state[(begin+i)%256]
 	}
 }
 
-func ReplaceUint64(state StateReplacer, in uint64) uint64 {
-	var temp [8]byte
-	binary.BigEndian.PutUint64(temp[:], in)
-	state.StateReplace(temp[:])
-	return binary.BigEndian.Uint64(temp[:])
+type StateSalted_t struct {
+	state *State256_t
+	hash  [8]byte
+	ix    int
 }
 
-type Fnv64Salted_t struct {
-	state StateReplacer
-	hash  uint64
-}
-
-func NewFnv64Salted() (self *Fnv64Salted_t) {
-	self = &Fnv64Salted_t{}
+func NewStateSalted() (self *StateSalted_t) {
+	self = &StateSalted_t{}
 	self.state = NewState256()
-	self.Reset()
 	return
 }
 
-func (self *Fnv64Salted_t) Reset() {
+func (self *StateSalted_t) Reset() {
 	self.state.StateReset()
-	self.hash = FNVOFFSET64
+	self.hash = [8]byte{}
+	self.ix = 0
 }
 
-func (self *Fnv64Salted_t) Fnv64Salted(in []byte) uint64 {
+func (self *StateSalted_t) StateSalted(in []byte) uint64 {
 	for _, code := range in {
-		self.hash ^= uint64(code)
-		self.hash *= FNVPRIME64
-		self.hash = ReplaceUint64(self.state, self.hash)
+		self.hash[self.ix] ^= self.state.StateNext(code)
+		self.ix = (self.ix + 1) % 8
 	}
-	return self.hash
+	return binary.BigEndian.Uint64(self.hash[:])
 }
