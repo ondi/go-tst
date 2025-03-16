@@ -30,7 +30,8 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 	var i int
 	var temp *mapped3_t[Value_t]
 	key := key3_t{}
-	state := NewState256()
+	state := State256_t{}
+	state.StateReset()
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
 		key.hash[i%8] ^= state.StateNext(key.code)
@@ -49,7 +50,8 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	var ok bool
 	var temp *mapped3_t[Value_t]
 	key := key3_t{}
-	state := NewState256()
+	state := State256_t{}
+	state.StateReset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
 		key.hash[length%8] ^= state.StateNext(key.code)
@@ -67,12 +69,6 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 type State256_t struct {
 	state [256]uint8
 	x, y  int
-}
-
-func NewState256() (self *State256_t) {
-	self = &State256_t{}
-	self.StateReset()
-	return
 }
 
 func (self *State256_t) StateReset() {
@@ -123,14 +119,14 @@ func (self *State256_t) StateRead(out []byte) {
 }
 
 type StateSalted_t struct {
-	state *State256_t
+	state State256_t
 	hash  [8]byte
 	ix    int
 }
 
 func NewStateSalted() (self *StateSalted_t) {
 	self = &StateSalted_t{}
-	self.state = NewState256()
+	self.state.StateReset()
 	return
 }
 
