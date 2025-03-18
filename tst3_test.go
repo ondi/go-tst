@@ -1,5 +1,5 @@
 //
-// go test -run Test_Tst3_02 -v -count=1
+// go test -run Test_Tst3_02 -v -count=1 -timeout 0
 //
 
 package tst
@@ -56,20 +56,27 @@ func Test_Tst3_01(t *testing.T) {
 	assert.Assert(t, value == "/metrics")
 }
 
-var CHARSET = []rune{
+var CHARSET = []byte{
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '~', '@', '#', '$', '%', '^', '&', '*', '-', '_', '/',
 	'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 	'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 }
 
 // rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 1))
-func GenerateString(rnd *rand.Rand, length int, charset []rune, out *bytes.Buffer) {
+func GenerateString(rnd *rand.Rand, length int, charset []byte, out *bytes.Buffer) {
+	// h := fnv.New64a()
 	for range length {
-		out.WriteRune(charset[rnd.IntN(len(charset))])
+		r := rnd.IntN(len(charset))
+		b := charset[r : r+1]
+		// h.Write(b)
+		out.Write(b)
 	}
+	// return h.Sum64()
 }
 
 func Test_Tst3_02(t *testing.T) {
+	// t.Parallel()
+
 	var repeat int
 	var buf bytes.Buffer
 	storage := map[uint64]string{}
@@ -79,20 +86,37 @@ func Test_Tst3_02(t *testing.T) {
 		buf.Reset()
 		salt.Reset()
 		GenerateString(rnd, 10+rnd.IntN(20), CHARSET, &buf)
-		val := salt.StateSalted(buf.Bytes())
+		salted := salt.StateSalted(buf.Bytes())
 		if i%200_000 == 0 {
-			t.Logf("i=%v, repeat=%v, storage=%v, sample %v %q", i, repeat, len(storage), val, buf.Bytes())
+			t.Logf("i=%v, repeat=%v, storage=%v, salted=%v, buf=%q", i, repeat, len(storage), salted, buf.Bytes())
 		}
-		if temp, ok := storage[val]; ok {
+		if temp, ok := storage[salted]; ok {
 			if temp == buf.String() {
 				repeat++
-				// t.Logf("repeat val=%v, temp=%q, buf=%q", val, temp, buf.Bytes())
 			} else {
-				t.Fatalf("collision val=%v, temp=%q, buf=%q", val, temp, buf.Bytes())
+				t.Fatalf("collision salted=%v, storage=%v, buf=%q", salted, temp, buf.Bytes())
 			}
 		} else {
-			storage[val] = buf.String()
+			storage[salted] = buf.String()
 		}
 	}
 	t.Logf("storage=%v", len(storage))
+}
+
+// self.y = (self.y + int(self.state[self.x]+in) + 1) % 256
+var in = [][]string{
+	{"rEfx8~mDHMLH", "dJTvU~mD^B"},
+	{"#JkYdrZVhUiDRVtI70^uA", "aw*pNMx1e3aGm13/e4YS^-xd/Zf0"},
+	{"S&z4C#VrPy", "APb4C#Vrbt"},
+}
+
+func Test_Tst3_03(t *testing.T) {
+	salt := NewStateSalted()
+	for i1, v1 := range in {
+		for _, v2 := range v1 {
+			salt.Reset()
+			res := salt.StateSalted([]byte(v2))
+			t.Logf("i=%v, res=%v, in=%v", i1, res, v2)
+		}
+	}
 }
