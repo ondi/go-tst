@@ -103,11 +103,13 @@ func Test_Tst3_02(t *testing.T) {
 	t.Logf("storage=%v", len(storage))
 }
 
-// self.y = (self.y + int(self.state[self.x]+in) + 1) % 256
 var in = [][]string{
+	// self.y = (self.y + int(self.state[self.x]+in) + 1) % 256
 	{"rEfx8~mDHMLH", "dJTvU~mD^B"},
 	{"#JkYdrZVhUiDRVtI70^uA", "aw*pNMx1e3aGm13/e4YS^-xd/Zf0"},
 	{"S&z4C#VrPy", "APb4C#Vrbt"},
+	// self.y = (self.y * int(self.state[self.x]+in) + 1) % 256
+	{"gMKOeg#xc^", "oqgoe/#r3p"},
 }
 
 func Test_Tst3_03(t *testing.T) {
