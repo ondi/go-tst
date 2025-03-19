@@ -104,10 +104,12 @@ func Test_Tst3_02(t *testing.T) {
 }
 
 var in = [][]string{
+	// self.x = (self.x + 1) % 256
 	// self.y = (self.y + int(self.state[self.x]+in) + 1) % 256
 	{"rEfx8~mDHMLH", "dJTvU~mD^B"},
 	{"#JkYdrZVhUiDRVtI70^uA", "aw*pNMx1e3aGm13/e4YS^-xd/Zf0"},
 	{"S&z4C#VrPy", "APb4C#Vrbt"},
+	// self.x = (self.x + 1) % 256
 	// self.y = (self.y * int(self.state[self.x]+in) + 1) % 256
 	{"gMKOeg#xc^", "oqgoe/#r3p"},
 }
