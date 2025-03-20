@@ -122,6 +122,10 @@ var in = [][]string{
 	// self.x = (self.x + 1) % 256
 	// self.y = (self.y*int(self.state[self.x]) + int(in) + 1) % 256
 	{"RpehpLGfEL", "VTehpLGf1x"},
+	// x = 0, y = 0
+	// self.x = (self.x + 1) % 256
+	// self.y = (self.y*int(self.state[self.x]) + int(in) + 1) % 256
+	{"pnc0zgYXPm8", "^WW$zgYXzM"},
 }
 
 func Test_Tst3_03(t *testing.T) {

@@ -101,7 +101,7 @@ func (self *State256_t) StateReset() {
 		250, 251, 252, 253, 254, 255,
 	}
 	self.x = 0
-	self.y = 0
+	self.y = 1
 }
 
 func (self *State256_t) StateNext(in byte) byte {
