@@ -87,7 +87,7 @@ func Test_Tst3_02(t *testing.T) {
 		salt.Reset()
 		GenerateString(rnd, 10+rnd.IntN(20), CHARSET, &buf)
 		salted := salt.StateSalted(buf.Bytes())
-		if i%200_000 == 0 {
+		if i%1_000_000 == 0 {
 			t.Logf("i=%v, repeat=%v, storage=%v, salted=%v, buf=%q", i, repeat, len(storage), salted, buf.Bytes())
 		}
 		if temp, ok := storage[salted]; ok {
@@ -104,17 +104,24 @@ func Test_Tst3_02(t *testing.T) {
 }
 
 var in = [][]string{
+	// x = 85, y = 170
 	// self.x = (self.x + 1) % 256
 	// self.y = (self.y + int(self.state[self.x]+in) + 1) % 256
 	{"rEfx8~mDHMLH", "dJTvU~mD^B"},
 	{"#JkYdrZVhUiDRVtI70^uA", "aw*pNMx1e3aGm13/e4YS^-xd/Zf0"},
 	{"S&z4C#VrPy", "APb4C#Vrbt"},
+	// x = 85, y = 170
 	// self.x = (self.x + 1) % 256
 	// self.y = (self.y * int(self.state[self.x]+in) + 1) % 256
 	{"gMKOeg#xc^", "oqgoe/#r3p"},
+	// x = 85, y = 170
 	// self.x = (self.x*int(self.state[self.y]) + int(in) + 1) % 256
 	// self.y = (self.y*int(self.state[self.x]) + int(in) + 1) % 256
 	{"Gp&JQLG^&Nf&ImA", "AKHuNwnxMoIqrp9D3o&_71%^P"},
+	// x = 85, y = 170
+	// self.x = (self.x + 1) % 256
+	// self.y = (self.y*int(self.state[self.x]) + int(in) + 1) % 256
+	{"RpehpLGfEL", "VTehpLGf1x"},
 }
 
 func Test_Tst3_03(t *testing.T) {
