@@ -112,7 +112,7 @@ var in = [][]string{
 	{"S&z4C#VrPy", "APb4C#Vrbt"},
 	// x = 85, y = 170
 	// self.x = (self.x + 1) % 256
-	// self.y = (self.y * int(self.state[self.x]+in) + 1) % 256
+	// self.y = (self.y*int(self.state[self.x]+in) + 1) % 256
 	{"gMKOeg#xc^", "oqgoe/#r3p"},
 	// x = 85, y = 170
 	// self.x = (self.x*int(self.state[self.y]) + int(in) + 1) % 256
@@ -126,6 +126,10 @@ var in = [][]string{
 	// self.x = (self.x + 1) % 256
 	// self.y = (self.y*int(self.state[self.x]) + int(in) + 1) % 256
 	{"pnc0zgYXPm8", "^WW$zgYXzM"},
+	// x = 0, y = 1
+	// self.x = (self.x + 1) % 256
+	// self.y = (self.y*int(self.state[self.x]) + int(in) + 1) % 256
+	{"%sc3e^tAkEE@", "ph~tp^tA8x"},
 }
 
 func Test_Tst3_03(t *testing.T) {
