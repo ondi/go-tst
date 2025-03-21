@@ -4,10 +4,8 @@
 
 package tst
 
-import "encoding/binary"
-
 type key3_t struct {
-	hash [8]byte
+	hash uint64
 	pos  int32
 	code byte
 }
@@ -28,13 +26,15 @@ func NewTree3[Value_t any]() *Tree3_t[Value_t] {
 
 func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 	var i int
+	var x, y byte
 	var temp *mapped3_t[Value_t]
 	key := key3_t{}
 	state := State256_t{}
 	state.StateReset()
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
-		key.hash[i%8] ^= state.StateNext(key.code)
+		x, y = state.StateNext(key.code)
+		key.hash = (key.hash ^ uint64(x)) * (key.hash + uint64(y) + 1)
 		if temp, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -48,13 +48,15 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 
 func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, found int) {
 	var ok bool
+	var x, y byte
 	var temp *mapped3_t[Value_t]
 	key := key3_t{}
 	state := State256_t{}
 	state.StateReset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
-		key.hash[length%8] ^= state.StateNext(key.code)
+		x, y = state.StateNext(key.code)
+		key.hash = (key.hash ^ uint64(x)) * (key.hash + uint64(y) + 1)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -104,24 +106,16 @@ func (self *State256_t) StateReset() {
 	self.y = 1
 }
 
-func (self *State256_t) StateNext(in byte) byte {
+func (self *State256_t) StateNext(in byte) (byte, byte) {
 	self.x = (self.x + 1) % 256
 	self.y = (self.y*int(self.state[self.x]) + int(in) + 1) % 256
 	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
-	return self.state[self.x]
-}
-
-func (self *State256_t) StateRead(out []byte) {
-	begin := (self.x + 256 - len(out)%256 + 1) % 256
-	for i := range out {
-		out[i] = self.state[(begin+i)%256]
-	}
+	return self.state[self.x], self.state[self.y]
 }
 
 type StateSalted_t struct {
 	state State256_t
-	hash  [8]byte
-	ix    int
+	hash  uint64
 }
 
 func NewStateSalted() (self *StateSalted_t) {
@@ -132,14 +126,14 @@ func NewStateSalted() (self *StateSalted_t) {
 
 func (self *StateSalted_t) Reset() {
 	self.state.StateReset()
-	self.hash = [8]byte{}
-	self.ix = 0
+	self.hash = 0
 }
 
 func (self *StateSalted_t) StateSalted(in []byte) uint64 {
+	var x, y byte
 	for _, code := range in {
-		self.hash[self.ix] ^= self.state.StateNext(code)
-		self.ix = (self.ix + 1) % 8
+		x, y = self.state.StateNext(code)
+		self.hash = (self.hash ^ uint64(x)) * (self.hash + uint64(y) + 1)
 	}
-	return binary.BigEndian.Uint64(self.hash[:])
+	return self.hash
 }
