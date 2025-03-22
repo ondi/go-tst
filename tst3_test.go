@@ -5,8 +5,9 @@
 package tst
 
 import (
-	"bytes"
+	"fmt"
 	"math/rand/v2"
+	"sync"
 	"testing"
 	"time"
 
@@ -63,44 +64,64 @@ var CHARSET = []byte{
 }
 
 // rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 1))
-func GenerateString(rnd *rand.Rand, length int, charset []byte, out *bytes.Buffer) {
-	// h := fnv.New64a()
-	for range length {
-		r := rnd.IntN(len(charset))
-		b := charset[r : r+1]
-		// h.Write(b)
-		out.Write(b)
+func GenerateString(rnd *rand.Rand, length int, charset []byte) (out []byte) {
+	out = make([]byte, length)
+	for i := range length {
+		out[i] = charset[rnd.IntN(len(charset))]
 	}
-	// return h.Sum64()
+	return
 }
 
-func Test_Tst3_02(t *testing.T) {
-	// t.Parallel()
+type Storage_t struct {
+	Mx   sync.Mutex
+	Data map[uint64]string
+}
+
+func (self *Storage_t) Len() (res int) {
+	self.Mx.Lock()
+	res = len(self.Data)
+	self.Mx.Unlock()
+	return
+}
+
+var storage = &Storage_t{
+	Data: map[uint64]string{},
+}
+
+func test_02(t *testing.T) {
+	t.Parallel()
 
 	var repeat int
-	var buf bytes.Buffer
-	storage := map[uint64]string{}
 	salt := NewStateSalted()
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 1))
 	for i := 1; i < 1_000_000; i++ {
-		buf.Reset()
 		salt.Reset()
-		GenerateString(rnd, 10+rnd.IntN(20), CHARSET, &buf)
-		salted := salt.StateSalted(buf.Bytes())
+		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
+		salted := salt.StateSalted(buf)
 		if i%1_000_000 == 0 {
-			t.Logf("i=%v, repeat=%v, storage=%v, salted=%v, buf=%q", i, repeat, len(storage), salted, buf.Bytes())
+			t.Logf("i=%v, repeat=%v, storage=%v, salted=%v, buf=%q", i, repeat, storage.Len(), salted, buf)
 		}
-		if temp, ok := storage[salted]; ok {
-			if temp == buf.String() {
+		storage.Mx.Lock()
+		temp, ok := storage.Data[salted]
+		if !ok {
+			storage.Data[salted] = string(buf)
+			storage.Mx.Unlock()
+		} else {
+			storage.Mx.Unlock()
+			if temp == string(buf) {
 				repeat++
 			} else {
-				t.Fatalf("collision salted=%v, storage=%v, buf=%q", salted, temp, buf.Bytes())
+				t.Fatalf("collision salted=%v, storage=%v, buf=%q", salted, temp, buf)
 			}
-		} else {
-			storage[salted] = buf.String()
 		}
 	}
-	t.Logf("storage=%v", len(storage))
+	t.Logf("storage=%v", storage.Len())
+}
+
+func Test_Tst3_02(t *testing.T) {
+	for i := 0; i < 1; i++ {
+		t.Run(fmt.Sprintf("test-%v", i), test_02)
+	}
 }
 
 var in = [][]string{
