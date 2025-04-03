@@ -119,12 +119,10 @@ func test_02(t *testing.T) {
 		temp, ok := local_map[salted]
 		if !ok {
 			local_map[salted] = string(buf)
+		} else if temp == string(buf) {
+			repeat++
 		} else {
-			if temp == string(buf) {
-				repeat++
-			} else {
-				t.Fatalf("collision salted=%v, storage=%q, buf=%q", salted, temp, buf)
-			}
+			t.Fatalf("collision salted=%v, storage=%q, buf=%q", salted, temp, buf)
 		}
 		if i%1_000_000 == 0 {
 			conflict, salted, value1, value2, size := storage.Merge(local_map)
