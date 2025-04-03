@@ -34,7 +34,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
 		sx, sy, vx, vy = state.StateNext(key.code)
-		key.hash = (key.hash+sx)*(key.hash+sy) + (key.hash * vx) + (key.hash * vy)
+		key.hash = (key.hash+sx+1)*(key.hash+sy+1) + (key.hash * vx) + (key.hash * vy)
 		if temp, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -56,7 +56,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
 		sx, sy, vx, vy = state.StateNext(key.code)
-		key.hash = (key.hash+sx)*(key.hash+sy) + (key.hash * vx) + (key.hash * vy)
+		key.hash = (key.hash+sx+1)*(key.hash+sy+1) + (key.hash * vx) + (key.hash * vy)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -133,7 +133,7 @@ func (self *StateSalted_t) StateSalted(in []byte) uint64 {
 	var sx, sy, vx, vy uint64
 	for _, code := range in {
 		sx, sy, vx, vy = self.state.StateNext(code)
-		self.hash = (self.hash+sx)*(self.hash+sy) + (self.hash * vx) + (self.hash * vy)
+		self.hash = (self.hash+sx+1)*(self.hash+sy+1) + (self.hash * vx) + (self.hash * vy)
 	}
 	return self.hash
 }

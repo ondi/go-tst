@@ -132,15 +132,16 @@ var in = [][]string{
 	{"ZW@5A@PNeaVgWjxilsDg&", "~B-ApzTs$wL%"},
 	{"yUR6QTdn*$-6-Mg", "kc^F^#trYSQpL2@YxrzsUG&kDa"},
 	{"/*&IC&scY3lYVXh_s", "c~%qYSSCWVwyO*d2KMk2mzEL2x9*E"},
+	{"bYK#ou-%/_lowdTJDtqk^FT&_dPa", "D/Z9OVZmQ#EQyBBC*Tl"},
 }
 
 func Test_Tst3_03(t *testing.T) {
 	salt := NewStateSalted()
-	for i1, v1 := range in {
-		for _, v2 := range v1 {
-			salt.Reset()
-			res := salt.StateSalted([]byte(v2))
-			t.Logf("i=%v, res=%v, in=%v", i1, res, v2)
-		}
+	for _, v := range in {
+		salt.Reset()
+		res1 := salt.StateSalted([]byte(v[0]))
+		salt.Reset()
+		res2 := salt.StateSalted([]byte(v[1]))
+		assert.Assert(t, res1 != res2, fmt.Sprintf("%v %q %q", res1, v[0], v[1]))
 	}
 }
