@@ -30,7 +30,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 	var temp *mapped3_t[Value_t]
 	key := key3_t{}
 	state := State256_t{}
-	state.StateReset()
+	state.Reset()
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
 		sx, sy, vx, vy = state.StateNext(key.code)
@@ -52,7 +52,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	var temp *mapped3_t[Value_t]
 	key := key3_t{}
 	state := State256_t{}
-	state.StateReset()
+	state.Reset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
 		sx, sy, vx, vy = state.StateNext(key.code)
@@ -73,7 +73,7 @@ type State256_t struct {
 	x, y  uint64
 }
 
-func (self *State256_t) StateReset() {
+func (self *State256_t) Reset() {
 	self.state = [256]uint8{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 		10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
@@ -113,23 +113,23 @@ func (self *State256_t) StateNext(in byte) (uint64, uint64, uint64, uint64) {
 	return uint64(self.state[self.x]), uint64(self.state[self.y]), self.x, self.y
 }
 
-type StateSalted_t struct {
+type StateHash_t struct {
 	state State256_t
 	hash  uint64
 }
 
-func NewStateSalted() (self *StateSalted_t) {
-	self = &StateSalted_t{}
-	self.state.StateReset()
+func NewStateHash() (self *StateHash_t) {
+	self = &StateHash_t{}
+	self.state.Reset()
 	return
 }
 
-func (self *StateSalted_t) Reset() {
-	self.state.StateReset()
+func (self *StateHash_t) Reset() {
+	self.state.Reset()
 	self.hash = 0
 }
 
-func (self *StateSalted_t) StateSalted(in []byte) uint64 {
+func (self *StateHash_t) Sum64(in []byte) uint64 {
 	var sx, sy, vx, vy uint64
 	for _, code := range in {
 		sx, sy, vx, vy = self.state.StateNext(code)

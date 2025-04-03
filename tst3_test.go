@@ -6,6 +6,8 @@ package tst
 
 import (
 	"fmt"
+	"hash/fnv"
+	"io"
 	"math/rand/v2"
 	"sync"
 	"testing"
@@ -72,15 +74,30 @@ func GenerateString(rnd *rand.Rand, length int, charset []byte) (out []byte) {
 	return
 }
 
+func StringToUint64(in string) uint64 {
+	h := fnv.New64a()
+	io.WriteString(h, in)
+	return h.Sum64()
+}
+
 type Storage_t struct {
 	Mx   sync.Mutex
 	Data map[uint64]string
 }
 
-func (self *Storage_t) Len() (res int) {
+func (self *Storage_t) Merge(in map[uint64]string) (conflict bool, key1 uint64, value1 string, value2 string, size int) {
 	self.Mx.Lock()
-	res = len(self.Data)
-	self.Mx.Unlock()
+	defer self.Mx.Unlock()
+	for key1, value1 = range in {
+		if value2, conflict = self.Data[key1]; !conflict {
+			self.Data[key1] = value1
+		} else if value1 == value2 {
+			conflict = false
+		} else {
+			break
+		}
+	}
+	size = len(self.Data)
 	return
 }
 
@@ -92,34 +109,36 @@ func test_02(t *testing.T) {
 	t.Parallel()
 
 	var repeat int
-	salt := NewStateSalted()
-	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), 1))
-	for i := 1; i < 1_000_000; i++ {
+	salt := NewStateHash()
+	local_map := map[uint64]string{}
+	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
+	for i := 1; i < 500_000_000; i++ {
 		salt.Reset()
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
-		salted := salt.StateSalted(buf)
-		if i%1_000_000 == 0 {
-			t.Logf("i=%v, repeat=%v, storage=%v, salted=%v, buf=%q", i, repeat, storage.Len(), salted, buf)
-		}
-		storage.Mx.Lock()
-		temp, ok := storage.Data[salted]
+		salted := salt.Sum64(buf)
+		temp, ok := local_map[salted]
 		if !ok {
-			storage.Data[salted] = string(buf)
-			storage.Mx.Unlock()
+			local_map[salted] = string(buf)
 		} else {
-			storage.Mx.Unlock()
 			if temp == string(buf) {
 				repeat++
 			} else {
-				t.Fatalf("collision salted=%v, storage=%v, buf=%q", salted, temp, buf)
+				t.Fatalf("collision salted=%v, storage=%q, buf=%q", salted, temp, buf)
 			}
 		}
+		if i%1_000_000 == 0 {
+			conflict, salted, value1, value2, size := storage.Merge(local_map)
+			if conflict {
+				t.Fatalf("collision salted=%v, storage=%q, buf=%q", salted, value1, value2)
+			}
+			local_map = map[uint64]string{}
+			t.Logf("i=%v, repeat=%v, salted=%v, storage=%v, buf=%q", i, repeat, salted, size, buf)
+		}
 	}
-	t.Logf("storage=%v", storage.Len())
 }
 
 func Test_Tst3_02(t *testing.T) {
-	for i := 0; i < 1; i++ {
+	for i := 0; i < 2; i++ {
 		t.Run(fmt.Sprintf("test-%v", i), test_02)
 	}
 }
@@ -136,12 +155,12 @@ var in = [][]string{
 }
 
 func Test_Tst3_03(t *testing.T) {
-	salt := NewStateSalted()
+	salt := NewStateHash()
 	for _, v := range in {
 		salt.Reset()
-		res1 := salt.StateSalted([]byte(v[0]))
+		res1 := salt.Sum64([]byte(v[0]))
 		salt.Reset()
-		res2 := salt.StateSalted([]byte(v[1]))
+		res2 := salt.Sum64([]byte(v[1]))
 		assert.Assert(t, res1 != res2, fmt.Sprintf("%v %q %q", res1, v[0], v[1]))
 	}
 }
