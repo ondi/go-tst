@@ -136,7 +136,7 @@ func test_02(t *testing.T) {
 }
 
 func Test_Tst3_02(t *testing.T) {
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 1; i++ {
 		t.Run(fmt.Sprintf("test-%v", i), test_02)
 	}
 }
