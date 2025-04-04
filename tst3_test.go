@@ -80,56 +80,50 @@ func StringToUint64(in string) uint64 {
 	return h.Sum64()
 }
 
-type Storage_t struct {
-	Mx   sync.Mutex
-	Data map[uint64]string
+type Shard_t struct {
+	Mx sync.Mutex
+	Dm map[uint64]string
 }
 
-func (self *Storage_t) Merge(in map[uint64]string) (conflict bool, key1 uint64, value1 string, value2 string, size int) {
-	self.Mx.Lock()
-	defer self.Mx.Unlock()
-	for key1, value1 = range in {
-		if value2, conflict = self.Data[key1]; !conflict {
-			self.Data[key1] = value1
-		} else if value1 == value2 {
-			conflict = false
-		} else {
-			break
-		}
+type Shards_t []Shard_t
+
+func NewShards(shards int) (self Shards_t) {
+	for i := 0; i < shards; i++ {
+		self = append(self, Shard_t{Dm: map[uint64]string{}})
 	}
-	size = len(self.Data)
 	return
 }
 
-var storage = &Storage_t{
-	Data: map[uint64]string{},
+func (self Shards_t) Add(key uint64, value string) (conflict bool, value2 string, size int) {
+	shard := key % uint64(len(self))
+	// self[shard].Mx.Lock()
+	// defer self[shard].Mx.Unlock()
+	if value2, conflict = self[shard].Dm[key]; !conflict {
+		self[shard].Dm[key] = value
+	} else if value == value2 {
+		conflict = false
+	}
+	size = len(self[shard].Dm)
+	return
 }
+
+var storage = NewShards(1)
 
 func test_02(t *testing.T) {
 	t.Parallel()
 
 	var repeat int
 	salt := NewStateHash()
-	local_map := map[uint64]string{}
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
-	for i := 1; i < 500_000_000; i++ {
+	for i := 1; i < 1_000_000; i++ {
 		salt.Reset()
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
 		salted := salt.Sum64(buf)
-		temp, ok := local_map[salted]
-		if !ok {
-			local_map[salted] = string(buf)
-		} else if temp == string(buf) {
-			repeat++
-		} else {
+		conflict, temp, size := storage.Add(salted, string(buf))
+		if conflict {
 			t.Fatalf("collision salted=%v, storage=%q, buf=%q", salted, temp, buf)
 		}
 		if i%1_000_000 == 0 {
-			conflict, salted, value1, value2, size := storage.Merge(local_map)
-			if conflict {
-				t.Fatalf("collision salted=%v, storage=%q, buf=%q", salted, value1, value2)
-			}
-			local_map = map[uint64]string{}
 			t.Logf("i=%v, repeat=%v, salted=%v, storage=%v, buf=%q", i, repeat, salted, size, buf)
 		}
 	}
