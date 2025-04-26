@@ -10,24 +10,23 @@ type key3_t struct {
 	code byte
 }
 
-type mapped3_t[Value_t any] struct {
+type Mapped_t[Value_t any] struct {
 	value Value_t
 }
 
 type Tree3_t[Value_t any] struct {
-	root map[key3_t]*mapped3_t[Value_t]
+	root map[key3_t]*Mapped_t[Value_t]
 }
 
 func NewTree3[Value_t any]() *Tree3_t[Value_t] {
 	return &Tree3_t[Value_t]{
-		root: map[key3_t]*mapped3_t[Value_t]{},
+		root: map[key3_t]*Mapped_t[Value_t]{},
 	}
 }
 
-func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
+func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_t[Value_t], ok bool) {
 	var i int
 	var sx, sy, vx, vy uint64
-	var temp *mapped3_t[Value_t]
 	key := key3_t{}
 	state := State256_t{}
 	state.Reset()
@@ -35,21 +34,22 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (ok bool) {
 		key.pos = int32(i)
 		sx, sy, vx, vy = state.StateNext(key.code)
 		key.hash = (key.hash*sx + vx) * (key.hash*sy + vy)
-		if temp, ok = self.root[key]; !ok {
+		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
 	}
-	if temp == nil {
-		self.root[key] = &mapped3_t[Value_t]{value: value}
-		return true
+	if mapped == nil {
+		mapped = &Mapped_t[Value_t]{value: value}
+		self.root[key] = mapped
+		ok = true
 	}
-	return false
+	return
 }
 
 func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, found int) {
 	var ok bool
 	var sx, sy, vx, vy uint64
-	var temp *mapped3_t[Value_t]
+	var temp *Mapped_t[Value_t]
 	key := key3_t{}
 	state := State256_t{}
 	state.Reset()
