@@ -33,7 +33,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
 		sx, sy, vx, vy = state.StateNext(key.code)
-		key.hash = (key.hash*sx + vx) * (key.hash*sy + vy)
+		key.hash = (key.hash*sx + vx + 1) * (key.hash*sy + vy + 1)
 		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -56,7 +56,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
 		sx, sy, vx, vy = state.StateNext(key.code)
-		key.hash = (key.hash*sx + vx) * (key.hash*sy + vy)
+		key.hash = (key.hash*sx + vx + 1) * (key.hash*sy + vy + 1)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -122,9 +122,9 @@ func (self *StateHash_t) Reset() {
 func (self *StateHash_t) Sum64(in []byte) uint64 {
 	var sx, sy, vx, vy uint64
 	for _, code := range in {
-		// self.hash = (self.hash+sx+1)*(self.hash+sy+1) + (self.hash * vx) + (self.hash * vy)
 		sx, sy, vx, vy = self.state.StateNext(code)
-		self.hash = (self.hash*sx + vx) * (self.hash*sy + vy)
+		// self.hash = (self.hash*sx + vx) * (self.hash*sy + vy)
+		self.hash = (self.hash*sx + vx + 1) * (self.hash*sy + vy + 1)
 	}
 	return self.hash
 }
