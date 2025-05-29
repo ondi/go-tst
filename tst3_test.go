@@ -121,7 +121,7 @@ func test_02(t *testing.T) {
 		salted := salt.Sum64(buf)
 		conflict, temp, size := storage.Add(salted, string(buf))
 		if conflict {
-			t.Fatalf("collision salted=%v, storage=%q, buf=%q", salted, temp, buf)
+			t.Fatalf("collision i=%v, salted=%v, storage=%q, buf=%q", i, salted, temp, buf)
 		}
 		if i%1_000_000 == 0 {
 			t.Logf("i=%v, repeat=%v, salted=%v, storage=%v, buf=%q", i, repeat, salted, size, buf)
@@ -146,6 +146,7 @@ var in = [][]string{
 	{"bYK#ou-%/_lowdTJDtqk^FT&_dPa", "D/Z9OVZmQ#EQyBBC*Tl"},
 	{"BKytNPwqzlEXB3C6ot*th#", "_qUwrmVY4f%wmqj"},
 	{"24vWqxCezX76HWn^160", "/%UWIZSp@am^NG"},
+	{"gIDFraDf&Xia-U@2&e", "5rkzBp53C_TkoD#r&jEXYhkuWR"},
 }
 
 func Test_Tst3_03(t *testing.T) {
