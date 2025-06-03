@@ -113,12 +113,10 @@ func test_02(t *testing.T) {
 	t.Parallel()
 
 	var repeat int
-	salt := NewStateHash()
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
 	for i := 1; i < 1_000_000; i++ {
-		salt.Reset()
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
-		salted := salt.Sum64(buf)
+		salted := StateSum64(0, buf)
 		conflict, temp, size := storage.Add(salted, string(buf))
 		if conflict {
 			t.Fatalf("collision i=%v, salted=%v, storage=%q, buf=%q", i, salted, temp, buf)
@@ -147,15 +145,13 @@ var in = [][]string{
 	{"BKytNPwqzlEXB3C6ot*th#", "_qUwrmVY4f%wmqj"},
 	{"24vWqxCezX76HWn^160", "/%UWIZSp@am^NG"},
 	{"gIDFraDf&Xia-U@2&e", "5rkzBp53C_TkoD#r&jEXYhkuWR"},
+	{"XZtGF2$nW3YMqHpsTlo%PVj$", "Dmf85*ulAE#zMFdZCn9XQj/E4F"},
 }
 
 func Test_Tst3_03(t *testing.T) {
-	salt := NewStateHash()
 	for _, v := range in {
-		salt.Reset()
-		res1 := salt.Sum64([]byte(v[0]))
-		salt.Reset()
-		res2 := salt.Sum64([]byte(v[1]))
+		res1 := StateSum64(0, []byte(v[0]))
+		res2 := StateSum64(0, []byte(v[1]))
 		assert.Assert(t, res1 != res2, fmt.Sprintf("%v %q %q", res1, v[0], v[1]))
 	}
 }

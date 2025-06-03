@@ -26,14 +26,13 @@ func NewTree3[Value_t any]() *Tree3_t[Value_t] {
 
 func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_t[Value_t], ok bool) {
 	var i int
-	var sx, sy, vx, vy uint64
 	key := key3_t{}
 	state := State256_t{}
 	state.Reset()
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
-		sx, sy, vx, vy = state.StateNext(key.code)
-		key.hash = (key.hash*sx + vx + 1) * (key.hash*sy + vy + 1)
+		state.StateNext(key.code)
+		key.hash = state.Uint64Next(key.hash)
 		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -48,15 +47,14 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 
 func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, found int) {
 	var ok bool
-	var sx, sy, vx, vy uint64
 	var temp *Mapped_t[Value_t]
 	key := key3_t{}
 	state := State256_t{}
 	state.Reset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
-		sx, sy, vx, vy = state.StateNext(key.code)
-		key.hash = (key.hash*sx + vx + 1) * (key.hash*sy + vy + 1)
+		state.StateNext(key.code)
+		key.hash = state.Uint64Next(key.hash)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -96,34 +94,22 @@ func (self *State256_t) Reset() {
 	self.y = 0
 }
 
-func (self *State256_t) StateNext(in byte) (uint64, uint64, uint64, uint64) {
+func (self *State256_t) StateNext(in byte) {
 	self.x = (self.x + 1) % 256
-	self.y = (uint64(self.state[self.y]) + uint64(self.state[self.x]) + uint64(in) + 1) % 256
+	self.y = (uint64(self.state[self.y]) + uint64(self.state[self.x]) + uint64(in)) % 256
 	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
-	return uint64(self.state[self.x]), uint64(self.state[self.y]), self.x, self.y
 }
 
-type StateHash_t struct {
-	state State256_t
-	hash  uint64
+func (self *State256_t) Uint64Next(hash uint64) (res uint64) {
+	return (hash*uint64(self.state[self.x]) + self.x + 1) * (hash*uint64(self.state[self.y]) + self.y + 1)
 }
 
-func NewStateHash() (self *StateHash_t) {
-	self = &StateHash_t{}
-	self.state.Reset()
-	return
-}
-
-func (self *StateHash_t) Reset() {
-	self.state.Reset()
-	self.hash = 0
-}
-
-func (self *StateHash_t) Sum64(in []byte) uint64 {
-	var sx, sy, vx, vy uint64
+func StateSum64(hash uint64, in []byte) uint64 {
+	var state State256_t
+	state.Reset()
 	for _, code := range in {
-		sx, sy, vx, vy = self.state.StateNext(code)
-		self.hash = (self.hash*sx + vx + 1) * (self.hash*sy + vy + 1)
+		state.StateNext(code)
+		hash = state.Uint64Next(hash)
 	}
-	return self.hash
+	return hash
 }
