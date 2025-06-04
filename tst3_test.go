@@ -116,13 +116,13 @@ func test_02(t *testing.T) {
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
 	for i := 1; i < 1_000_000; i++ {
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
-		salted := StateSum64(0, buf)
-		conflict, temp, size := storage.Add(salted, string(buf))
+		hx := StateSum64(0, buf)
+		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
-			t.Fatalf("collision i=%v, salted=%v, storage=%q, buf=%q", i, salted, temp, buf)
+			t.Fatalf("collision i=%v, hash=%v, storage=%q, buf=%q", i, hx, temp, buf)
 		}
 		if i%1_000_000 == 0 {
-			t.Logf("i=%v, repeat=%v, salted=%v, storage=%v, buf=%q", i, repeat, salted, size, buf)
+			t.Logf("i=%v, repeat=%v, hash=%v, storage=%v, buf=%q", i, repeat, hx, size, buf)
 		}
 	}
 }
