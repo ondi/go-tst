@@ -67,7 +67,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state [256]uint8
+	state [256]byte
 	x, y  uint64
 }
 
@@ -96,7 +96,7 @@ func (self *State256_t) Reset() {
 
 func (self *State256_t) StateNext(in byte) {
 	self.x = (self.x + 1) % 256
-	self.y = (self.y + uint64(self.state[self.y]) + uint64(in)) % 256
+	self.y = (uint64(self.state[self.y]) + uint64(in) + 1) % 256
 	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
 }
 
