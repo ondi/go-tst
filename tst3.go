@@ -96,12 +96,14 @@ func (self *State256_t) Reset() {
 
 func (self *State256_t) StateNext(in byte) {
 	self.x = (self.x + 1) % 256
-	self.y = (self.y + uint64(self.state[self.y]) + uint64(in) + 1) % 256
+	self.y = (uint64(self.state[self.x]) + uint64(self.state[self.y]) + uint64(in) + 1) % 256
 	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
 }
 
-func (self *State256_t) Uint64Next(hash uint64) (res uint64) {
-	return (hash*uint64(self.state[self.x]) + self.x + 1) * (hash*uint64(self.state[self.y]) + self.y + 1)
+func (self *State256_t) Uint64Next(hash uint64) uint64 {
+	hash ^= 0b0000000001000000000100000000100000001000000100000100001000100101
+	hash = (hash*uint64(self.state[self.x]) + self.x + 1) * (hash*uint64(self.state[self.y]) + self.y + 1)
+	return hash
 }
 
 func StateSum64(hash uint64, in []byte) uint64 {
