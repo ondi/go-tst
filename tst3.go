@@ -103,9 +103,9 @@ func (self *State256_t) StateNext(in byte) {
 func (self *State256_t) Uint64Next(hash uint64) uint64 {
 	hash ^= 0b00000000_01000000_00010000_00001000_00001000_00010000_01000010_00100101
 	hash = hash * (uint64(self.state[self.x]) + 1)
-	hash = hash + self.x + 1
-	hash = hash * (uint64(self.state[self.y]) + 1)
-	hash = hash + self.y + 1
+	hash = hash * (self.x + 2)
+	hash = hash * (uint64(self.state[self.y]) + 3)
+	hash = hash * (self.y + 4)
 	return hash
 }
 
