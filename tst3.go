@@ -100,13 +100,23 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
 }
 
-func (self *State256_t) Uint64Next(hash uint64) uint64 {
-	hash ^= 0b00000000_01000000_00010000_00001000_00001000_00010000_01000010_00100101
-	hash = hash * (uint64(self.state[self.x]) + 1)
-	hash = hash * (self.x + 2)
-	hash = hash * (uint64(self.state[self.y]) + 3)
-	hash = hash * (self.y + 4)
-	return hash
+func (self *State256_t) Uint64Next(in uint64) (out uint64) {
+	begin := Begin(256, self.x, 8)
+	for i := 0; i < 8; i++ {
+		out = (out << 8) + uint64(self.state[begin])
+		begin = (begin + 1) % 256
+	}
+	out *= in ^ 0b00000000_01000000_00010000_00001000_00001000_00010000_01000010_00100101
+	return
+}
+
+func Begin(total uint64, current uint64, length uint64) (begin uint64) {
+	if current+1 >= length {
+		begin = current - length + 1
+	} else {
+		begin = total - (length - current) + 1
+	}
+	return
 }
 
 func StateSum64(hash uint64, in []byte) uint64 {
