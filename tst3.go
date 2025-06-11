@@ -72,7 +72,7 @@ type State256_t struct {
 }
 
 func (self *State256_t) Reset() {
-	self.state = [256]uint8{
+	self.state = [256]byte{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 		32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
@@ -102,9 +102,8 @@ func (self *State256_t) StateNext(in byte) {
 
 func (self *State256_t) Uint64Next(in uint64) (out uint64) {
 	begin := Begin(256, self.x, 8)
-	for i := 0; i < 8; i++ {
-		out = (out << 8) + uint64(self.state[begin])
-		begin = (begin + 1) % 256
+	for i := uint64(0); i < 8; i++ {
+		out = (out << 8) + uint64(self.state[(begin+i)%256])
 	}
 	out *= in ^ 0b00000000_01000000_00010000_00001000_00001000_00010000_01000010_00100101
 	return
