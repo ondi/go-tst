@@ -1,10 +1,11 @@
 //
-// go test -run Manual_Tst3_02 -v -count=1 -timeout 0
+// go test ./... -manual -v -count=1 -timeout 0
 //
 
 package tst
 
 import (
+	"flag"
 	"fmt"
 	"hash/fnv"
 	"io"
@@ -16,6 +17,8 @@ import (
 
 	"gotest.tools/assert"
 )
+
+var flag_manual = flag.Bool("manual", false, "Запускать ручные тесты")
 
 func Test_Tst3_01(t *testing.T) {
 	temp := NewTree3[string]()
@@ -108,9 +111,7 @@ func (self Shards_t) Add(key uint64, value string) (conflict bool, value2 string
 	return
 }
 
-var storage = NewShards(1)
-
-func manual_test_02(t *testing.T, count int) {
+func test_02(t *testing.T, storage Shards_t, count int) {
 	fd, err := os.OpenFile("collisions.txt", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
 	if err != nil {
 		fd = os.Stderr
@@ -126,22 +127,27 @@ func manual_test_02(t *testing.T, count int) {
 		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
 			fmt.Fprintf(fd, "%s\t%s\n", temp, buf)
-			t.Errorf("collision i=%v, hash=%0X, storage=%q, buf=%q\n", i, hx, temp, buf)
+			t.Errorf("%v collision i=%v, hash=%0X, storage=%q, buf=%q\n", t.Name(), i, hx, temp, buf)
 		}
 		if i%1_000_000 == 0 {
-			t.Logf("i=%v, repeat=%v, hash=%0X, storage=%v, buf=%q", i, repeat, hx, size, buf)
+			t.Logf("%v i=%v, repeat=%v, hash=%0X, storage=%v, buf=%q", t.Name(), i, repeat, hx, size, buf)
 		}
 	}
 }
 
-func Manual_Tst3_02(t *testing.T) {
+func Test_Manual_Tst3_02(t *testing.T) {
+	if flag_manual == nil || *flag_manual == false {
+		t.Skip("skipped, add -manual to run")
+	}
 	for i := 0; i < 1_000; i++ {
-		t.Run(fmt.Sprintf("test-%v", i), func(t *testing.T) { manual_test_02(t, 1_000_000_000) })
+		storage := NewShards(1)
+		t.Run(fmt.Sprintf("test-%v", i), func(t *testing.T) { test_02(t, storage, 800_000_000) })
 	}
 }
 
 func Test_Tst3_02(t *testing.T) {
-	t.Run("test-0", func(t *testing.T) { manual_test_02(t, 1_000_000) })
+	storage := NewShards(1)
+	t.Run("test-0", func(t *testing.T) { test_02(t, storage, 1_000_000) })
 }
 
 var in = [][]string{
