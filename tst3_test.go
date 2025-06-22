@@ -119,10 +119,10 @@ func test_02(t *testing.T) {
 		hx := StateSum64(0, buf)
 		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
-			t.Fatalf("collision i=%v, hash=%v, storage=%q, buf=%q", i, hx, temp, buf)
+			t.Fatalf("collision i=%v, hash=%0X, storage=%q, buf=%q", i, hx, temp, buf)
 		}
 		if i%1_000_000 == 0 {
-			t.Logf("i=%v, repeat=%v, hash=%v, storage=%v, buf=%q", i, repeat, hx, size, buf)
+			t.Logf("i=%v, repeat=%v, hash=%0X, storage=%v, buf=%q", i, repeat, hx, size, buf)
 		}
 	}
 }
