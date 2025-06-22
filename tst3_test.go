@@ -135,7 +135,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 	}
 }
 
-func Test_Manual_Tst3_02(t *testing.T) {
+func Test_Tst3_02(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
@@ -145,7 +145,7 @@ func Test_Manual_Tst3_02(t *testing.T) {
 	}
 }
 
-func Test_Tst3_02(t *testing.T) {
+func Test_Tst3_03(t *testing.T) {
 	storage := NewShards(1)
 	t.Run("test-0", func(t *testing.T) { test_02(t, storage, 1_000_000) })
 }
@@ -177,7 +177,7 @@ var in = [][]string{
 	{"U0K0SOenMQ$N&tAagsjsi-w", "ZBc%6d/C5^AYT"},
 }
 
-func Test_Tst3_03(t *testing.T) {
+func Test_Tst3_04(t *testing.T) {
 	for _, v := range in {
 		res1 := StateSum64(0, []byte(v[0]))
 		res2 := StateSum64(0, []byte(v[1]))
