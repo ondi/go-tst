@@ -110,7 +110,7 @@ func (self *State256_t) Uint64Next(in uint64) (out uint64) {
 		uint64(self.state[(begin+5)%256])<<(8*2) |
 		uint64(self.state[(begin+6)%256])<<(8*1) |
 		uint64(self.state[(begin+7)%256])<<(8*0))
-	out *= in ^ (uint64(self.state[(begin+0)%256])<<(8*0) |
+	out ^= out * (uint64(self.state[(begin+0)%256])<<(8*0) |
 		uint64(self.state[(begin+1)%256])<<(8*1) |
 		uint64(self.state[(begin+2)%256])<<(8*2) |
 		uint64(self.state[(begin+3)%256])<<(8*3) |
