@@ -1,5 +1,5 @@
 //
-// go test -run Test_Tst3_02 -v -count=1 -timeout 0
+// go test -run Manual_Tst3_02 -v -count=1 -timeout 0
 //
 
 package tst
@@ -9,6 +9,7 @@ import (
 	"hash/fnv"
 	"io"
 	"math/rand/v2"
+	"os"
 	"sync"
 	"testing"
 	"time"
@@ -109,17 +110,23 @@ func (self Shards_t) Add(key uint64, value string) (conflict bool, value2 string
 
 var storage = NewShards(1)
 
-func test_02(t *testing.T) {
-	t.Parallel()
+func manual_test_02(t *testing.T, count int) {
+	fd, err := os.OpenFile("collisions.txt", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+	if err != nil {
+		fd = os.Stderr
+	} else {
+		defer fd.Close()
+	}
 
 	var repeat int
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
-	for i := 1; i < 1_000_000; i++ {
+	for i := 1; i < count; i++ {
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
 		hx := StateSum64(0, buf)
 		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
-			t.Fatalf("collision i=%v, hash=%0X, storage=%q, buf=%q", i, hx, temp, buf)
+			fmt.Fprintf(fd, "%s\t%s\n", temp, buf)
+			t.Errorf("collision i=%v, hash=%0X, storage=%q, buf=%q\n", i, hx, temp, buf)
 		}
 		if i%1_000_000 == 0 {
 			t.Logf("i=%v, repeat=%v, hash=%0X, storage=%v, buf=%q", i, repeat, hx, size, buf)
@@ -127,10 +134,14 @@ func test_02(t *testing.T) {
 	}
 }
 
-func Test_Tst3_02(t *testing.T) {
-	for i := 0; i < 1; i++ {
-		t.Run(fmt.Sprintf("test-%v", i), test_02)
+func Manual_Tst3_02(t *testing.T) {
+	for i := 0; i < 1_000; i++ {
+		t.Run(fmt.Sprintf("test-%v", i), func(t *testing.T) { manual_test_02(t, 1_000_000_000) })
 	}
+}
+
+func Test_Tst3_02(t *testing.T) {
+	t.Run("test-0", func(t *testing.T) { manual_test_02(t, 1_000_000) })
 }
 
 var in = [][]string{
