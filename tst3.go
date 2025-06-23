@@ -102,7 +102,7 @@ func (self *State256_t) StateNext(in byte) {
 
 func (self *State256_t) Uint64Next(in uint64) (ex uint64) {
 	begin := Begin(256, self.x, 16)
-	in = in ^ (uint64(self.state[(begin+0)%256])<<(8*0) |
+	in = in + (uint64(self.state[(begin+0)%256])<<(8*0) |
 		uint64(self.state[(begin+1)%256])<<(8*1) |
 		uint64(self.state[(begin+2)%256])<<(8*2) |
 		uint64(self.state[(begin+3)%256])<<(8*3) |
