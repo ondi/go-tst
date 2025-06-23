@@ -141,7 +141,7 @@ func Test_Tst3_02(t *testing.T) {
 	}
 	for i := 0; i < 1_000; i++ {
 		storage := NewShards(1)
-		t.Run(fmt.Sprintf("test-%v", i), func(t *testing.T) { test_02(t, storage, 800_000_000) })
+		t.Run(fmt.Sprintf("test-%v", i), func(t *testing.T) { test_02(t, storage, 700_000_000) })
 	}
 }
 
