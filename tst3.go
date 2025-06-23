@@ -121,11 +121,11 @@ func (self *State256_t) Uint64Next(in uint64) (ex uint64) {
 	return
 }
 
-func Begin(total uint64, current uint64, length uint64) (begin uint64) {
-	if current+1 >= length {
-		begin = current - length + 1
+func Begin(size uint64, current uint64, request uint64) (begin uint64) {
+	if current+1 >= request {
+		begin = current - request + 1
 	} else {
-		begin = total - (length - current) + 1
+		begin = size - (request - current) + 1
 	}
 	return
 }
