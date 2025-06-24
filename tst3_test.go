@@ -179,6 +179,7 @@ var in = [][]string{
 	{"U0K0SOenMQ$N&tAagsjsi-w", "ZBc%6d/C5^AYT"},
 	{"vb9fwPYLF4S15", "7HNW9/M/bR"},
 	{"INn8lj-97Gk&Q74Gk%nVnUBI3^fg", "Gp5B0^J2fD_A*n"},
+	{"oPy6Z@6lW$rRS", "nc6a2DHMxYi"},
 }
 
 func Test_Tst3_04(t *testing.T) {
