@@ -127,7 +127,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		hx := StateSum64(0, buf)
 		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
-			fmt.Fprintf(fd, "%s\t%s\n", temp, buf)
+			fmt.Fprintf(fd, "%s\t%v\t%q\t%q\n", t.Name(), i, temp, buf)
 			t.Errorf("%v collision i=%v, hash=%0X, storage=%q, buf=%q\n", t.Name(), i, hx, temp, buf)
 		}
 		if i%1_000_000 == 0 {
@@ -185,6 +185,7 @@ var in = [][]string{
 	{"3f$#I3$bT*3my", "pLDV#PaJt_saZ$RlG"},
 	{"EP/EwEU@k5$*V/h2XOi-6E", "/VW%YP3GssrH&Hgf-hKDdFVQ"},
 	{"^#7zFwQgEV3fXB8ArfWLi", "cHOgcl2Ui$/JdQoU_hETpHC"},
+	{"VQvPKagE3V%xGfUjtX@yHaQ3U8bH", "fi9b^BLBu9tk2@&Ni"},
 }
 
 func Test_Tst3_04(t *testing.T) {

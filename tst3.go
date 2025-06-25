@@ -67,12 +67,12 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state [256]byte
+	state [256]uint64
 	x, y  uint64
 }
 
 func (self *State256_t) Reset() {
-	self.state = [256]byte{
+	self.state = [256]uint64{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
 		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 		32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
@@ -96,36 +96,36 @@ func (self *State256_t) Reset() {
 
 func (self *State256_t) StateNext(in byte) {
 	self.x = (self.x + 1) % 256
-	self.y = (self.x + self.y + uint64(in) + 1) % 256
+	self.y = (self.state[self.y] + self.state[self.x] + +self.state[in] + 1) % 256
 	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
 }
 
 func (self *State256_t) Uint64Next(in uint64) uint64 {
 	begin := Begin(256, self.x, 24)
-	in = in ^ (uint64(self.state[(begin+0)%256])<<(8*7) |
-		uint64(self.state[(begin+1)%256])<<(8*6) |
-		uint64(self.state[(begin+2)%256])<<(8*5) |
-		uint64(self.state[(begin+3)%256])<<(8*4) |
-		uint64(self.state[(begin+4)%256])<<(8*3) |
-		uint64(self.state[(begin+5)%256])<<(8*2) |
-		uint64(self.state[(begin+6)%256])<<(8*1) |
-		uint64(self.state[(begin+7)%256])<<(8*0))
-	in = in + (uint64(self.state[(begin+8)%256])<<(8*7) |
-		uint64(self.state[(begin+9)%256])<<(8*6) |
-		uint64(self.state[(begin+10)%256])<<(8*5) |
-		uint64(self.state[(begin+11)%256])<<(8*4) |
-		uint64(self.state[(begin+12)%256])<<(8*3) |
-		uint64(self.state[(begin+13)%256])<<(8*2) |
-		uint64(self.state[(begin+14)%256])<<(8*1) |
-		uint64(self.state[(begin+15)%256])<<(8*0))
-	in = in * (uint64(self.state[(begin+16)%256])<<(8*7) |
-		uint64(self.state[(begin+17)%256])<<(8*6) |
-		uint64(self.state[(begin+18)%256])<<(8*5) |
-		uint64(self.state[(begin+19)%256])<<(8*4) |
-		uint64(self.state[(begin+20)%256])<<(8*3) |
-		uint64(self.state[(begin+21)%256])<<(8*2) |
-		uint64(self.state[(begin+22)%256])<<(8*1) |
-		uint64(self.state[(begin+23)%256])<<(8*0))
+	in = in ^ (self.state[(begin+0)%256]<<(8*7) |
+		self.state[(begin+1)%256]<<(8*6) |
+		self.state[(begin+2)%256]<<(8*5) |
+		self.state[(begin+3)%256]<<(8*4) |
+		self.state[(begin+4)%256]<<(8*3) |
+		self.state[(begin+5)%256]<<(8*2) |
+		self.state[(begin+6)%256]<<(8*1) |
+		self.state[(begin+7)%256]<<(8*0))
+	in = in + (self.state[(begin+8)%256]<<(8*7) |
+		self.state[(begin+9)%256]<<(8*6) |
+		self.state[(begin+10)%256]<<(8*5) |
+		self.state[(begin+11)%256]<<(8*4) |
+		self.state[(begin+12)%256]<<(8*3) |
+		self.state[(begin+13)%256]<<(8*2) |
+		self.state[(begin+14)%256]<<(8*1) |
+		self.state[(begin+15)%256]<<(8*0))
+	in = in * (self.state[(begin+16)%256]<<(8*7) |
+		self.state[(begin+17)%256]<<(8*6) |
+		self.state[(begin+18)%256]<<(8*5) |
+		self.state[(begin+19)%256]<<(8*4) |
+		self.state[(begin+20)%256]<<(8*3) |
+		self.state[(begin+21)%256]<<(8*2) |
+		self.state[(begin+22)%256]<<(8*1) |
+		self.state[(begin+23)%256]<<(8*0))
 	return in
 }
 
