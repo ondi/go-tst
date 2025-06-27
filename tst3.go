@@ -96,36 +96,49 @@ func (self *State256_t) Reset() {
 
 func (self *State256_t) StateNext(in byte) {
 	self.x = (self.x + 1) % 256
-	self.y = (self.y + self.state[in] + self.state[self.x]) % 256
+	self.y = (self.state[self.y] + self.state[self.x] + self.state[in]) % 256
 	self.state[self.x], self.state[self.y] = self.state[self.y], self.state[self.x]
 }
 
 func (self *State256_t) Uint64Next(in uint64) uint64 {
-	begin := Begin(256, self.y, 24)
-	in = in + (self.state[(begin+0)%256]<<(8*0) |
-		self.state[(begin+1)%256]<<(8*1) |
-		self.state[(begin+2)%256]<<(8*2) |
-		self.state[(begin+3)%256]<<(8*3) |
-		self.state[(begin+4)%256]<<(8*4) |
-		self.state[(begin+5)%256]<<(8*5) |
-		self.state[(begin+6)%256]<<(8*6) |
-		self.state[(begin+7)%256]<<(8*7))
-	in = in ^ (self.state[(begin+8)%256]<<(8*0) |
-		self.state[(begin+9)%256]<<(8*1) |
-		self.state[(begin+10)%256]<<(8*2) |
-		self.state[(begin+11)%256]<<(8*3) |
-		self.state[(begin+12)%256]<<(8*4) |
-		self.state[(begin+13)%256]<<(8*5) |
-		self.state[(begin+14)%256]<<(8*6) |
-		self.state[(begin+15)%256]<<(8*7))
-	in = in * (self.state[(begin+16)%256]<<(8*0) |
-		self.state[(begin+17)%256]<<(8*1) |
-		self.state[(begin+18)%256]<<(8*2) |
-		self.state[(begin+19)%256]<<(8*3) |
-		self.state[(begin+20)%256]<<(8*4) |
-		self.state[(begin+21)%256]<<(8*5) |
-		self.state[(begin+22)%256]<<(8*6) |
-		self.state[(begin+23)%256]<<(8*7))
+	var begin uint64
+
+	begin = Begin(256, self.x, 16)
+	in = in + (self.state[(begin+0)%256]<<(8*7) |
+		self.state[(begin+1)%256]<<(8*6) |
+		self.state[(begin+2)%256]<<(8*5) |
+		self.state[(begin+3)%256]<<(8*4) |
+		self.state[(begin+4)%256]<<(8*3) |
+		self.state[(begin+5)%256]<<(8*2) |
+		self.state[(begin+6)%256]<<(8*1) |
+		self.state[(begin+7)%256]<<(8*0))
+	in = in * (self.state[(begin+8)%256]<<(8*7) |
+		self.state[(begin+9)%256]<<(8*6) |
+		self.state[(begin+10)%256]<<(8*5) |
+		self.state[(begin+11)%256]<<(8*4) |
+		self.state[(begin+12)%256]<<(8*3) |
+		self.state[(begin+13)%256]<<(8*2) |
+		self.state[(begin+14)%256]<<(8*1) |
+		self.state[(begin+15)%256]<<(8*0))
+
+	begin = Begin(256, self.y, 16)
+	in = in + (self.state[(begin+0)%256]<<(8*7) |
+		self.state[(begin+1)%256]<<(8*6) |
+		self.state[(begin+2)%256]<<(8*5) |
+		self.state[(begin+3)%256]<<(8*4) |
+		self.state[(begin+4)%256]<<(8*3) |
+		self.state[(begin+5)%256]<<(8*2) |
+		self.state[(begin+6)%256]<<(8*1) |
+		self.state[(begin+7)%256]<<(8*0))
+	in = in * (self.state[(begin+8)%256]<<(8*7) |
+		self.state[(begin+9)%256]<<(8*6) |
+		self.state[(begin+10)%256]<<(8*5) |
+		self.state[(begin+11)%256]<<(8*4) |
+		self.state[(begin+12)%256]<<(8*3) |
+		self.state[(begin+13)%256]<<(8*2) |
+		self.state[(begin+14)%256]<<(8*1) |
+		self.state[(begin+15)%256]<<(8*0))
+
 	return in
 }
 
