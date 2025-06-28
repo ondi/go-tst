@@ -199,6 +199,13 @@ var in = [][]string{
 	{"H$vafBY~%E6", "kzwLPxfF2m^Uxmbmy"},
 	{"Xk2t-mMCRaC6V0GYbS-4eSTLxze@", "KAya$1Q5E*C/"},
 	{"bogfWCiAp^JopF7kPD", "dCvLEjyr^_vbaEBA&Um~@NWKuu"},
+	{"QXz@1j7n%5uS3t/~fSe01gQ#-iiQ", "zr/ppjs_F^Jk#W^z~S1"},
+	{"E62TTgYO^2DzNmF5R_Otmq", "g3UcdHsB#yt-a9"},
+	{"#rWEggwuAb/s96VUzT96fdk^7V", "fU2WYFYT_9x2pS8^Yp7PBjx-x"},
+	{"uFWYkbG3ocIoPPWkudGj~piu5S#4", "7yL7O1DtmLQQmjr"},
+	{"YuBQcG24y3VvIQ-1l9RW2xg@c", "ukMUJbn~kLo-/4S"},
+	{"r$*lsgC5rer9R#7i", "GG8Fnv-Q#JuRb_rz98_XM#VdMaD&A"},
+	{"L_0wV/5GumzmTVhbwZuBt2_6", "JOWWgkSCn-_NOcidEBaw"},
 }
 
 func Test_Tst3_04(t *testing.T) {
