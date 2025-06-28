@@ -114,12 +114,12 @@ func (self *State256_t) Uint64Next(in uint64) uint64 {
 		self.state[(begin+7)%256]<<(8*7))
 	in = in * (self.state[(begin+8)%256]<<(8*0) |
 		self.state[(begin+9)%256]<<(8*1) |
-		self.state[(begin+10)%256]<<(8*1) |
-		self.state[(begin+11)%256]<<(8*2) |
-		self.state[(begin+12)%256]<<(8*3) |
-		self.state[(begin+13)%256]<<(8*4) |
-		self.state[(begin+14)%256]<<(8*5) |
-		self.state[(begin+15)%256]<<(8*6))
+		self.state[(begin+10)%256]<<(8*2) |
+		self.state[(begin+11)%256]<<(8*3) |
+		self.state[(begin+12)%256]<<(8*4) |
+		self.state[(begin+13)%256]<<(8*5) |
+		self.state[(begin+14)%256]<<(8*6) |
+		self.state[(begin+15)%256]<<(8*7))
 
 	begin = Begin(256, self.x, 16)
 	in = in + (self.state[(begin+0)%256]<<(8*0) |
@@ -138,6 +138,7 @@ func (self *State256_t) Uint64Next(in uint64) uint64 {
 		self.state[(begin+13)%256]<<(8*5) |
 		self.state[(begin+14)%256]<<(8*6) |
 		self.state[(begin+15)%256]<<(8*7))
+
 	return in
 }
 
