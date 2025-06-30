@@ -208,6 +208,10 @@ var in = [][]string{
 	{"L_0wV/5GumzmTVhbwZuBt2_6", "JOWWgkSCn-_NOcidEBaw"},
 	{"cb0Fbn@oLYQN", "j2dA5o2R$NG9B"},
 	{"LxVOQMTe14", "r%CJ2/uJH5zKLfO%#1PDbD*2*cym"},
+	{"vn0d%L8Kxjrdl", "vAZ_WR&3g*#244ITR"},
+	{"8hiEm/BU5iiQOO%U0CwX", "~81m_hbjW~SwuYG&dkwj1Z6wUURan"},
+	{"o^K/3/rHGqr", "lvjpvHNNQ@LBN"},
+	{"f2$e%UMl_JWh", "3eA/yTeK~M1yn4*xgt"},
 }
 
 func Test_Tst3_04(t *testing.T) {
