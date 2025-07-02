@@ -225,6 +225,8 @@ var in = [][]string{
 	{"ep~lzy6*9Z", "04M*O3mg/Qg/ryRj2V7aw"},
 	{"GAuul^sQAP#V7A", "GoC3g@nwISXQiFov*_Io"},
 	{"VWWu/SRk9ko1#&l#-q3uIo", "/dbP/j~OWn0"},
+	{"_9D#/w-tcvH#@SgRghxK2W2Z#", "Xa2D~wwhSay1R0m%3$@"},
+	{"B@7ms%n3Un%Mxse6MqK28pu~", "5W3BJPKiqZ"},
 }
 
 func Test_Tst3_04(t *testing.T) {
