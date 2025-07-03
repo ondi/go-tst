@@ -96,43 +96,39 @@ func (self *State256_t) Reset() {
 }
 
 func (self *State256_t) StateNext(in byte) {
-	self.x = (self.x + 1) % 256
-	self.y = (self.state[self.y] + self.state[self.x] + self.state[in] + 1) % 256
-	self.z = (self.state[self.z] + self.state[self.y] + self.state[in] + 1) % 256
+	self.x = (self.state[self.x] + self.state[in] + 1) % 256
+	self.y = (self.state[self.y] + self.state[self.x] + 1) % 256
+	self.z = (self.state[self.z] + self.state[self.y] + 1) % 256
 	self.state[self.x], self.state[self.y], self.state[self.z] = self.state[self.y], self.state[self.z], self.state[self.x]
 }
 
 func (self *State256_t) Uint64Next(in uint64) uint64 {
-	x := Begin(256, self.x, 8)
-	y := Begin(256, self.y, 8)
-	z := Begin(256, self.z, 8)
+	in = in ^ (self.state[(self.x+0)%256]<<(8*0) |
+		self.state[(self.x+1)%256]<<(8*1) |
+		self.state[(self.x+2)%256]<<(8*2) |
+		self.state[(self.x+3)%256]<<(8*3) |
+		self.state[(self.x+4)%256]<<(8*4) |
+		self.state[(self.x+5)%256]<<(8*5) |
+		self.state[(self.x+6)%256]<<(8*6) |
+		self.state[(self.x+7)%256]<<(8*7))
 
-	in = in ^ (self.state[(x+0)%256]<<(8*0) |
-		self.state[(x+1)%256]<<(8*1) |
-		self.state[(x+2)%256]<<(8*2) |
-		self.state[(x+3)%256]<<(8*3) |
-		self.state[(x+4)%256]<<(8*4) |
-		self.state[(x+5)%256]<<(8*5) |
-		self.state[(x+6)%256]<<(8*6) |
-		self.state[(x+7)%256]<<(8*7))
+	in = in + (self.state[(self.y+0)%256]<<(8*0) |
+		self.state[(self.y+1)%256]<<(8*1) |
+		self.state[(self.y+2)%256]<<(8*2) |
+		self.state[(self.y+3)%256]<<(8*3) |
+		self.state[(self.y+4)%256]<<(8*4) |
+		self.state[(self.y+5)%256]<<(8*5) |
+		self.state[(self.y+6)%256]<<(8*6) |
+		self.state[(self.y+7)%256]<<(8*7))
 
-	in = in + (self.state[(y+0)%256]<<(8*0) |
-		self.state[(y+1)%256]<<(8*1) |
-		self.state[(y+2)%256]<<(8*2) |
-		self.state[(y+3)%256]<<(8*3) |
-		self.state[(y+4)%256]<<(8*4) |
-		self.state[(y+5)%256]<<(8*5) |
-		self.state[(y+6)%256]<<(8*6) |
-		self.state[(y+7)%256]<<(8*7))
-
-	in = in * (self.state[(z+0)%256]<<(8*0) |
-		self.state[(z+1)%256]<<(8*1) |
-		self.state[(z+2)%256]<<(8*2) |
-		self.state[(z+3)%256]<<(8*3) |
-		self.state[(z+4)%256]<<(8*4) |
-		self.state[(z+5)%256]<<(8*5) |
-		self.state[(z+6)%256]<<(8*6) |
-		self.state[(z+7)%256]<<(8*7))
+	in = in * (self.state[(self.z+0)%256]<<(8*0) |
+		self.state[(self.z+1)%256]<<(8*1) |
+		self.state[(self.z+2)%256]<<(8*2) |
+		self.state[(self.z+3)%256]<<(8*3) |
+		self.state[(self.z+4)%256]<<(8*4) |
+		self.state[(self.z+5)%256]<<(8*5) |
+		self.state[(self.z+6)%256]<<(8*6) |
+		self.state[(self.z+7)%256]<<(8*7))
 
 	return in
 }
