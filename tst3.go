@@ -103,14 +103,14 @@ func (self *State256_t) StateNext(in byte) {
 }
 
 func (self *State256_t) Uint64Next(in uint64) uint64 {
-	in = in ^ (self.state[(self.x+0)%256]<<(8*0) |
-		self.state[(self.x+1)%256]<<(8*1) |
-		self.state[(self.x+2)%256]<<(8*2) |
-		self.state[(self.x+3)%256]<<(8*3) |
-		self.state[(self.x+4)%256]<<(8*4) |
-		self.state[(self.x+5)%256]<<(8*5) |
-		self.state[(self.x+6)%256]<<(8*6) |
-		self.state[(self.x+7)%256]<<(8*7))
+	in = in ^ (self.state[(self.z+0)%256]<<(8*0) |
+		self.state[(self.z+1)%256]<<(8*1) |
+		self.state[(self.z+2)%256]<<(8*2) |
+		self.state[(self.z+3)%256]<<(8*3) |
+		self.state[(self.z+4)%256]<<(8*4) |
+		self.state[(self.z+5)%256]<<(8*5) |
+		self.state[(self.z+6)%256]<<(8*6) |
+		self.state[(self.z+7)%256]<<(8*7))
 
 	in = in + (self.state[(self.y+0)%256]<<(8*0) |
 		self.state[(self.y+1)%256]<<(8*1) |
@@ -121,14 +121,14 @@ func (self *State256_t) Uint64Next(in uint64) uint64 {
 		self.state[(self.y+6)%256]<<(8*6) |
 		self.state[(self.y+7)%256]<<(8*7))
 
-	in = in * (self.state[(self.z+0)%256]<<(8*0) |
-		self.state[(self.z+1)%256]<<(8*1) |
-		self.state[(self.z+2)%256]<<(8*2) |
-		self.state[(self.z+3)%256]<<(8*3) |
-		self.state[(self.z+4)%256]<<(8*4) |
-		self.state[(self.z+5)%256]<<(8*5) |
-		self.state[(self.z+6)%256]<<(8*6) |
-		self.state[(self.z+7)%256]<<(8*7))
+	in = in * (self.state[(self.x+0)%256]<<(8*0) |
+		self.state[(self.x+1)%256]<<(8*1) |
+		self.state[(self.x+2)%256]<<(8*2) |
+		self.state[(self.x+3)%256]<<(8*3) |
+		self.state[(self.x+4)%256]<<(8*4) |
+		self.state[(self.x+5)%256]<<(8*5) |
+		self.state[(self.x+6)%256]<<(8*6) |
+		self.state[(self.x+7)%256]<<(8*7))
 
 	return in
 }
