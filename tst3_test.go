@@ -228,6 +228,8 @@ var in = [][]string{
 	{"_9D#/w-tcvH#@SgRghxK2W2Z#", "Xa2D~wwhSay1R0m%3$@"},
 	{"B@7ms%n3Un%Mxse6MqK28pu~", "5W3BJPKiqZ"},
 	{"Cszx*ti1rUJ", "1nZJ4aWAsX%jO62i"},
+	{"u1vIqg8F9*2%q9RcQJL4%eP", "1CzmO~yfX5@wF^c6re"},
+	{"p*aKNC4rldPfkb_fcpul#", "uGaKk4cQRQc3L1@1p4tXsQhSQ"},
 }
 
 func Test_Tst3_04(t *testing.T) {
