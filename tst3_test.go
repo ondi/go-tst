@@ -232,6 +232,9 @@ var in = [][]string{
 	{"p*aKNC4rldPfkb_fcpul#", "uGaKk4cQRQc3L1@1p4tXsQhSQ"},
 	{"CXL8N@xkBgJxwF007thG%W~FHqpTl", "vRN0SXr*8XHEA4@HiJPl7Yxzaq0Zf"},
 	{"Yg7/l#O-#HqOqLwer", "gYofEGFot7nvX"},
+	{"Iid2TQ2~FMxCF#wNb~", "ObHRiL2a1J2fszFC~onQ"},
+	{"qd^vfES^-W", "FvBlSdIVvAx%6a@ylWLXI%"},
+	{"9J78_6C2yu65^I2Z/v3K$*v", "Pdipy$Eg@EmkPgBqE@P&z"},
 }
 
 func Test_Tst3_04(t *testing.T) {
