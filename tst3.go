@@ -138,11 +138,11 @@ func (self *State256_t) Sum64() (res uint64) {
 }
 
 func Forward(size uint64, current uint64, offset uint64) uint64 {
-	return (current + offset%size + size) % size
+	return (size + current + offset) % size
 }
 
 func Backward(size uint64, current uint64, offset uint64) uint64 {
-	return (current - offset%size + size) % size
+	return (size + current - offset) % size
 }
 
 func StateSum64(in []byte) uint64 {
