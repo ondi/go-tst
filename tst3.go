@@ -32,7 +32,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
 		state.StateNext(key.code)
-		key.hash = state.Uint64Next()
+		key.hash = state.Sum64()
 		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -54,7 +54,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
 		state.StateNext(key.code)
-		key.hash = state.Uint64Next()
+		key.hash = state.Sum64()
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -102,7 +102,7 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.x], self.state[self.y], self.state[self.z] = self.state[self.y], self.state[self.z], self.state[self.x]
 }
 
-func (self *State256_t) Uint64Next() (res uint64) {
+func (self *State256_t) Sum64() (res uint64) {
 	x := Backward(256, self.x, 8)
 	y := Backward(256, self.y, 8)
 	z := Backward(256, self.z, 8)
@@ -151,5 +151,5 @@ func StateSum64(in []byte) uint64 {
 	for _, code := range in {
 		state.StateNext(code)
 	}
-	return state.Uint64Next()
+	return state.Sum64()
 }
