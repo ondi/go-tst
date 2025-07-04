@@ -32,7 +32,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
 		state.StateNext(key.code)
-		key.hash = state.Uint64Next(key.hash)
+		key.hash = state.Uint64Next()
 		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -54,7 +54,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
 		state.StateNext(key.code)
-		key.hash = state.Uint64Next(key.hash)
+		key.hash = state.Uint64Next()
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -98,16 +98,16 @@ func (self *State256_t) Reset() {
 func (self *State256_t) StateNext(in byte) {
 	self.x = (self.x + 1) % 256
 	self.y = (self.y + self.state[self.x] + self.state[in] + 1) % 256
-	self.z = (self.z + self.state[self.y] + self.state[in] + 1) % 256
+	self.z = (self.z + self.state[self.y] + self.state[self.z] + 1) % 256
 	self.state[self.x], self.state[self.y], self.state[self.z] = self.state[self.y], self.state[self.z], self.state[self.x]
 }
 
-func (self *State256_t) Uint64Next(in uint64) uint64 {
-	x := Backward(256, self.x, 1)
-	y := Backward(256, self.y, 4)
-	z := Backward(256, self.x, 8)
+func (self *State256_t) Uint64Next() (res uint64) {
+	x := Backward(256, self.x, 8)
+	y := Backward(256, self.y, 8)
+	z := Backward(256, self.z, 8)
 
-	in = in ^ (self.state[(z+1)%256]<<(8*0) |
+	res = (self.state[(z+1)%256]<<(8*0) |
 		self.state[(z+2)%256]<<(8*1) |
 		self.state[(z+3)%256]<<(8*2) |
 		self.state[(z+4)%256]<<(8*3) |
@@ -116,7 +116,7 @@ func (self *State256_t) Uint64Next(in uint64) uint64 {
 		self.state[(z+7)%256]<<(8*6) |
 		self.state[(z+8)%256]<<(8*7))
 
-	in = in + (self.state[(y+1)%256]<<(8*0) |
+	res = res + (self.state[(y+1)%256]<<(8*0) |
 		self.state[(y+2)%256]<<(8*1) |
 		self.state[(y+3)%256]<<(8*2) |
 		self.state[(y+4)%256]<<(8*3) |
@@ -125,7 +125,7 @@ func (self *State256_t) Uint64Next(in uint64) uint64 {
 		self.state[(y+7)%256]<<(8*6) |
 		self.state[(y+8)%256]<<(8*7))
 
-	in = in * (self.state[(x+1)%256]<<(8*0) |
+	res = res * (self.state[(x+1)%256]<<(8*0) |
 		self.state[(x+2)%256]<<(8*1) |
 		self.state[(x+3)%256]<<(8*2) |
 		self.state[(x+4)%256]<<(8*3) |
@@ -134,7 +134,7 @@ func (self *State256_t) Uint64Next(in uint64) uint64 {
 		self.state[(x+7)%256]<<(8*6) |
 		self.state[(x+8)%256]<<(8*7))
 
-	return in
+	return
 }
 
 func Forward(size uint64, current uint64, offset uint64) uint64 {
@@ -145,12 +145,11 @@ func Backward(size uint64, current uint64, offset uint64) uint64 {
 	return (current - offset%size + size) % size
 }
 
-func StateSum64(hash uint64, in []byte) uint64 {
+func StateSum64(in []byte) uint64 {
 	var state State256_t
 	state.Reset()
 	for _, code := range in {
 		state.StateNext(code)
-		hash = state.Uint64Next(hash)
 	}
-	return hash
+	return state.Uint64Next()
 }

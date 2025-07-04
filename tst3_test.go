@@ -124,7 +124,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
 	for i := 1; i < count; i++ {
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
-		hx := StateSum64(0, buf)
+		hx := StateSum64(buf)
 		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
 			fmt.Fprintf(fd, "%s\t%v\t%q\t%q\n", t.Name(), i, temp, buf)
@@ -239,8 +239,8 @@ var in = [][]string{
 
 func Test_Tst3_04(t *testing.T) {
 	for _, v := range in {
-		res1 := StateSum64(0, []byte(v[0]))
-		res2 := StateSum64(0, []byte(v[1]))
+		res1 := StateSum64([]byte(v[0]))
+		res2 := StateSum64([]byte(v[1]))
 		assert.Assert(t, res1 != res2, fmt.Sprintf("%v %q %q", res1, v[0], v[1]))
 	}
 }
