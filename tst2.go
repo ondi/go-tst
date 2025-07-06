@@ -6,15 +6,11 @@ package tst
 
 import "math"
 
-type mapped2_t[Value_t any] struct {
-	value Value_t
-}
-
 type node2_t[Value_t any] struct {
 	hi_kid int
 	eq_kid int
 	lo_kid int
-	value  *mapped2_t[Value_t]
+	value  *Mapped_t[Value_t]
 	key    rune
 }
 
@@ -55,7 +51,7 @@ func (self *Tree2_t[Value_t]) Add(in string, value Value_t) {
 		cur = self.root[cur].eq_kid
 	}
 	if last != math.MaxInt {
-		self.root[last].value = &mapped2_t[Value_t]{value: value}
+		self.root[last].value = &Mapped_t[Value_t]{value: value}
 	}
 }
 

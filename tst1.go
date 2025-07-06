@@ -4,15 +4,11 @@
 
 package tst
 
-type mapped1_t[Value_t any] struct {
-	value Value_t
-}
-
 type node1_t[Value_t any] struct {
 	eq_kid *node1_t[Value_t]
 	hi_kid *node1_t[Value_t]
 	lo_kid *node1_t[Value_t]
-	value  *mapped1_t[Value_t]
+	value  *Mapped_t[Value_t]
 	key    rune
 }
 
@@ -42,7 +38,7 @@ func (self *Tree1_t[Value_t]) Add(in string, value Value_t) {
 		cur = &(*cur).eq_kid
 	}
 	if last != nil {
-		(*last).value = &mapped1_t[Value_t]{value: value}
+		(*last).value = &Mapped_t[Value_t]{value: value}
 	}
 }
 
