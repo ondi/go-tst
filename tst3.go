@@ -67,8 +67,8 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state   [256]uint64
-	x, y, z uint64
+	state      [256]uint64
+	a, b, c, d uint64
 }
 
 func (self *State256_t) Reset() {
@@ -90,20 +90,23 @@ func (self *State256_t) Reset() {
 		224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
 		240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
 	}
-	self.x = 0
-	self.y = 0
-	self.z = 0
+	self.a = 0
+	self.b = 0
+	self.c = 0
+	self.d = 0
 }
 
 func (self *State256_t) StateNext(in byte) {
-	self.x = (self.x + 1) % 256
-	self.y = (self.state[self.y] + self.state[self.x] + self.state[in] + 1) % 256
-	self.z = (self.state[self.z] + self.state[self.y] + uint64(in) + 1) % 256
-	self.state[self.x], self.state[self.y], self.state[self.z] = self.state[self.y], self.state[self.z], self.state[self.x]
+	self.a = (self.a + 1) % 256
+	self.b = (self.state[self.b] + self.state[(self.a+uint64(in))%256] + 1) % 256
+	self.c = (self.c + 31) % 256
+	self.d = (self.state[self.d] + self.state[(self.c+uint64(in))%256] + 1) % 256
+	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
+	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
 func (self *State256_t) Sum64() (res uint64) {
-	for i := self.x; i < self.x+256; i += 32 {
+	for i := self.a; i < self.a+256; i += 32 {
 		res = res ^ (self.state[(i+0)%256]<<(8*0) |
 			self.state[(i+1)%256]<<(8*1) |
 			self.state[(i+2)%256]<<(8*2) |
