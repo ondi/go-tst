@@ -67,8 +67,8 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state      [256]uint64
-	a, b, c, d uint64
+	state [256]uint64
+	a, b  uint64
 }
 
 func (self *State256_t) Reset() {
@@ -92,56 +92,51 @@ func (self *State256_t) Reset() {
 	}
 	self.a = 0
 	self.b = 0
-	self.c = 0
-	self.d = 0
 }
 
 func (self *State256_t) StateNext(in byte) {
-	self.a = (self.a + 1) % 256
+	self.a = (self.a + 31) % 256
 	self.b = (self.state[self.b] + self.state[(self.a+uint64(in))%256] + 1) % 256
-	self.c = (self.c + 31) % 256
-	self.d = (self.state[self.d] + self.state[(self.c+uint64(in))%256] + 1) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
 func (self *State256_t) Sum64() (res uint64) {
 	for i := self.a; i < self.a+256; i += 32 {
-		res = res ^ (self.state[(i+0)%256]<<(8*0) |
-			self.state[(i+1)%256]<<(8*1) |
-			self.state[(i+2)%256]<<(8*2) |
-			self.state[(i+3)%256]<<(8*3) |
-			self.state[(i+4)%256]<<(8*4) |
-			self.state[(i+5)%256]<<(8*5) |
-			self.state[(i+6)%256]<<(8*6) |
-			self.state[(i+7)%256]<<(8*7))
+		res = res ^ (self.state[(i+1)%256]<<(8*0) |
+			self.state[(i+2)%256]<<(8*1) |
+			self.state[(i+3)%256]<<(8*2) |
+			self.state[(i+4)%256]<<(8*3) |
+			self.state[(i+5)%256]<<(8*4) |
+			self.state[(i+6)%256]<<(8*5) |
+			self.state[(i+7)%256]<<(8*6) |
+			self.state[(i+8)%256]<<(8*7))
 
-		res = res * (self.state[(i+8)%256]<<(8*0) |
-			self.state[(i+9)%256]<<(8*1) |
-			self.state[(i+10)%256]<<(8*2) |
-			self.state[(i+11)%256]<<(8*3) |
-			self.state[(i+12)%256]<<(8*4) |
-			self.state[(i+13)%256]<<(8*5) |
-			self.state[(i+14)%256]<<(8*6) |
-			self.state[(i+15)%256]<<(8*7))
+		res = res * (self.state[(i+9)%256]<<(8*0) |
+			self.state[(i+10)%256]<<(8*1) |
+			self.state[(i+11)%256]<<(8*2) |
+			self.state[(i+12)%256]<<(8*3) |
+			self.state[(i+13)%256]<<(8*4) |
+			self.state[(i+14)%256]<<(8*5) |
+			self.state[(i+15)%256]<<(8*6) |
+			self.state[(i+16)%256]<<(8*7))
 
-		res = res + (self.state[(i+16)%256]<<(8*0) |
-			self.state[(i+17)%256]<<(8*1) |
-			self.state[(i+18)%256]<<(8*2) |
-			self.state[(i+19)%256]<<(8*3) |
-			self.state[(i+20)%256]<<(8*4) |
-			self.state[(i+21)%256]<<(8*5) |
-			self.state[(i+22)%256]<<(8*6) |
-			self.state[(i+23)%256]<<(8*7))
+		res = res + (self.state[(i+17)%256]<<(8*0) |
+			self.state[(i+18)%256]<<(8*1) |
+			self.state[(i+19)%256]<<(8*2) |
+			self.state[(i+20)%256]<<(8*3) |
+			self.state[(i+21)%256]<<(8*4) |
+			self.state[(i+22)%256]<<(8*5) |
+			self.state[(i+23)%256]<<(8*6) |
+			self.state[(i+24)%256]<<(8*7))
 
-		res = res * (self.state[(i+24)%256]<<(8*0) |
-			self.state[(i+25)%256]<<(8*1) |
-			self.state[(i+26)%256]<<(8*2) |
-			self.state[(i+27)%256]<<(8*3) |
-			self.state[(i+28)%256]<<(8*4) |
-			self.state[(i+29)%256]<<(8*5) |
-			self.state[(i+30)%256]<<(8*6) |
-			self.state[(i+31)%256]<<(8*7))
+		res = res * (self.state[(i+25)%256]<<(8*0) |
+			self.state[(i+26)%256]<<(8*1) |
+			self.state[(i+27)%256]<<(8*2) |
+			self.state[(i+28)%256]<<(8*3) |
+			self.state[(i+29)%256]<<(8*4) |
+			self.state[(i+30)%256]<<(8*5) |
+			self.state[(i+31)%256]<<(8*6) |
+			self.state[(i+32)%256]<<(8*7))
 	}
 	return
 }
