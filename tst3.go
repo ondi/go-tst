@@ -95,7 +95,7 @@ func (self *State256_t) Reset() {
 }
 
 func (self *State256_t) StateNext(in byte) {
-	self.a = (self.a + 31) % 256
+	self.a = (self.a + self.b%31 + 1) % 256
 	self.b = (self.state[self.b] + self.state[self.a] + self.state[in] + 1) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 }
