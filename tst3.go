@@ -102,7 +102,7 @@ func (self *State256_t) StateNext(in byte) {
 
 func (self *State256_t) Sum64() (res uint64) {
 	for i := self.a; i < self.a+256; i += 32 {
-		res = res ^ (self.state[(i+1)%256]<<(8*0) |
+		res = res + (self.state[(i+1)%256]<<(8*0) |
 			self.state[(i+2)%256]<<(8*1) |
 			self.state[(i+3)%256]<<(8*2) |
 			self.state[(i+4)%256]<<(8*3) |
@@ -111,7 +111,7 @@ func (self *State256_t) Sum64() (res uint64) {
 			self.state[(i+7)%256]<<(8*6) |
 			self.state[(i+8)%256]<<(8*7))
 
-		res = res * (self.state[(i+9)%256]<<(8*0) |
+		res = res ^ (self.state[(i+9)%256]<<(8*0) |
 			self.state[(i+10)%256]<<(8*1) |
 			self.state[(i+11)%256]<<(8*2) |
 			self.state[(i+12)%256]<<(8*3) |
@@ -129,7 +129,7 @@ func (self *State256_t) Sum64() (res uint64) {
 			self.state[(i+23)%256]<<(8*6) |
 			self.state[(i+24)%256]<<(8*7))
 
-		res = res * (self.state[(i+25)%256]<<(8*0) |
+		res = res ^ (self.state[(i+25)%256]<<(8*0) |
 			self.state[(i+26)%256]<<(8*1) |
 			self.state[(i+27)%256]<<(8*2) |
 			self.state[(i+28)%256]<<(8*3) |
