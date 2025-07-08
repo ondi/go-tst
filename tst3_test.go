@@ -20,6 +20,7 @@ import (
 )
 
 var flag_manual = flag.Bool("manual", false, "Запускать ручные тесты")
+var collisions int
 
 func Test_Tst3_01(t *testing.T) {
 	temp := NewTree3[string]()
@@ -120,7 +121,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		defer fd.Close()
 	}
 
-	var repeat, collisions int
+	var repeat int
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
 	for i := 1; i < count; i++ {
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
@@ -255,6 +256,7 @@ var in = [][]string{
 	{"Dr5_r2^Ti0S1Z", "f2xWnyf4IFksld%j4svW5phJK"},
 	{"6^/0uQ*rdiQg5k3y8lB&m", "I4g3LM4yfE@oEHeq/lE"},
 	{"V0aUwgUlvo", "yQw1yJ3PMMb&o#Y"},
+	{"pGyZaWDx#_S", "&JT&bt%IJsUjV@$i6@3M"},
 }
 
 func Test_Tst3_04(t *testing.T) {
