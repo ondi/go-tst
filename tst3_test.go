@@ -120,18 +120,19 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		defer fd.Close()
 	}
 
-	var repeat int
+	var repeat, collisions int
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
 	for i := 1; i < count; i++ {
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
 		hx := StateSum64(buf)
 		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
+			collisions++
 			fmt.Fprintf(fd, "%s\t%v\t%q\t%q\n", t.Name(), i, temp, buf)
-			t.Errorf("%v collision i=%v, hash=%0X, storage=%q, buf=%q\n", t.Name(), i, hx, temp, buf)
+			t.Errorf("%v collision=%v i=%v, hash=%0X, storage=%q, buf=%q\n", t.Name(), collisions, i, hx, temp, buf)
 		}
 		if i%1_000_000 == 0 {
-			t.Logf("%v i=%v, repeat=%v, hash=%0X, storage=%v, buf=%q", t.Name(), i, repeat, hx, size, buf)
+			t.Logf("%v i=%v, collision=%v, repeat=%v, hash=%0X, storage=%v, buf=%q", t.Name(), i, collisions, repeat, hx, size, buf)
 		}
 	}
 }
