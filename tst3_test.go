@@ -125,7 +125,12 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
 	for i := 1; i < count; i++ {
 		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
-		hx := StateSum64(buf)
+		var state State256_t
+		state.Reset()
+		for _, code := range buf {
+			state.StateNext(code)
+		}
+		hx := state.Sum64()
 		conflict, temp, size := storage.Add(hx, string(buf))
 		if conflict {
 			collisions++
@@ -260,12 +265,37 @@ var in = [][]string{
 	{"0DyZAIUSmvE-kWkrb13F$", "i^VBiJD_/HaXERkh*3BVD225^Gd2"},
 	{"kq8OZPR3byKOjHRl42C*pJtq1u", "eIoNZUKWfy^z$D13V2M*5"},
 	{"-_1oUep2V8sOhZ", "X/lP248A$Jl"},
+	{"FZ~/7oQwqVbueR@3%RAm@UAC", "9Vylgk2f&ow@D@dnK79O3^D~G"},
 }
 
 func Test_Tst3_04(t *testing.T) {
 	for _, v := range in {
-		res1 := StateSum64([]byte(v[0]))
-		res2 := StateSum64([]byte(v[1]))
-		assert.Assert(t, res1 != res2, fmt.Sprintf("%v %q %q", res1, v[0], v[1]))
+		var state1, state2 State256_t
+		state1.Reset()
+		state2.Reset()
+		for _, code := range []byte(v[0]) {
+			state1.StateNext(code)
+		}
+		for _, code := range []byte(v[1]) {
+			state2.StateNext(code)
+		}
+		res1 := state1.Sum64()
+		res2 := state2.Sum64()
+		if res1 == res2 {
+			var same, diff []int
+			for i := 0; i < 256; i++ {
+				if state1.state[i] == state2.state[i] {
+					same = append(same, i)
+				} else {
+					diff = append(diff, i)
+				}
+			}
+			// t.Logf("state1 = %v", state1.state)
+			// t.Logf("state2 = %v", state2.state)
+			t.Logf("same = %v %v", len(same), same)
+			t.Logf("diff = %v %v", len(diff), diff)
+			t.Logf("in1=%q (%v), in2=%q (%v)", v[0], len(v[0]), v[1], len(v[1]))
+			assert.Assert(t, false)
+		}
 	}
 }

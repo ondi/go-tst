@@ -48,8 +48,8 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, found int) {
 	var ok bool
 	var temp *Mapped_t[Value_t]
-	key := key3_t{}
 	state := State256_t{}
+	key := key3_t{}
 	state.Reset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
@@ -94,9 +94,11 @@ func (self *State256_t) Reset() {
 }
 
 func (self *State256_t) StateNext(in byte) {
-	self.a = (self.a + 31) % 256
+	// self.a = (self.a + 31) % 256
+	// self.c = (self.c + 225) % 256
+	self.a = (self.a + 17) % 256
+	self.c = (self.c + 239) % 256
 	self.b = (self.state[self.b] + self.state[self.a] + uint64(in) + 1) % 256
-	self.c = (self.c + 225) % 256
 	self.d = (self.state[self.d] + self.state[self.c] + uint64(in) + 1) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
@@ -149,13 +151,4 @@ func Forward(size uint64, current uint64, offset uint64) uint64 {
 
 func Backward(size uint64, current uint64, offset uint64) uint64 {
 	return (size + current - offset) % size
-}
-
-func StateSum64(in []byte) uint64 {
-	var state State256_t
-	state.Reset()
-	for _, code := range in {
-		state.StateNext(code)
-	}
-	return state.Sum64()
 }
