@@ -120,7 +120,7 @@ func (self *State256_t) Sum64() (res uint64) {
 			self.state[(i+15)%256]<<(8*6) |
 			self.state[(i+16)%256]<<(8*7))
 
-		res = res + (self.state[(i+17)%256]<<(8*0) |
+		res = res * (self.state[(i+17)%256]<<(8*0) |
 			self.state[(i+18)%256]<<(8*1) |
 			self.state[(i+19)%256]<<(8*2) |
 			self.state[(i+20)%256]<<(8*3) |
