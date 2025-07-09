@@ -269,6 +269,7 @@ var in = [][]string{
 	{"YK1We6poqz1YvY0gxAy&jbK", "juEm4@00d%L"},
 	{"1mPXf9OM0x/*fGK65yUa/S&K", "ZX$J0oIl#AV8a%9pjbhEXD_*ds"},
 	{"g%hiDoB@1k7aX4a", "ThvUO0kKI&9sUN%"},
+	{"kG1MpgutW^^~EdiwS#9kCn", "E&QfVcv5*VL"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -285,20 +286,39 @@ func Test_Tst3_04(t *testing.T) {
 		res1 := state1.Sum64()
 		res2 := state2.Sum64()
 		if res1 == res2 {
-			var same, diff []int
+			same := map[int]int{}
+			diff := map[int]int{}
 			for i := 0; i < 256; i++ {
 				if state1.state[i] == state2.state[i] {
-					same = append(same, i)
+					same[i/8]++
 				} else {
-					diff = append(diff, i)
+					diff[i/8]++
 				}
 			}
-			// t.Logf("state1 = %v", state1.state)
-			// t.Logf("state2 = %v", state2.state)
 			t.Logf("same = %v %v", len(same), same)
 			t.Logf("diff = %v %v", len(diff), diff)
-			t.Logf("in1=%q (%v), in2=%q (%v)", v[0], len(v[0]), v[1], len(v[1]))
-			assert.Assert(t, false)
+			t.Logf("len1=%v, a1=%v, in1=%q", len(v[0]), state1.a, v[0])
+			t.Logf("len2=%v, a2=%v, in2=%q", len(v[1]), state2.a, v[1])
+			var h1, h2 uint64
+			var a1, a2 [4]uint64
+			for i := uint64(0); i < 256; i += 32 {
+				a1[0], a2[0] = state1.Uint64LE(state1.a+i+0), state2.Uint64LE(state2.a+i+0)
+				a1[1], a2[1] = state1.Uint64LE(state1.a+i+8), state2.Uint64LE(state2.a+i+8)
+				a1[2], a2[2] = state1.Uint64LE(state1.a+i+16), state2.Uint64LE(state2.a+i+16)
+				a1[3], a2[3] = state1.Uint64LE(state1.a+i+24), state2.Uint64LE(state2.a+i+24)
+
+				h1, h2 = h1+a1[0], h2+a2[0]
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[0], a2[0], h1, h2, h1 == h2)
+				h1, h2 = h1^a1[1], h2^a2[1]
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[1], a2[1], h1, h2, h1 == h2)
+				h1, h2 = h1+a1[2], h2+a2[2]
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[2], a2[2], h1, h2, h1 == h2)
+				h1, h2 = h1*a1[3], h2*a2[3]
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[3], a2[3], h1, h2, h1 == h2)
+
+				t.Logf("###")
+			}
+			assert.Assert(t, false, res1)
 		}
 	}
 }
