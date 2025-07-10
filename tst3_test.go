@@ -277,7 +277,8 @@ var in = []DebugState_t{
 	{A: "1mPXf9OM0x/*fGK65yUa/S&K", B: "ZX$J0oIl#AV8a%9pjbhEXD_*ds"},
 	{A: "g%hiDoB@1k7aX4a", B: "ThvUO0kKI&9sUN%"},
 	{A: "kG1MpgutW^^~EdiwS#9kCn", B: "E&QfVcv5*VL"},
-	{A: "t53K0FNskElGMLLDICHmHmtr9o", B: "93-&k8Jl#PYhmCfX9_GfzC2Fx/mCM", Debug: false},
+	{A: "t53K0FNskElGMLLDICHmHmtr9o", B: "93-&k8Jl#PYhmCfX9_GfzC2Fx/mCM"},
+	{A: "5HSJb//_YXZZ%UHdLEF^E", B: "68i3XotjZoRiw"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -307,6 +308,7 @@ func Test_Tst3_04(t *testing.T) {
 			t.Logf("diff = %v %v", len(diff), diff)
 			t.Logf("len1=%v\ta1=%v\tb1=%v\tin1=%q", len(v.A), state1.a, state1.b, v.A)
 			t.Logf("len2=%v\ta2=%v\tb2=%v\tin2=%q", len(v.B), state2.a, state2.b, v.B)
+
 			var h1, h2 [4]uint64
 			var a1, a2 [4]uint64
 			for i := uint64(0); i < 256; i += 32 {
