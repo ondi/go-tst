@@ -280,8 +280,8 @@ var in = []DebugState_t{
 	{A: "t53K0FNskElGMLLDICHmHmtr9o", B: "93-&k8Jl#PYhmCfX9_GfzC2Fx/mCM"},
 	{A: "5HSJb//_YXZZ%UHdLEF^E", B: "68i3XotjZoRiw"},
 	{A: "Rt-a$%s7cYgSfsH5", B: "0eY2Kwaw&g"},
-	{A: "lbwWi@35Cpj5xDRPTKo&UDTPd%irr", B: "Qu-qIyt#Eb%V1AHkq4d5dCHHj4", Skip: true},
-	{A: "rM#4VwCB4&95RanX8t", B: "BFd4gHW^#Z~F1S_qL", Skip: true, Debug: true},
+	{A: "lbwWi@35Cpj5xDRPTKo&UDTPd%irr", B: "Qu-qIyt#Eb%V1AHkq4d5dCHHj4"},
+	{A: "rM#4VwCB4&95RanX8t", B: "BFd4gHW^#Z~F1S_qL"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -309,10 +309,10 @@ func Test_Tst3_04(t *testing.T) {
 				}
 			}
 
+			t.Logf("res1=%v\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", res1, len(v.A), state1.a, state1.b, v.A)
+			t.Logf("res2=%v\tlen2=%v\ta2=%v\tb2=%v\tin2=%q", res2, len(v.B), state2.a, state2.b, v.B)
 			t.Logf("same = %v %v", len(same), same)
 			t.Logf("diff = %v %v", len(diff), diff)
-			t.Logf("len1=%v\ta1=%v\tb1=%v\tin1=%q", len(v.A), state1.a, state1.b, v.A)
-			t.Logf("len2=%v\ta2=%v\tb2=%v\tin2=%q", len(v.B), state2.a, state2.b, v.B)
 
 			var h1, h2 [4]uint64
 			var a1, a2, o1, o2 [4]uint64
@@ -336,9 +336,10 @@ func Test_Tst3_04(t *testing.T) {
 				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[2], a2[2], h1[2], h2[2], o1[2], o2[2], h1[2] == h2[2])
 				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[3], a2[3], h1[3], h2[3], o1[3], o2[3], h1[3] == h2[3])
 
-				t.Logf("###")
+				t.Logf("#####")
 			}
-			assert.Assert(t, v.Skip, res1)
+			t.Logf("### res1=%v, res2=%v", res1, res2)
+			assert.Assert(t, v.Skip || v.Debug, res1)
 		}
 	}
 }
