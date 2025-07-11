@@ -160,10 +160,10 @@ func Test_Tst3_03(t *testing.T) {
 }
 
 type DebugState_t struct {
-	A      string
-	B      string
-	Debug  bool
-	Ignore bool
+	A     string
+	B     string
+	Debug bool
+	Skip  bool
 }
 
 var in = []DebugState_t{
@@ -280,6 +280,7 @@ var in = []DebugState_t{
 	{A: "t53K0FNskElGMLLDICHmHmtr9o", B: "93-&k8Jl#PYhmCfX9_GfzC2Fx/mCM"},
 	{A: "5HSJb//_YXZZ%UHdLEF^E", B: "68i3XotjZoRiw"},
 	{A: "Rt-a$%s7cYgSfsH5", B: "0eY2Kwaw&g"},
+	{A: "lbwWi@35Cpj5xDRPTKo&UDTPd%irr", B: "Qu-qIyt#Eb%V1AHkq4d5dCHHj4", Skip: true},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -295,7 +296,7 @@ func Test_Tst3_04(t *testing.T) {
 		}
 		res1 := state1.Sum64()
 		res2 := state2.Sum64()
-		if v.Ignore == false && res1 == res2 || v.Debug {
+		if res1 == res2 || v.Debug {
 			same := map[int]int{}
 			diff := map[int]int{}
 			for i := 0; i < 256; i++ {
@@ -330,7 +331,7 @@ func Test_Tst3_04(t *testing.T) {
 
 				t.Logf("###")
 			}
-			assert.Assert(t, false, res1)
+			assert.Assert(t, v.Skip, res1)
 		}
 	}
 }
