@@ -96,8 +96,6 @@ func (self *State256_t) Reset() {
 }
 
 func (self *State256_t) StateNext(in byte) {
-	// self.a = (self.a + 3) % 256
-	// self.c = (self.c + 253) % 256
 	self.a = (self.a + 7) % 256
 	self.c = (self.c + 249) % 256
 	self.b = (self.state[self.b] + self.state[self.a] + uint64(in) + 1) % 256
@@ -107,55 +105,52 @@ func (self *State256_t) StateNext(in byte) {
 }
 
 func (self *State256_t) Sum64() (res uint64) {
+	res = self.Uint64LE(self.b)
 	for i := self.a; i < self.a+256; i += 32 {
-		res = res + (self.state[(i+1)%256]<<(8*0) |
-			self.state[(i+2)%256]<<(8*1) |
-			self.state[(i+3)%256]<<(8*2) |
-			self.state[(i+4)%256]<<(8*3) |
-			self.state[(i+5)%256]<<(8*4) |
-			self.state[(i+6)%256]<<(8*5) |
-			self.state[(i+7)%256]<<(8*6) |
-			self.state[(i+8)%256]<<(8*7))
-
-		res = res ^ (self.state[(i+9)%256]<<(8*0) |
-			self.state[(i+10)%256]<<(8*1) |
-			self.state[(i+11)%256]<<(8*2) |
-			self.state[(i+12)%256]<<(8*3) |
-			self.state[(i+13)%256]<<(8*4) |
-			self.state[(i+14)%256]<<(8*5) |
-			self.state[(i+15)%256]<<(8*6) |
-			self.state[(i+16)%256]<<(8*7))
-
-		res = res + (self.state[(i+17)%256]<<(8*0) |
-			self.state[(i+18)%256]<<(8*1) |
-			self.state[(i+19)%256]<<(8*2) |
-			self.state[(i+20)%256]<<(8*3) |
-			self.state[(i+21)%256]<<(8*4) |
-			self.state[(i+22)%256]<<(8*5) |
-			self.state[(i+23)%256]<<(8*6) |
-			self.state[(i+24)%256]<<(8*7))
-
-		res = res * (self.state[(i+25)%256]<<(8*0) |
-			self.state[(i+26)%256]<<(8*1) |
-			self.state[(i+27)%256]<<(8*2) |
-			self.state[(i+28)%256]<<(8*3) |
-			self.state[(i+29)%256]<<(8*4) |
-			self.state[(i+30)%256]<<(8*5) |
-			self.state[(i+31)%256]<<(8*6) |
-			self.state[(i+32)%256]<<(8*7))
+		res, _, _ = self.Operation(i+1, res)
+		res, _, _ = self.Operation(i+9, res)
+		res, _, _ = self.Operation(i+17, res)
+		res, _, _ = self.Operation(i+25, res)
 	}
 	return
 }
 
+func (self *State256_t) Operation(i uint64, prev uint64) (res uint64, b uint64, op uint64) {
+	b = self.Uint64LE(i)
+	op = prev % 3
+	switch prev % 3 {
+	case 0:
+		res = prev + b
+	case 1:
+		res = prev * b
+	default:
+		res = prev ^ b
+	}
+	return
+}
+
+// 0x12345678 <-> []{0x78, 0x56, 0x34, 0x12}
 func (self *State256_t) Uint64LE(i uint64) uint64 {
-	return (self.state[(i+1)%256]<<(8*0) |
-		self.state[(i+2)%256]<<(8*1) |
-		self.state[(i+3)%256]<<(8*2) |
+	return self.state[(i+0)%256]<<(8*0) |
+		self.state[(i+1)%256]<<(8*1) |
+		self.state[(i+2)%256]<<(8*2) |
+		self.state[(i+3)%256]<<(8*3) |
+		self.state[(i+4)%256]<<(8*4) |
+		self.state[(i+5)%256]<<(8*5) |
+		self.state[(i+6)%256]<<(8*6) |
+		self.state[(i+7)%256]<<(8*7)
+}
+
+// 0x12345678 <-> []{0x12, 0x34, 0x56, 0x78}
+func (self *State256_t) Uint64BE(i uint64) uint64 {
+	return self.state[(i+0)%256]<<(8*7) |
+		self.state[(i+1)%256]<<(8*6) |
+		self.state[(i+2)%256]<<(8*5) |
+		self.state[(i+3)%256]<<(8*4) |
 		self.state[(i+4)%256]<<(8*3) |
-		self.state[(i+5)%256]<<(8*4) |
-		self.state[(i+6)%256]<<(8*5) |
-		self.state[(i+7)%256]<<(8*6) |
-		self.state[(i+8)%256]<<(8*7))
+		self.state[(i+5)%256]<<(8*2) |
+		self.state[(i+6)%256]<<(8*1) |
+		self.state[(i+7)%256]<<(8*0)
 }
 
 func Forward(size uint64, current uint64, offset uint64) uint64 {

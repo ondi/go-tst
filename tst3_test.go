@@ -281,6 +281,7 @@ var in = []DebugState_t{
 	{A: "5HSJb//_YXZZ%UHdLEF^E", B: "68i3XotjZoRiw"},
 	{A: "Rt-a$%s7cYgSfsH5", B: "0eY2Kwaw&g"},
 	{A: "lbwWi@35Cpj5xDRPTKo&UDTPd%irr", B: "Qu-qIyt#Eb%V1AHkq4d5dCHHj4", Skip: true},
+	{A: "rM#4VwCB4&95RanX8t", B: "BFd4gHW^#Z~F1S_qL", Skip: true, Debug: true},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -296,6 +297,7 @@ func Test_Tst3_04(t *testing.T) {
 		}
 		res1 := state1.Sum64()
 		res2 := state2.Sum64()
+
 		if res1 == res2 || v.Debug {
 			same := map[int]int{}
 			diff := map[int]int{}
@@ -306,28 +308,33 @@ func Test_Tst3_04(t *testing.T) {
 					diff[i/8]++
 				}
 			}
+
 			t.Logf("same = %v %v", len(same), same)
 			t.Logf("diff = %v %v", len(diff), diff)
 			t.Logf("len1=%v\ta1=%v\tb1=%v\tin1=%q", len(v.A), state1.a, state1.b, v.A)
 			t.Logf("len2=%v\ta2=%v\tb2=%v\tin2=%q", len(v.B), state2.a, state2.b, v.B)
 
 			var h1, h2 [4]uint64
-			var a1, a2 [4]uint64
+			var a1, a2, o1, o2 [4]uint64
+
+			h1[3] = state1.Uint64LE(state1.b)
+			h2[3] = state2.Uint64LE(state2.b)
+
 			for i := uint64(0); i < 256; i += 32 {
-				a1[0], a2[0] = state1.Uint64LE(state1.a+i+0), state2.Uint64LE(state2.a+i+0)
-				a1[1], a2[1] = state1.Uint64LE(state1.a+i+8), state2.Uint64LE(state2.a+i+8)
-				a1[2], a2[2] = state1.Uint64LE(state1.a+i+16), state2.Uint64LE(state2.a+i+16)
-				a1[3], a2[3] = state1.Uint64LE(state1.a+i+24), state2.Uint64LE(state2.a+i+24)
+				h1[0], a1[0], o1[0] = state1.Operation(state1.a+1+i, h1[3])
+				h1[1], a1[1], o1[1] = state1.Operation(state1.a+9+i, h1[0])
+				h1[2], a1[2], o1[2] = state1.Operation(state1.a+17+i, h1[1])
+				h1[3], a1[3], o1[3] = state1.Operation(state1.a+25+i, h1[2])
 
-				h1[0], h2[0] = h1[3]+a1[0], h2[3]+a2[0]
-				h1[1], h2[1] = h1[0]^a1[1], h2[0]^a2[1]
-				h1[2], h2[2] = h1[1]+a1[2], h2[1]+a2[2]
-				h1[3], h2[3] = h1[2]*a1[3], h2[2]*a2[3]
+				h2[0], a2[0], o2[0] = state2.Operation(state2.a+1+i, h2[3])
+				h2[1], a2[1], o2[1] = state2.Operation(state2.a+9+i, h2[0])
+				h2[2], a2[2], o2[2] = state2.Operation(state2.a+17+i, h2[1])
+				h2[3], a2[3], o2[3] = state2.Operation(state2.a+25+i, h2[2])
 
-				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[0], a2[0], h1[0], h2[0], h1[0] == h2[0])
-				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[1], a2[1], h1[1], h2[1], h1[1] == h2[1])
-				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[2], a2[2], h1[2], h2[2], h1[2] == h2[2])
-				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\t%v", a1[3], a2[3], h1[3], h2[3], h1[3] == h2[3])
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[0], a2[0], h1[0], h2[0], o1[0], o2[0], h1[0] == h2[0])
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[1], a2[1], h1[1], h2[1], o1[1], o2[1], h1[1] == h2[1])
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[2], a2[2], h1[2], h2[2], o1[2], o2[2], h1[2] == h2[2])
+				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[3], a2[3], h1[3], h2[3], o1[3], o2[3], h1[3] == h2[3])
 
 				t.Logf("###")
 			}
