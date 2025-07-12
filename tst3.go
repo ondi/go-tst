@@ -117,7 +117,7 @@ func (self *State256_t) Sum64() (res uint64) {
 
 func (self *State256_t) Operation(i uint64, prev uint64) (res uint64, b uint64, op uint64) {
 	b = self.Uint64LE(i)
-	op = (prev + b) % 3
+	op = (prev + b + i) % 3
 	switch op {
 	case 0:
 		res = prev + b
