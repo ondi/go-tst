@@ -287,6 +287,16 @@ var in = []DebugState_t{
 	{A: "YO#_fSoW1%kHu", B: "NjPJ#NMr5-YqoFESmt&ubAl*u"},
 	{A: "aptNp*_1JpgeS5VLi", B: "1fPN$3#waYuFU_hHg"},
 	{A: "07ENtqKkkf0~spNbG", B: "G~kkZ7ladVOVSpAy%"},
+	{A: "u7x3%fq~lVy^qcoOy", B: "rHTbR9J#@a6&SxhYG"},
+	{A: "*v&G*eJJBkWC#bIn$", B: "$UkrsSP662NOO$Q0Q"},
+	{A: "v*YK/ktPCg-OFOC3&EEdR3f", B: "Jq*mC8WT/3gJvs_zmwlFK"},
+	{A: "4s8ICBi3kw92D9G82", B: "gPjDL%BI*AvXCdQ_w"},
+	{A: "zw*&y-zYwPVPA~FeHLpDgcu8", B: "Vg/ZMlhBnf48ZXe^"},
+	{A: "A7eds2PQOwQ0KoWHK", B: "JDPF8nWRbTgqdlKH2"},
+	{A: "FiGxyz618gKk$#KxY&O#qK0*F", B: "3#vgwOgfV6e2V~ohr"},
+	{A: "hyB#RBT5RSWReQF3#U", B: "$l5qt%MRAnk#e2g*XNP"},
+	{A: "2IvOpyHNUXpN#", B: "7yQwNSlQl_w"},
+	{A: "47Yzc~N1thZLr6cur", B: "C#Ylsf@1o1GtQ%ztg"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -322,8 +332,10 @@ func Test_Tst3_04(t *testing.T) {
 			var h1, h2 [4]uint64
 			var a1, a2, o1, o2 [4]uint64
 
-			h1[3] = state1.Uint64LE(state1.b)
-			h2[3] = state2.Uint64LE(state2.b)
+			// h1[3] = state1.Uint64LE(state1.b)
+			// h2[3] = state2.Uint64LE(state2.b)
+			// t.Logf("state1.b = %v", h1[3])
+			// t.Logf("state2.b = %v", h2[3])
 
 			for i := uint64(0); i < 256; i += 32 {
 				h1[0], a1[0], o1[0] = state1.Operation(state1.a+1+i, h1[3])
