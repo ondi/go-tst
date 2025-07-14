@@ -297,6 +297,7 @@ var in = []DebugState_t{
 	{A: "hyB#RBT5RSWReQF3#U", B: "$l5qt%MRAnk#e2g*XNP"},
 	{A: "2IvOpyHNUXpN#", B: "7yQwNSlQl_w"},
 	{A: "47Yzc~N1thZLr6cur", B: "C#Ylsf@1o1GtQ%ztg"},
+	{A: "b4EUQ-YshHrj1fBF_4JhzW", B: "SJtSDNHPcSqmhvMPpfqR8#_qwe2bm"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -331,11 +332,6 @@ func Test_Tst3_04(t *testing.T) {
 
 			var h1, h2 [4]uint64
 			var a1, a2, o1, o2 [4]uint64
-
-			// h1[3] = state1.Uint64LE(state1.b)
-			// h2[3] = state2.Uint64LE(state2.b)
-			// t.Logf("state1.b = %v", h1[3])
-			// t.Logf("state2.b = %v", h2[3])
 
 			for i := uint64(0); i < 256; i += 32 {
 				h1[0], a1[0], o1[0] = state1.Operation(state1.a+1+i, h1[3])

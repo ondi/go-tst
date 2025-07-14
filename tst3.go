@@ -105,7 +105,6 @@ func (self *State256_t) StateNext(in byte) {
 }
 
 func (self *State256_t) Sum64() (res uint64) {
-	// res = self.Uint64LE(self.b)
 	for i := self.a; i < self.a+256; i += 32 {
 		res, _, _ = self.Operation(i+1, res)
 		res, _, _ = self.Operation(i+9, res)
@@ -117,8 +116,15 @@ func (self *State256_t) Sum64() (res uint64) {
 
 func (self *State256_t) Operation(i uint64, prev uint64) (res uint64, b uint64, op uint64) {
 	b = self.Uint64LE(i)
-	for k := uint64(0); res == 0; k++ {
-		op = (prev + b + i + k) % 3
+	op = (prev + b + i) % 3
+	if prev < b {
+		switch op {
+		case 0:
+			res = prev + b
+		default:
+			res = prev ^ b
+		}
+	} else {
 		switch op {
 		case 0:
 			res = prev + b
