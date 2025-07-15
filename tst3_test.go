@@ -298,6 +298,7 @@ var in = []DebugState_t{
 	{A: "2IvOpyHNUXpN#", B: "7yQwNSlQl_w"},
 	{A: "47Yzc~N1thZLr6cur", B: "C#Ylsf@1o1GtQ%ztg"},
 	{A: "b4EUQ-YshHrj1fBF_4JhzW", B: "SJtSDNHPcSqmhvMPpfqR8#_qwe2bm"},
+	{A: "2Rh5MKNCEmKOGsthH", B: "Pm0UdIpLz6ZQM"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -334,15 +335,23 @@ func Test_Tst3_04(t *testing.T) {
 			var a1, a2, o1, o2 [4]uint64
 
 			for i := uint64(0); i < 256; i += 32 {
-				h1[0], a1[0], o1[0] = state1.Operation(state1.a+1+i, h1[3])
-				h1[1], a1[1], o1[1] = state1.Operation(state1.a+9+i, h1[0])
-				h1[2], a1[2], o1[2] = state1.Operation(state1.a+17+i, h1[1])
-				h1[3], a1[3], o1[3] = state1.Operation(state1.a+25+i, h1[2])
+				a1[0] = state1.Uint64LE(state1.a + 1 + i)
+				h1[0], o1[0] = state1.Operation(h1[3], a1[0], o1[3])
+				a1[1] = state1.Uint64LE(state1.a + 9 + i)
+				h1[1], o1[1] = state1.Operation(h1[0], a1[1], o1[0])
+				a1[2] = state1.Uint64LE(state1.a + 17 + i)
+				h1[2], o1[2] = state1.Operation(h1[1], a1[2], o1[1])
+				a1[3] = state1.Uint64LE(state1.a + 25 + i)
+				h1[3], o1[3] = state1.Operation(h1[2], a1[3], o1[2])
 
-				h2[0], a2[0], o2[0] = state2.Operation(state2.a+1+i, h2[3])
-				h2[1], a2[1], o2[1] = state2.Operation(state2.a+9+i, h2[0])
-				h2[2], a2[2], o2[2] = state2.Operation(state2.a+17+i, h2[1])
-				h2[3], a2[3], o2[3] = state2.Operation(state2.a+25+i, h2[2])
+				a2[0] = state2.Uint64LE(state1.a + 1 + i)
+				h2[0], o2[0] = state2.Operation(h2[3], a2[0], o2[3])
+				a2[1] = state2.Uint64LE(state1.a + 9 + i)
+				h2[1], o2[1] = state2.Operation(h2[0], a2[1], o2[0])
+				a2[2] = state2.Uint64LE(state1.a + 17 + i)
+				h2[2], o2[2] = state2.Operation(h2[1], a2[2], o2[1])
+				a2[3] = state2.Uint64LE(state1.a + 25 + i)
+				h2[3], o2[3] = state2.Operation(h2[2], a2[3], o2[2])
 
 				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[0], a2[0], h1[0], h2[0], o1[0], o2[0], h1[0] == h2[0])
 				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[1], a2[1], h1[1], h2[1], o1[1], o2[1], h1[1] == h2[1])
@@ -351,8 +360,7 @@ func Test_Tst3_04(t *testing.T) {
 
 				t.Logf("#####")
 			}
-			t.Logf("### res1=%v, res2=%v", res1, res2)
-			assert.Assert(t, v.Skip || v.Debug, res1)
+			assert.Assert(t, v.Skip || v.Debug)
 		}
 	}
 }
