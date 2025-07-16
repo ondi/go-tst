@@ -301,6 +301,7 @@ var in = []DebugState_t{
 	{A: "2Rh5MKNCEmKOGsthH", B: "Pm0UdIpLz6ZQM"},
 	{A: "RpJu6$5-H1/5EGV&c*ARM99", B: "uJoKrr8jZUi0Xp&iP~K1SPYxM^D"},
 	{A: "-ZrhMT*Dm6CTN", B: "~7JjL*FlyE3M$zuhJeR8WWUc0nf2"},
+	{A: "lBbH6-lbOchyjXa*zH8Php$kDt^~", B: "F6P5U#JQjT"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -338,22 +339,22 @@ func Test_Tst3_04(t *testing.T) {
 
 			for i := uint64(0); i < 256; i += 32 {
 				a1[0] = state1.Uint64LE(state1.a + 1 + i)
-				h1[0], o1[0] = state1.Operation(h1[3], a1[0], o1[3])
+				o1[0], h1[0] = state1.Operation(o1[3], h1[3], a1[0])
 				a1[1] = state1.Uint64LE(state1.a + 9 + i)
-				h1[1], o1[1] = state1.Operation(h1[0], a1[1], o1[0])
+				o1[1], h1[1] = state1.Operation(o1[0], h1[0], a1[1])
 				a1[2] = state1.Uint64LE(state1.a + 17 + i)
-				h1[2], o1[2] = state1.Operation(h1[1], a1[2], o1[1])
+				o1[2], h1[2] = state1.Operation(o1[1], h1[1], a1[2])
 				a1[3] = state1.Uint64LE(state1.a + 25 + i)
-				h1[3], o1[3] = state1.Operation(h1[2], a1[3], o1[2])
+				o1[3], h1[3] = state1.Operation(o1[2], h1[2], a1[3])
 
-				a2[0] = state2.Uint64LE(state1.a + 1 + i)
-				h2[0], o2[0] = state2.Operation(h2[3], a2[0], o2[3])
-				a2[1] = state2.Uint64LE(state1.a + 9 + i)
-				h2[1], o2[1] = state2.Operation(h2[0], a2[1], o2[0])
-				a2[2] = state2.Uint64LE(state1.a + 17 + i)
-				h2[2], o2[2] = state2.Operation(h2[1], a2[2], o2[1])
-				a2[3] = state2.Uint64LE(state1.a + 25 + i)
-				h2[3], o2[3] = state2.Operation(h2[2], a2[3], o2[2])
+				a2[0] = state2.Uint64LE(state2.a + 1 + i)
+				o2[0], h2[0] = state2.Operation(o2[3], h2[3], a2[0])
+				a2[1] = state2.Uint64LE(state2.a + 9 + i)
+				o2[1], h2[1] = state2.Operation(o2[0], h2[0], a2[1])
+				a2[2] = state2.Uint64LE(state2.a + 17 + i)
+				o2[2], h2[2] = state2.Operation(o2[1], h2[1], a2[2])
+				a2[3] = state2.Uint64LE(state2.a + 25 + i)
+				o2[3], h2[3] = state2.Operation(o2[2], h2[2], a2[3])
 
 				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[0], a2[0], h1[0], h2[0], o1[0], o2[0], h1[0] == h2[0])
 				t.Logf("a1=%v\ta2=%v\th1=%v\th2=%v\to1=%v\to2=%v\t%v", a1[1], a2[1], h1[1], h2[1], o1[1], o2[1], h1[1] == h2[1])

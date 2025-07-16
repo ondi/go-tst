@@ -107,26 +107,25 @@ func (self *State256_t) StateNext(in byte) {
 func (self *State256_t) Sum64() (res uint64) {
 	var op uint64
 	for i := self.a; i < self.a+256; i += 32 {
-		res, op = self.Operation(res, self.Uint64LE(i+1), op)
-		res, op = self.Operation(res, self.Uint64LE(i+9), op)
-		res, op = self.Operation(res, self.Uint64LE(i+17), op)
-		res, op = self.Operation(res, self.Uint64LE(i+25), op)
+		op, res = self.Operation(op, res, self.Uint64LE(i+1))
+		op, res = self.Operation(op, res, self.Uint64LE(i+9))
+		op, res = self.Operation(op, res, self.Uint64LE(i+17))
+		op, res = self.Operation(op, res, self.Uint64LE(i+25))
 	}
 	return
 }
 
-func (self *State256_t) Operation(prev_val uint64, next_val uint64, prev_op uint64) (res uint64, next_op uint64) {
-	next_op = (prev_op + prev_val + next_val) % 3
-	if prev_val < next_val && next_op == 1 {
-		next_op = 2
-	}
-	switch next_op {
-	case 0:
-		res = prev_val + next_val
-	case 1:
-		res = prev_val * next_val
-	default:
-		res = prev_val ^ next_val
+func (self *State256_t) Operation(prev_op uint64, prev_val uint64, next_val uint64) (next_op uint64, res uint64) {
+	for i := uint64(0); res == 0; i++ {
+		next_op = (prev_op + prev_val + next_val + i) % 3
+		switch next_op {
+		case 0:
+			res = prev_val + next_val
+		case 1:
+			res = prev_val * next_val
+		default:
+			res = prev_val ^ next_val
+		}
 	}
 	return
 }
