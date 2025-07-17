@@ -124,21 +124,21 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 	var repeat int
 	rnd := rand.New(rand.NewPCG(uint64(time.Now().UnixNano()), StringToUint64(t.Name())))
 	for i := 1; i < count; i++ {
-		buf := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
+		value1 := GenerateString(rnd, 10+rnd.IntN(20), CHARSET)
 		var state State256_t
 		state.Reset()
-		for _, code := range buf {
+		for _, code := range value1 {
 			state.StateNext(code)
 		}
 		hx := state.Sum64()
-		conflict, temp, size := storage.Add(hx, string(buf))
+		conflict, value2, size := storage.Add(hx, string(value1))
 		if conflict {
 			collisions++
-			fmt.Fprintf(fd, "%s\t%v\t%q\t%q\n", t.Name(), i, temp, buf)
-			t.Errorf("%v collision=%v i=%v, hash=%0X, storage=%q, buf=%q\n", t.Name(), collisions, i, hx, temp, buf)
+			fmt.Fprintf(fd, "%s\t%v\t%q\t%q\n", t.Name(), i, value2, value1)
+			t.Errorf("%v collision=%v i=%v, hash=%0X, value1=%q, valuw2=%q\n", t.Name(), collisions, i, hx, value1, value2)
 		}
 		if i%1_000_000 == 0 {
-			t.Logf("%v i=%v, collision=%v, repeat=%v, hash=%0X, storage=%v, buf=%q", t.Name(), i, collisions, repeat, hx, size, buf)
+			t.Logf("%v i=%v, collision=%v, repeat=%v, storage=%v, hash=%0X, buf=%q", t.Name(), i, collisions, repeat, size, hx, value1)
 		}
 	}
 }
@@ -222,6 +222,7 @@ var in = []DebugState_t{
 	{A: "ioFY#Oh9DEY-M#2LTJOh~%^I_", B: "E8A/BAyE2J^c^4HhEe"},
 	{A: "%G5#iW@FHT-HWfJX3", B: "tspTbAY3h$WwDQKfz", Debug: true},
 	{A: "Efn-Ga-%h^UT_ZyXv", B: "kG4Xc49rTUx&0Yham"},
+	{A: "a$KYERvylDF400N~bdgfRA^o4A", B: "9Wi-rT3ddT5hz"},
 }
 
 func Test_Tst3_04(t *testing.T) {
