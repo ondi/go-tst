@@ -159,3 +159,11 @@ func Forward(size uint64, current uint64, offset uint64) uint64 {
 func Backward(size uint64, current uint64, offset uint64) uint64 {
 	return (size + current - offset) % size
 }
+
+func ROR64(in uint64, shift uint64) uint64 {
+	return (in >> shift) | (in << (64 - shift))
+}
+
+func ROL64(in uint64, shift uint64) uint64 {
+	return (in >> (64 - shift)) | (in << shift)
+}
