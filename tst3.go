@@ -114,13 +114,15 @@ func (self *State256_t) Sum64() (res uint64) {
 }
 
 func (self *State256_t) Operation(prev_op uint64, prev_val uint64, next_val1 uint64, next_val2 uint64) (next_op uint64, res uint64) {
-	next_op = (prev_op + prev_val + next_val1 + next_val2) % 3
+	next_op = (prev_op + prev_val + next_val1 + next_val2) % 4
 	switch next_op {
 	case 0:
 		res = (prev_val + next_val1) ^ next_val2
 	case 1:
+		res = (prev_val + next_val1) * next_val2
+	case 2:
 		res = (prev_val ^ next_val1) + next_val2
-	default:
+	case 3:
 		res = (prev_val ^ next_val1) * next_val2
 	}
 	return
