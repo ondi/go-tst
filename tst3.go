@@ -107,24 +107,17 @@ func (self *State256_t) StateNext(in byte) {
 func (self *State256_t) Sum64() (res uint64) {
 	var op uint64
 	for i := self.a; i < self.a+256; i += 32 {
-		op, res = self.Operation(op, res, self.Uint64LE(i+1), self.Uint64LE(i+9))
-		op, res = self.Operation(op, res, self.Uint64LE(i+17), self.Uint64LE(i+25))
+		op, res = self.Operation(op, res, self.Uint64LE(i+1), self.Uint64LE(i+9), self.Uint64LE(i+17), self.Uint64LE(i+25))
 	}
 	return
 }
 
-func (self *State256_t) Operation(prev_op uint64, prev_val uint64, next_val1 uint64, next_val2 uint64) (next_op uint64, res uint64) {
-	next_op = (prev_op + prev_val + next_val1 + next_val2) % 32
-	switch next_op % 4 {
-	case 0:
-		res = ROR64(prev_val+next_val1, 15+next_op) ^ next_val2
-	case 1:
-		res = ROR64(prev_val+next_val1, 15+next_op) * next_val2
-	case 2:
-		res = ROR64(prev_val^next_val1, 15+next_op) + next_val2
-	case 3:
-		res = ROR64(prev_val^next_val1, 15+next_op) * next_val2
-	}
+func (self *State256_t) Operation(prev_op uint64, prev_val uint64, a1 uint64, a2 uint64, a3 uint64, a4 uint64) (next_op uint64, next_val uint64) {
+	next_op = (prev_op + prev_val + a1 + a2 + a3 + a4) % 32
+	next_val = ROR64(prev_val+a1, 15+next_op)
+	next_val = ROR64(next_val^a2, 17+next_op)
+	next_val = ROR64(next_val*a3, 19+next_op)
+	next_val = ROR64(next_val^a4, 21+next_op)
 	return
 }
 

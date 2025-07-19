@@ -225,6 +225,10 @@ var in = []DebugState_t{
 	{A: "a$KYERvylDF400N~bdgfRA^o4A", B: "9Wi-rT3ddT5hz"},
 	{A: "H@dq/znBhoG%ZqL", B: "#XQwn8DIxIVSq-jxtp0PLl"},
 	{A: "N59IuxVpyp8", B: "V-4bEIL%SN#E"},
+	{A: "j1U*qQ--R3", B: "DlfXFHcgOy6s4MVGw0vNcHyaCKPp"},
+	{A: "eAJjraAxl6DZsRS_7yZMfdkqj0P$F", B: "ZLxZ0Ofk%iLfkqcCZI"},
+	{A: "NYxRswXq%rg_D@4b6rMw#", B: "IKQdkpW%pKGPOeCY"},
+	{A: "l$5x9$4R&f3pi2uUJ-/mLUV", B: "8mZloglGIj*2r#FqfQ4jcCh"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -258,26 +262,24 @@ func Test_Tst3_04(t *testing.T) {
 			t.Logf("diff = %v %v", len(diff), diff)
 
 			var a1, a2 [4]uint64
-			var h1, h2 [2]uint64
-			var o1, o2 [2]uint64
+			var h1, h2 [1]uint64
+			var o1, o2 [1]uint64
 
 			for i := uint64(0); i < 256; i += 32 {
 				a1[0] = state1.Uint64LE(state1.a + 1 + i)
 				a1[1] = state1.Uint64LE(state1.a + 9 + i)
 				a1[2] = state1.Uint64LE(state1.a + 17 + i)
 				a1[3] = state1.Uint64LE(state1.a + 25 + i)
-				o1[0], h1[0] = state1.Operation(o1[1], h1[1], a1[0], a1[1])
-				o1[1], h1[1] = state1.Operation(o1[0], h1[0], a1[2], a1[3])
+				o1[0], h1[0] = state1.Operation(o1[0], h1[0], a1[0], a1[1], a1[2], a1[3])
 
 				a2[0] = state2.Uint64LE(state2.a + 1 + i)
 				a2[1] = state2.Uint64LE(state2.a + 9 + i)
 				a2[2] = state2.Uint64LE(state2.a + 17 + i)
 				a2[3] = state2.Uint64LE(state2.a + 25 + i)
-				o2[0], h2[0] = state2.Operation(o2[1], h2[1], a2[0], a2[1])
-				o2[1], h2[1] = state2.Operation(o2[0], h2[0], a2[2], a2[3])
+				o2[0], h2[0] = state2.Operation(o2[0], h2[0], a2[0], a2[1], a2[2], a2[3])
 
-				t.Logf("a1[0]=%v a1[1]=%v a2[0]=%v a2[1]=%v h1=%v h2=%v o1=%v o2=%v %v", a1[0], a1[1], a2[0], a2[1], h1[0], h2[0], o1[0], o2[0], h1[0] == h2[0])
-				t.Logf("a1[2]=%v a1[3]=%v a2[2]=%v a2[3]=%v h1=%v h2=%v o1=%v o2=%v %v", a1[2], a1[3], a2[2], a2[3], h1[1], h2[1], o1[1], o2[1], h1[1] == h2[1])
+				t.Logf("a1[0]=%v a1[1]=%v a1[2]=%v a1[3]=%v a2[0]=%v a2[1]=%v a2[2]=%v a2[3]=%v h1=%v h2=%v o1=%v o2=%v %v",
+					a1[0], a1[1], a1[2], a1[3], a2[0], a2[1], a2[2], a2[3], h1[0], h2[0], o1[0], o2[0], h1[0] == h2[0])
 
 				t.Logf("#####")
 			}
