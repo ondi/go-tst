@@ -113,11 +113,11 @@ func (self *State256_t) Sum64() (res uint64) {
 }
 
 func (self *State256_t) Operation(prev_op uint64, prev_val uint64, a1 uint64, a2 uint64, a3 uint64, a4 uint64) (next_op uint64, next_val uint64) {
-	next_op = (prev_op + prev_val + a1 + a2 + a3 + a4) % 32
-	next_val = ROR64(prev_val+a1, 15+next_op)
-	next_val = ROR64(next_val^a2, 17+next_op)
-	next_val = ROR64(next_val*a3, 19+next_op)
-	next_val = ROR64(next_val^a4, 21+next_op)
+	next_op = (prev_op + 1) % 32
+	next_val = ROR64(prev_val+a1, 33)
+	next_val = ROR64(next_val^a2, 35)
+	next_val = ROR64(next_val*a3, 37)
+	next_val = ROR64(next_val^a4, 39)
 	return
 }
 
