@@ -96,8 +96,10 @@ func (self *State256_t) Reset() {
 }
 
 func (self *State256_t) StateNext(in byte) {
-	self.a = (self.a + 7) % 256
-	self.c = (self.c + 249) % 256
+	self.a = (self.a + 5) % 256
+	self.c = (self.c + 251) % 256
+	// self.a = (self.a + 7) % 256
+	// self.c = (self.c + 249) % 256
 	self.b = (self.state[self.b] + self.state[self.a] + uint64(in) + 1) % 256
 	self.d = (self.state[self.d] + self.state[self.c] + uint64(in) + 1) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
@@ -113,11 +115,11 @@ func (self *State256_t) Sum64() (res uint64) {
 }
 
 func (self *State256_t) Operation(prev_op uint64, prev_val uint64, a1 uint64, a2 uint64, a3 uint64, a4 uint64) (next_op uint64, next_val uint64) {
-	next_op = (prev_op + 1) % 4
-	next_val = ROR64(prev_val, 31+prev_op) + a1
-	next_val = ROR64(next_val, 35+prev_op) ^ a2
-	next_val = ROR64(next_val, 39+prev_op) * a3
-	next_val = ROR64(next_val, 43+prev_op) ^ a4
+	next_op = (prev_op + 1) % 16
+	next_val = ROR64(prev_val, 31+a1%16) + a1
+	next_val = ROR64(next_val, 35+a2%16) ^ a2
+	next_val = ROR64(next_val, 39+a3%16) * a3
+	next_val = ROR64(next_val, 43+a4%16) ^ a4
 	return
 }
 
