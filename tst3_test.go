@@ -238,6 +238,7 @@ var in = []DebugState_t{
 	{A: "OQzyimP^mKyKX-Z7Q", B: "/iOsJHUMJa"},
 	{A: "TRE6dSp0cZXuJe&", B: "Cv5_un0ddi"},
 	{A: "rVnC3cbOw8pS#9u/KsImGu98", B: "p7t9kxYyzZVxDyna_fsO~t%MtHgz-"},
+	{A: "7H8xD&CnskMDuUsuxIYShi$p4l&", B: "XJD_TSlSYeawf*j9xIMpNnims~j6J"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -287,10 +288,10 @@ func Test_Tst3_04(t *testing.T) {
 				a2[3] = state2.Uint64LE(state2.a + 25 + i)
 				o2[0], h2[0] = state2.Operation(o2[0], h2[0], a2[0], a2[1], a2[2], a2[3])
 
-				t.Logf("a1[0]=%v a1[1]=%v a1[2]=%v a1[3]=%v h1=%v o1=%v   ", a1[0], a1[1], a1[2], a1[3], h1[0], o1[0])
-				t.Logf("a2[0]=%v a2[1]=%v a2[2]=%v a2[3]=%v h2=%v o2=%v %v", a2[0], a2[1], a2[2], a2[3], h2[0], o2[0], h1[0] == h2[0])
+				t.Logf("a1[0]=%v a1[1]=%v a1[2]=%v a1[3]=%v h1=%v o1=%v", a1[0], a1[1], a1[2], a1[3], h1[0], o1[0])
+				t.Logf("a2[0]=%v a2[1]=%v a2[2]=%v a2[3]=%v h2=%v o2=%v", a2[0], a2[1], a2[2], a2[3], h2[0], o2[0])
 
-				t.Logf("#####")
+				t.Logf("##### %v", h1[0] == h2[0])
 			}
 			assert.Assert(t, v.Skip || v.Debug)
 		}
