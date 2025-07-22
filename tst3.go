@@ -115,10 +115,10 @@ func (self *State256_t) Sum64() (res uint64) {
 }
 
 func (self *State256_t) Operation(prev_op uint64, prev_val uint64, a1 uint64, a2 uint64, a3 uint64, a4 uint64) (next_op uint64, next_val uint64) {
-	next_val = ROR64(prev_val, 1+a1%63) ^ a1
-	next_val = ROR64(next_val, 3+a2%61) * a2
-	next_val = ROR64(next_val, 5+a3%59) + a3
-	next_val = ROR64(next_val, 7+a4%57) * a4
+	next_val = ROR64(prev_val+a1, 1+a1%63) ^ a2
+	next_val = ROR64(next_val*a2, 1+a2%63) ^ a3
+	next_val = ROR64(next_val+a3, 1+a3%63) ^ a4
+	next_val = ROR64(next_val*a4, 1+a4%63) ^ a1
 	return
 }
 
