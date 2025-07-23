@@ -122,6 +122,14 @@ func (self *State256_t) Operation(prev_op uint64, prev_val uint64, a1 uint64, a2
 	return
 }
 
+func (self *State256_t) Operation2(prev_op uint64, prev_val uint64, a1 uint64, a2 uint64, a3 uint64, a4 uint64) (next_op uint64, next_val uint64) {
+	next_val = ROR64(prev_val+a1, 1+a2%63) ^ a3
+	next_val = ROR64(next_val*a4, 1+a1%63) ^ a2
+	next_val = ROR64(next_val+a3, 1+a4%63) ^ a1
+	next_val = ROR64(next_val*a2, 1+a3%63) ^ a4
+	return
+}
+
 // 0x12345678 <-> []{0x78, 0x56, 0x34, 0x12}
 func (self *State256_t) Uint64LE(i uint64) uint64 {
 	return self.state[(i+0)%256]<<(8*0) |
