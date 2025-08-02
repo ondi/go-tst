@@ -116,7 +116,7 @@ func (self *State256_t) Sum64() (res uint64) {
 	return
 }
 
-func (self *State256_t) Operation(prev_step uint64, prev_val uint64) (next_step uint64, next_val uint64, a [4]uint64) {
+func (self *State256_t) Operation03(prev_step uint64, prev_val uint64) (next_step uint64, next_val uint64, a [4]uint64) {
 	for i := 0; i < 256; i++ {
 		next_val = ROR64(next_val, 8)
 		switch i % 3 {
@@ -129,6 +129,17 @@ func (self *State256_t) Operation(prev_step uint64, prev_val uint64) (next_step 
 		}
 	}
 	next_step = 256
+	return
+}
+
+// 62
+func (self *State256_t) Operation(prev_step uint64, prev_val uint64) (next_step uint64, next_val uint64, a [4]uint64) {
+	a[0], a[1], a[2], a[3] = self.Uint64LE(prev_step+0, 1), self.Uint64LE(prev_step+8, 1), self.Uint64LE(prev_step+16, 1), self.Uint64LE(prev_step+24, 1)
+	next_val = (ROR64(prev_val, a[0]%64) ^ ROR64(a[1], a[2]%64)) * ROR64(a[3], a[0]%64)
+	next_val = (ROR64(next_val, a[1]%64) + ROR64(a[2], a[3]%64)) * ROR64(a[0], a[1]%64)
+	next_val = (ROR64(next_val, a[2]%64) ^ ROR64(a[3], a[0]%64)) * ROR64(a[1], a[2]%64)
+	next_val = (ROR64(next_val, a[3]%64) + ROR64(a[0], a[1]%64)) * ROR64(a[2], a[3]%64)
+	next_step = prev_step + 32
 	return
 }
 
