@@ -216,7 +216,30 @@ var in = []DebugState_t{
 	{A: "MhM5cxXFMYGUQIH_zqx^nbo2", B: "jbLK/KOvmZb"},
 	{A: "3f*k#~@Jf8h&s&9P*/BGA$01^M", B: "3*gRt_EV7w6z$RB@WdakoO"},
 	{A: "EZSfINiHX4NY@C4ZXP-j~08sw_VS", B: "TUJd*PGPq_ZllI^~0vNil"},
-	{A: "Kact#z5bH9nxkBe&", B: "p2ZJpiESj~s#Xnle$F6i5NAJ", Skip: true},
+	{A: "l@FVfTazm51", B: "QIR_#kv33D"},
+	{A: "XTtKRclozF$VT_6TUXbZRIawl", B: "kBOfhk9cKa"},
+	{A: "AUyfVlgIAMMrI9siGKxgvfZQZZCX", B: "1TKIysX_WT1o2P#w_HbvKlhQct"},
+	{A: "EYF@iPT2E4l/%gm#l1c4gLUmvYa", B: "eGFGBSMX7ZsQ@@MLj5L"},
+	{A: "Kact#z5bH9nxkBe&", B: "p2ZJpiESj~s#Xnle$F6i5NAJ"},
+	{A: "@qQaFN_QkXIKD%mzJs1Q7Bq6my", B: "Ub2SSVgF5p2#8V-"},
+	{A: "DH-k5LBP9#ERLqnar-Qi-1U", B: "H1kVt99rGG~OMsnJM#C&SSs"},
+	{A: "mGEVUT0LeLt$IH8@vqght", B: "d*ST#LXkICq"},
+	{A: "_-cBF6QT^8U9h7WZ", B: "sScSnQM&MzX~MEqjpC2JChc%IAkBA"},
+	{A: "&APsgcW%Yx9tL^sCTo", B: "iij&vG-bvWVrQ9Jru0r/~VF"},
+	{A: "RAIQGFj3YjDvk$P*NTzcB", B: "EGW7vqTDmQC~ZuamKHtY3V0"},
+	{A: "uV_3cV2wzK_@ze0K", B: "sggD3oyyD*JzBPek^#qKiI3S"},
+	{A: "zNqIOvJgoYz@UiWOjFYI~bqaLJMz-", B: "fNNxPN#D3j9T2$XE6"},
+	{A: "C-jSLRKcCJB8", B: "Qx3$hUExNhL6"},
+	{A: "Z*KstVax9e7FB", B: "%hv4TquwA0"},
+	{A: "F*JyLRGRXscpA~piYL3", B: "J6$nDnIHz3q0Rmo"},
+	{A: "7K8o$9IX%bXsOz#", B: "ZW/CrC~^ezqC"},
+	{A: "U$wZ&O$%3Y_ZsSR$", B: "6dEG8h*%Ou6rKSP/G$pVJ6qbVFq^"},
+	{A: "_K3#fFKl4zzt_XO829", B: "1G*e/1ieisiKKbXgMQOU%7JFe0aSX"},
+	{A: "kP/7Hl49S1fW/O", B: "Z-uHJKouS1fwt/~Tut0~RhmpzBo9K"},
+	{A: "Pz0stSU9wAl6l$83OgDSu7THpub", B: "glzWfFe7yHR2jOfQ"},
+	{A: "lga#b/b59OS8", B: "UoeyDAIGI4"},
+	{A: "owjKti0qQHZKUY$4P686Ea#nTp-", B: "zo5i^*SE0s$#UHzWd@rU"},
+	{A: "fQ9fxSQ4f*Dl5Z&u", B: "GtF9DsTr21#"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -249,19 +272,14 @@ func Test_Tst3_04(t *testing.T) {
 			t.Logf("same = %v %v", len(same), same)
 			t.Logf("diff = %v %v", len(diff), diff)
 
-			var step1, step2 uint64
-			var h1, h2 [1]uint64
-			var a1, a2 [4]uint64
+			h1 := state1.Sum64()
+			h2 := state2.Sum64()
 
-			for step1 < 256 {
-				step1, h1[0], a1 = state1.Operation(step1, h1[0])
-				step2, h2[0], a2 = state2.Operation(step2, h2[0])
+			t.Logf("hash1=%v", h1)
+			t.Logf("hash2=%v", h2)
 
-				t.Logf("hash1=%v step1=%v a1=%v", h1[0], step1, a1)
-				t.Logf("hash2=%v step2=%v a2=%v", h2[0], step2, a2)
+			t.Logf("##### %v", h1 == h2)
 
-				t.Logf("##### %v %v", h1[0] == h2[0], a1[0] == a2[0] || a1[1] == a2[1] || a1[2] == a2[2] || a1[3] == a2[3])
-			}
 			assert.Assert(t, v.Skip || v.Debug)
 		}
 	}

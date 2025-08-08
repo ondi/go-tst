@@ -108,49 +108,27 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
-func (self *State256_t) Sum64() (res uint64) {
-	var step uint64
-	for step < 256 {
-		step, res, _ = self.Operation(step, res)
+func (self *State256_t) Sum64() (result uint64) {
+	for i := range 256 {
+		result = ROL64(result, self.state[i], 1)
+		result = result ^ ROL64(self.state[i]+1, result, 1)
 	}
 	return
 }
 
-func (self *State256_t) Operation(prev_step uint64, prev_val uint64) (next_step uint64, next_val uint64, a [4]uint64) {
-	for i := 0; i < 256; i++ {
-		next_val = ROR64(next_val, self.state[i])
-		switch i % 3 {
+// 1_227_133_513, 78_536_544_841, 12_274_985_119_529
+func (self *State256_t) Sum64_v1() (result uint64) {
+	for i := range 256 {
+		result = ROL64(result, self.state[i], 1)
+		switch self.state[i] % 3 {
 		case 0:
-			next_val = next_val ^ (self.state[i] + 1)
+			result = result ^ ROL64(self.state[i]+1, result, 1)
 		case 1:
-			next_val = next_val + (self.state[i] + 1)
+			result = result * (self.state[i] + 1)
 		case 2:
-			next_val = next_val * (self.state[i] + 1)
+			result = result + ROL64(self.state[i]+1, result, 1)
 		}
 	}
-	next_step = 256
-	return
-}
-
-// 62
-func (self *State256_t) Operation02(prev_step uint64, prev_val uint64) (next_step uint64, next_val uint64, a [4]uint64) {
-	a[0], a[1], a[2], a[3] = self.Uint64LE(prev_step+0, 1), self.Uint64LE(prev_step+8, 1), self.Uint64LE(prev_step+16, 1), self.Uint64LE(prev_step+24, 1)
-	next_val = (ROR64(prev_val, a[0]) ^ ROR64(a[1], a[2])) + ROR64(a[3], a[0])
-	next_val = (ROR64(next_val, a[1]) * ROR64(a[2], a[3])) ^ ROR64(a[0], a[1])
-	next_val = (ROR64(next_val, a[2]) + ROR64(a[3], a[0])) * ROR64(a[1], a[2])
-	next_val = (ROR64(next_val, a[3]) ^ ROR64(a[0], a[1])) + ROR64(a[2], a[3])
-	next_step = prev_step + 32
-	return
-}
-
-// 44
-func (self *State256_t) Operation01(prev_step uint64, prev_val uint64) (next_step uint64, next_val uint64, a [4]uint64) {
-	a[0], a[1], a[2], a[3] = self.Uint64LE(prev_step+0, 1), self.Uint64LE(prev_step+8, 1), self.Uint64LE(prev_step+16, 1), self.Uint64LE(prev_step+24, 1)
-	next_val = ROR64(prev_val, a[0]) ^ ROR64(a[1], a[2])
-	next_val = ROR64(next_val, a[3]) * ROR64(a[0], a[1])
-	next_val = ROR64(next_val, a[2]) + ROR64(a[3], a[0])
-	next_val = ROR64(next_val, a[1]) * ROR64(a[2], a[3])
-	next_step = prev_step + 32
 	return
 }
 
@@ -186,16 +164,20 @@ func Backward(size uint64, current uint64, offset uint64) uint64 {
 	return (size + current - offset%size) % size
 }
 
-func ROR64(in uint64, shift uint64) uint64 {
-	if shift = shift % 64; shift > 0 {
-		return (in >> shift) | (in << (64 - shift))
+func ROR64(in uint64, shift uint64, bias uint64) uint64 {
+	if shift = shift % 64; shift == 0 {
+		if shift = bias % 64; shift == 0 {
+			return in
+		}
 	}
-	return in
+	return (in >> shift) | (in << (64 - shift))
 }
 
-func ROL64(in uint64, shift uint64) uint64 {
-	if shift = shift % 64; shift > 0 {
-		return (in >> (64 - shift)) | (in << shift)
+func ROL64(in uint64, shift uint64, bias uint64) uint64 {
+	if shift = shift % 64; shift == 0 {
+		if shift = bias % 64; shift == 0 {
+			return in
+		}
 	}
-	return in
+	return (in >> (64 - shift)) | (in << shift)
 }
