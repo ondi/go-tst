@@ -110,6 +110,13 @@ func (self *State256_t) StateNext(in byte) {
 
 func (self *State256_t) Sum64() (result uint64) {
 	for i := range 256 {
+		result = ROL64(result, self.state[i]%3, 1) ^ (self.state[i] + 1)
+	}
+	return
+}
+
+func (self *State256_t) Sum64_v2() (result uint64) {
+	for i := range 256 {
 		result = ROL64(result, self.state[i], 1)
 		result = result ^ ROL64(self.state[i]+1, result, 1)
 	}
