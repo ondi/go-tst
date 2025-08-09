@@ -108,25 +108,17 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
-func (self *State256_t) Sum64() (result uint64) {
-	for i := range 256 {
-		result = ROL64(result, self.state[i], 1)
-		result = (result ^ ROL64(self.state[i]+1, result, 0)) * (self.state[i] + 1)
-	}
-	return
-}
-
 // 1_227_133_513, 78_536_544_841, 12_274_985_119_529
-func (self *State256_t) Sum64_v1() (result uint64) {
+func (self *State256_t) Sum64() (result uint64) {
 	for i := range 256 {
 		result = ROL64(result, self.state[i], 1)
 		switch self.state[i] % 3 {
 		case 0:
-			result = result ^ ROL64(self.state[i]+1, result, 1)
+			result = result ^ ROL64(self.state[i]+1, result, 0)
 		case 1:
 			result = result * (self.state[i] + 1)
 		case 2:
-			result = result + ROL64(self.state[i]+1, result, 1)
+			result = result + ROL64(self.state[i]+1, result, 0)
 		}
 	}
 	return
