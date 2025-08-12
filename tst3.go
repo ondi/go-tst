@@ -108,12 +108,20 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
-// 1_227_133_513, 78_536_544_841, 12_274_985_119_529
 func roam(in uint64, state uint64) uint64 {
+	in = in + ROL64(state, state, 0)
+	in = (in ^ ROL64(state, in, 0)) * state
+	return in
+}
+
+// 64: 31, 51
+// 95: 79
+func roam_v1(in uint64, state uint64) uint64 {
 	in = ROL64(in+state, state, 1)
 	return (in ^ ROL64(state, in, 0)) * state
 }
 
+// 1_227_133_513, 78_536_544_841, 12_274_985_119_529
 func (self *State256_t) Sum64() uint64 {
 	var result [2]uint64
 	for i := 0; i < 256; i += 2 {
