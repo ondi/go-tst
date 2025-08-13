@@ -109,7 +109,13 @@ func (self *State256_t) StateNext(in byte) {
 }
 
 func roam(in uint64, state uint64) uint64 {
-	in = in + ROL64(state, state, 0)
+	in = ROL64(in, state, 1) ^ ROL64(state, in, 1)
+	hi, in := Mul_u64(in, state)
+	return in ^ hi
+}
+
+func roam_v2(in uint64, state uint64) uint64 {
+	in = ROL64(in, state, 1) + state
 	in = (in ^ ROL64(state, in, 0)) * state
 	return in
 }
@@ -194,4 +200,21 @@ func ROL64(in uint64, shift uint64, bias uint64) uint64 {
 		}
 	}
 	return (in >> (64 - shift)) | (in << shift)
+}
+
+func Mul_u64(a uint64, b uint64) (hi uint64, lo uint64) {
+	a_hi, b_hi := a>>32, b>>32
+	a_lo, b_lo := a&0xFFFFFFFF, b&0xFFFFFFFF
+
+	a_hi_b_hi := a_hi * b_hi
+	a_hi_b_lo := a_hi * b_lo
+	a_lo_b_hi := a_lo * b_hi
+	a_lo_b_lo := a_lo * b_lo
+
+	intermediate := a_hi_b_lo + a_lo_b_hi + (a_lo_b_lo >> 32)
+
+	hi = a_hi_b_hi + (intermediate >> 32)
+	lo = (intermediate << 32) | (a_lo_b_lo & 0xFFFFFFFF)
+
+	return
 }
