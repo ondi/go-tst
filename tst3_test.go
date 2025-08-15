@@ -253,6 +253,12 @@ var in = []DebugState_t{
 	{A: "AlN#JbCv%442800Yc", B: "wBNACZBGOkdW1hL^imljtNtoxgq0"},
 	{A: "EDyif_%kAclGu_SVBPBZQEqtza/L4", B: "bcuM3LCpb%QJVPr#&TBR3P2K%"},
 	{A: "7KvgpO6uhf41R^@KxlO06Q", B: "jg$VTqm0CsvH8"},
+	{A: "$msTojH*V/uNSRNd1_Ki2", B: "7WQ@1nuejXePtR"},
+	{A: "sSA22#bO1oV8XOUBt1g", B: "m$lDFYQi%JckQ"},
+	{A: "11i&KauCzl*g-G^", B: "cEM3RagxkyruN4S@9"},
+	{A: "3hqBcY#QNJU$jg0*jdSrc*bS8uO", B: "nKFfA8NRz8k3V/uaE"},
+	{A: "5qQeAnAx#p$@Ei4i8Q8", B: "@_nHQ$d02x_4MrXFz-p9qt@z3mzq"},
+	{A: "V%_wwDdPJfL^EB@QS", B: "w$g%sCGPRq33L$z5$XC_9m6k"},
 }
 
 func Test_Tst3_04(t *testing.T) {

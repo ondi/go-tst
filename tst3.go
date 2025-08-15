@@ -108,33 +108,33 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
-func roam(in uint64, state uint64) uint64 {
-	in = ROL64(in, state, 1) ^ ROL64(state, in, 1)
-	hi, in := Mul_u64(in, state)
-	return in ^ hi
-}
-
-func roam_v2(in uint64, state uint64) uint64 {
-	in = ROL64(in, state, 1) + state
-	in = (in ^ ROL64(state, in, 0)) * state
+func mix_v3(in uint64, state uint64) uint64 {
+	in = in ^ ROL64(in+state, 1, 0)
+	in = in ^ ROL64(in*state, 1, 0)
 	return in
 }
 
-// 64: 31, 51
-// 95: 79
-func roam_v1(in uint64, state uint64) uint64 {
-	in = ROL64(in+state, state, 1)
-	return (in ^ ROL64(state, in, 0)) * state
+func mix(in uint64, state uint64) uint64 {
+	in = in + (ROL64(state, in, 0) * state)
+	in = in ^ (ROL64(in, state, 1) * state)
+	return in
+}
+
+func mix_v1(in uint64, state uint64) uint64 {
+	in = in ^ (ROL64(state, in, 1) * state)
+	in = in ^ (ROL64(in, state, 1) * state)
+	return in
 }
 
 // 1_227_133_513, 78_536_544_841, 12_274_985_119_529
 func (self *State256_t) Sum64() uint64 {
 	var result [2]uint64
-	for i := 0; i < 256; i += 2 {
-		result[0] = roam(result[0], self.state[i]+1)
-		result[1] = roam(result[1], self.state[i+1]+1)
+	for i := 0; i < 256; i += 1 {
+		result[0] = mix(result[0], self.state[i]+1)
+		// result[1] = roam(result[1], self.state[i+1]+1)
 	}
-	return ROL64(result[0], result[1], 1) ^ ROL64(result[1], result[0], 1)
+	// return ROL64(result[0], result[1], 1) ^ ROL64(result[1], result[0], 1)
+	return result[0]
 }
 
 func (self *State256_t) Sum64_v1() (result uint64) {
