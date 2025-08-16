@@ -108,13 +108,14 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
-func mix_v3(in uint64, state uint64) uint64 {
-	in = in ^ ROL64(in+state, 1, 0)
-	in = in ^ ROL64(in*state, 1, 0)
+func mix(in uint64, state uint64) uint64 {
+	in = in ^ (ROL64(state, in, 0) + state)
+	in = in ^ (ROL64(in, state, 1) * state)
 	return in
 }
 
-func mix(in uint64, state uint64) uint64 {
+// 128: 120
+func mix_v2(in uint64, state uint64) uint64 {
 	in = in + (ROL64(state, in, 0) * state)
 	in = in ^ (ROL64(in, state, 1) * state)
 	return in
