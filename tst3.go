@@ -108,68 +108,36 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
-func mix(in uint64, state uint64) uint64 {
-	in = in ^ state
-	in = ROL64(in, state, 1)
-	return in
+func Mix_v7(prev uint64, state uint64) uint64 {
+	prev = prev ^ ROL64(prev^state, 8, state+7, 8)*state
+	return prev
 }
 
-// 96: 48
-// 74: 29,64
-func mix_v4(in uint64, state uint64) uint64 {
-	in = ROL64(in, 1, 0) ^ ROL64(state, in, 0)
-	in = in ^ (ROL64(in, state, 0) * state)
-	return in
+// 100: 60, 67
+func Mix_v6(prev uint64, state uint64) uint64 {
+	prev = prev ^ ROL64(prev^state, 1, state, 1)*state
+	return prev
 }
 
-// 128: 120
-func mix_v3(in uint64, state uint64) uint64 {
-	in = in + (ROL64(state, in, 0) * state)
-	in = in ^ (ROL64(in, state, 1) * state)
-	return in
-}
-
-// 60: 10, 15, 46
-func mix_v2(in uint64, state uint64) uint64 {
-	in = in ^ (ROL64(state, in, 0) + state)
-	in = in ^ (ROL64(in, state, 1) * state)
-	return in
-}
-
-// 60: 38
-func mix_v1(in uint64, state uint64) uint64 {
-	in = in ^ (ROL64(state, in, 1) * state)
-	in = in ^ (ROL64(in, state, 1) * state)
-	return in
+func Mix(prev uint64, state uint64) uint64 {
+	prev = prev ^ state
+	prev = ROL64(prev, 8, prev+state+7, 8)
+	return prev
 }
 
 // 78_536_544_841, 1_227_133_513
 func (self *State256_t) Sum64() uint64 {
 	var result [4]uint64
-	for i := 0; i < 256; i += 4 {
-		result[0] = mix(result[0], self.state[i+0]+1)
-		result[1] = mix(result[1], self.state[i+1]+1)
-		result[2] = mix(result[2], self.state[i+2]+1)
-		result[3] = mix(result[3], self.state[i+3]+1)
+	for i := 0; i < 256; i += 1 {
+		result[0] = Mix(result[0], self.state[i+0]+1)
+		// result[1] = Mix(result[1], self.state[i+1]+1)
+		// result[2] = Mix(result[2], self.state[i+2]+1)
+		// result[3] = Mix(result[3], self.state[i+3]+1)
 	}
-	a := ROL64(result[0], result[1], 1) ^ ROL64(result[1], result[0], 1)
-	b := ROL64(result[2], result[3], 1) ^ ROL64(result[3], result[2], 1)
-	return ROL64(a, b, 1) ^ ROL64(b, a, 1)
-}
-
-func (self *State256_t) Sum64_v1() (result uint64) {
-	for i := range 256 {
-		result = ROL64(result, self.state[i], 1)
-		switch self.state[i] % 3 {
-		case 0:
-			result = result ^ ROL64(self.state[i]+1, result, 0)
-		case 1:
-			result = result * (self.state[i] + 1)
-		case 2:
-			result = result + ROL64(self.state[i]+1, result, 0)
-		}
-	}
-	return
+	// a := ROL64(result[0], result[1], 1) ^ ROL64(result[1], result[0], 1)
+	// b := ROL64(result[2], result[3], 1) ^ ROL64(result[3], result[2], 1)
+	// return ROL64(a, b, 1) ^ ROL64(b, a, 1)
+	return result[0]
 }
 
 // 0x12345678 <-> []{0x78, 0x56, 0x34, 0x12}
@@ -204,18 +172,18 @@ func Backward(size uint64, current uint64, offset uint64) uint64 {
 	return (size + current - offset%size) % size
 }
 
-func ROR64(in uint64, shift ...uint64) (out uint64) {
+func ROR64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out > 0 {
+		if out = v % 64; out >= min {
 			return (in >> out) | (in << (64 - out))
 		}
 	}
 	return in
 }
 
-func ROL64(in uint64, shift ...uint64) (out uint64) {
+func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out > 0 {
+		if out = v % 64; out >= min {
 			return (in >> (64 - out)) | (in << out)
 		}
 	}

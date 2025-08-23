@@ -135,10 +135,10 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		if conflict {
 			collisions++
 			fmt.Fprintf(fd, "%s\t%v\t%q\t%q\n", t.Name(), i, value2, value1)
-			t.Errorf("%v collision=%v i=%v, hash=%0X, value1=%q, valuw2=%q\n", t.Name(), collisions, i, hx, value1, value2)
+			t.Errorf("%v collision=%v i=%v, hash=%016X, value1=%q, valuw2=%q\n", t.Name(), collisions, i, hx, value1, value2)
 		}
 		if i%1_000_000 == 0 {
-			t.Logf("%v i=%v, collision=%v, repeat=%v, storage=%v, hash=%0X, buf=%q", t.Name(), i, collisions, repeat, size, hx, value1)
+			t.Logf("%v i=%v, collision=%v, repeat=%v, storage=%v, hash=%016X, buf=%q", t.Name(), i, collisions, repeat, size, hx, value1)
 		}
 	}
 }
@@ -254,6 +254,8 @@ var in = []DebugState_t{
 	{A: "IrWo_U-%VNP/h$u%cG3", B: "M~g^LP2crwTIRXGB*O&G58Y#^eJ^"},
 	{A: "$a6Pw_r&%*/22", B: "oQYi/7wz33@ePL3m*/G2gT"},
 	{A: "m4XG0f_Bb~tcamZKP_6", B: "vHGTRfsQHg1r1ZY0"},
+	{A: "-/cuMb6^-&s$XY", B: "DK852sjm9IC6lk"},
+	{A: "UH1Kzl&Y2A8R", B: "$olc_kZ3zK^SA-pZ"},
 }
 
 func Test_Tst3_04(t *testing.T) {
