@@ -108,32 +108,38 @@ func (self *State256_t) StateNext(in byte) {
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 }
 
-func Mix_v7(prev uint64, state uint64) uint64 {
-	prev = prev ^ state
-	prev = prev ^ ROL64(prev, 8, prev+state+7, 8)*state
-	return prev
-}
-
-// 100: 60, 67
+// GOOD 100: 60, 67
 func Mix_v6(prev uint64, state uint64) uint64 {
+	state += 8
 	prev = prev ^ ROL64(prev^state, 1, state, 1)*state
 	return prev
 }
 
+// GOOD
 func Mix(prev uint64, state uint64) uint64 {
-	state += 7
+	state += 8
+	prev = prev ^ state
+	prev = prev ^ ROL64(prev, 8, state, 8)*state
+	return prev
+}
+
+// BAD 42: 8, 9, 12, 28, 32
+func Mix_v3(prev uint64, state uint64) uint64 {
+	state += 8
 	prev = ROL64(prev^state, 8, prev+state, 8)
 	return prev
 }
 
-// 34: 13,23,32
+// BAD 34: 13,23,32
 func Mix_v2(prev uint64, state uint64) uint64 {
+	state += 8
 	prev = prev ^ state
-	prev = ROL64(prev, 8, prev+state+7, 8)
+	prev = ROL64(prev, 8, prev+state, 8)
 	return prev
 }
 
 func Mix_v1(prev uint64, state uint64) uint64 {
+	state += 8
 	prev = prev ^ state
 	prev = ROL64(prev, 8, state, 8)
 	return prev
@@ -143,10 +149,10 @@ func Mix_v1(prev uint64, state uint64) uint64 {
 func (self *State256_t) Sum64() uint64 {
 	var result [4]uint64
 	for i := 0; i < 256; i += 1 {
-		result[0] = Mix(result[0], self.state[i+0]+1)
-		// result[1] = Mix(result[1], self.state[i+1]+1)
-		// result[2] = Mix(result[2], self.state[i+2]+1)
-		// result[3] = Mix(result[3], self.state[i+3]+1)
+		result[0] = Mix(result[0], self.state[i+0])
+		// result[1] = Mix(result[1], self.state[i+1])
+		// result[2] = Mix(result[2], self.state[i+2])
+		// result[3] = Mix(result[3], self.state[i+3])
 	}
 	// a := ROL64(result[0], result[1], 1) ^ ROL64(result[1], result[0], 1)
 	// b := ROL64(result[2], result[3], 1) ^ ROL64(result[3], result[2], 1)
