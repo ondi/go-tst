@@ -110,14 +110,21 @@ func (self *State256_t) StateNext(in byte) {
 
 // GOOD 100: 60, 67
 func Mix_v6(prev uint64, state uint64) uint64 {
-	state += 8
+	state += 1
 	prev = prev ^ ROL64(prev^state, 1, state, 1)*state
 	return prev
 }
 
-// GOOD
 func Mix(prev uint64, state uint64) uint64 {
-	state += 8
+	state += 1
+	prev = prev ^ state
+	prev = prev ^ ROL64(state, 1, prev, 1)*state
+	return prev
+}
+
+// GOOD
+func Mix_v4(prev uint64, state uint64) uint64 {
+	state += 1
 	prev = prev ^ state
 	prev = prev ^ ROL64(prev, 8, state, 8)*state
 	return prev
@@ -125,21 +132,21 @@ func Mix(prev uint64, state uint64) uint64 {
 
 // BAD 42: 8, 9, 12, 28, 32
 func Mix_v3(prev uint64, state uint64) uint64 {
-	state += 8
+	state += 1
 	prev = ROL64(prev^state, 8, prev+state, 8)
 	return prev
 }
 
 // BAD 34: 13,23,32
 func Mix_v2(prev uint64, state uint64) uint64 {
-	state += 8
+	state += 1
 	prev = prev ^ state
 	prev = ROL64(prev, 8, prev+state, 8)
 	return prev
 }
 
 func Mix_v1(prev uint64, state uint64) uint64 {
-	state += 8
+	state += 1
 	prev = prev ^ state
 	prev = ROL64(prev, 8, state, 8)
 	return prev
