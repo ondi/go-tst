@@ -314,7 +314,8 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	in := "N*1Krz%2*sP&$#0nh"
+	// 1C6092A0EBAA9B6E
+	in := "Xr$2^-te63qFnJ#"
 
 	var state State256_t
 	var res uint64
