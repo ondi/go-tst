@@ -99,9 +99,17 @@ func (self *State256_t) State(in byte) uint64 {
 }
 
 func Mix(prev uint64, state uint64) uint64 {
+	prev = (prev ^ (state + 1)) * (state + 3)
+	prev = ROL64(prev, 1, state)
+	return prev
+}
+
+// 120: 60, 109
+// 100: null
+func Mix_v2(prev uint64, state uint64) uint64 {
 	state += 3
 	prev = (prev ^ state) * state
-	prev = ROL64(prev, 1, state, 1)
+	prev = ROL64(prev, 1, state)
 	return prev
 }
 
@@ -110,7 +118,7 @@ func Mix(prev uint64, state uint64) uint64 {
 func Mix_v1(prev uint64, state uint64) uint64 {
 	state += 3
 	prev = (prev + state) * state
-	prev = ROL64(prev, 1, state, 1)
+	prev = ROL64(prev, 1, state)
 	return prev
 }
 
@@ -148,18 +156,24 @@ func Backward(size uint64, current uint64, offset uint64) uint64 {
 
 func ROR64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out >= min {
+		if out = v % 64; out > min {
 			return (in >> out) | (in << (64 - out))
 		}
+	}
+	if min > 0 {
+		return (in >> min) | (in << (64 - min))
 	}
 	return in
 }
 
 func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out >= min {
+		if out = v % 64; out > min {
 			return (in >> (64 - out)) | (in << out)
 		}
+	}
+	if min > 0 {
+		return (in >> (64 - min)) | (in << min)
 	}
 	return in
 }
