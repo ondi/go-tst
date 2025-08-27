@@ -267,6 +267,7 @@ var in = []DebugState_t{
 	{A: "Vld/iUuKGGF$YF#79dZ0m&Te%g", B: "osXBsudPI*XQ*GpMUv^N$Mky"},
 	{A: "S~fDD*j&Nb&$AidgNcG", B: "IFt@K1**hEn%laHk7qj%lJc1ym#30"},
 	{A: "_tlUsVR4YV79X9ZWI37yn", B: "VF3&wO0uyp0Gb5u2QcZ8-jX4"},
+	{A: "vtz6elfoLVhbyCH~%-K3F%O", B: "8eORK2GFCiztXSbpN*htoJ9LbXI-"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -283,20 +284,27 @@ func Test_Tst3_04(t *testing.T) {
 		}
 
 		if h1 == h2 || v.Debug {
-			same := map[int]int{}
-			diff := map[int]int{}
-			for i := 0; i < 256; i++ {
-				if state1.state[i] == state2.state[i] {
-					same[i/8]++
-				} else {
-					diff[i/8]++
-				}
+			var s1, s2 State256_t
+			var in1, in2 []uint64
+			m1 := map[uint64]struct{}{}
+			m2 := map[uint64]struct{}{}
+			s1.Reset()
+			s2.Reset()
+			for _, code := range []byte(v.A) {
+				s := s1.State(code)
+				in1 = append(in1, s)
+				m1[s] = struct{}{}
+			}
+			for _, code := range []byte(v.B) {
+				s := s2.State(code)
+				in2 = append(in2, s)
+				m2[s] = struct{}{}
 			}
 
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
 			t.Logf("h2=%016X\tlen2=%v\ta2=%v\tb2=%v\tin2=%q", h2, len(v.B), state2.a, state2.b, v.B)
-			t.Logf("same = %v %v", len(same), same)
-			t.Logf("diff = %v %v", len(diff), diff)
+			t.Logf("in1 = %v %v %v", len(m1), len(in1), in1)
+			t.Logf("in2 = %v %v %v", len(m2), len(in2), in2)
 
 			t.Logf("##### %v", h1 == h2)
 
