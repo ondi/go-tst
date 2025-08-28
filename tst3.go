@@ -105,6 +105,7 @@ func Mix(prev uint64, state uint64) uint64 {
 	return prev
 }
 
+// 70: 15, 42, 66
 func Mix_v3(prev uint64, state uint64) uint64 {
 	prev = (prev ^ (state + 1)) * (state + 2)
 	prev = ROL64(prev, 1, state)
