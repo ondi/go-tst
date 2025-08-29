@@ -272,6 +272,7 @@ var in = []DebugState_t{
 	{A: "92Y^m@589$D&BRv7", B: "Ft/KHHze6shnnQ~3E%/jcy^b&~f"},
 	{A: "GBNI_gP^RlEgr3dXp1nlgPGJACQXl", B: "#@Fs^hNN1dgLRC_oxrdp394"},
 	{A: "WUKa1OK8yfuEGP66T7d1x@N^-1~", B: "Z0zsf$zbmzMY$O^mZUCw6HogtkhaQ"},
+	{A: "CmxUmO*EMtlT^SNZo$C#b", B: "%6_S$6JVfWmIDRZ5CED"},
 }
 
 func Test_Tst3_04(t *testing.T) {
