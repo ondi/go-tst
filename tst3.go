@@ -88,20 +88,45 @@ func (self *State256_t) Reset() {
 		224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
 		240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
 	}
-	self.a, self.b = 0, 0
+	self.a, self.b = 0, 127
 }
 
 func (self *State256_t) State(in byte) uint64 {
-	self.a = (self.a + 5) % 256
-	self.b = (self.state[self.b] + self.state[self.a] + uint64(in) + 1) % 256
+	self.a = (self.a + 1) % 256
+	self.b = (self.state[self.b] + self.state[in] + 1) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.state[self.a]
 }
 
 func Mix(prev uint64, state uint64) uint64 {
+	prev = prev ^ (state + 1)
+	prev = prev * (prev&0xFF + 2)
+	prev = ROL64(prev, 1, state)
+	return prev
+}
+
+// 70: 15, 42, 66
+func Mix_v3(prev uint64, state uint64) uint64 {
+	prev = (prev ^ (state + 1)) * (state + 2)
+	prev = ROL64(prev, 1, state)
+	return prev
+}
+
+// 120: 60, 109
+// 100: null
+func Mix_v2(prev uint64, state uint64) uint64 {
+	state += 3
+	prev = (prev ^ state) * state
+	prev = ROL64(prev, 1, state)
+	return prev
+}
+
+// 115: 56, 95
+// 80: 34, 37,58
+func Mix_v1(prev uint64, state uint64) uint64 {
 	state += 3
 	prev = (prev + state) * state
-	prev = ROL64(prev, 1, state, 1)
+	prev = ROL64(prev, 1, state)
 	return prev
 }
 
@@ -139,18 +164,24 @@ func Backward(size uint64, current uint64, offset uint64) uint64 {
 
 func ROR64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out >= min {
-			return (in >> out) | (in << (64 - out))
+		if out = v % 64; out > min {
+			min = out
 		}
+	}
+	if min > 0 {
+		return (in >> min) | (in << (64 - min))
 	}
 	return in
 }
 
 func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out >= min {
-			return (in >> (64 - out)) | (in << out)
+		if out = v % 64; out > min {
+			min = out
 		}
+	}
+	if min > 0 {
+		return (in >> (64 - min)) | (in << min)
 	}
 	return in
 }
