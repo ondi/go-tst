@@ -101,6 +101,14 @@ func (self *State256_t) State(in byte) uint64 {
 func Mix(prev uint64, state uint64) uint64 {
 	prev = prev ^ (state + 1)
 	prev = prev * (prev&0xFF + 2)
+	prev = ROL64(prev, 1, state) + state
+	return prev
+}
+
+// 42: 7, 13, 15, 18, 27, 37
+func Mix_v6(prev uint64, state uint64) uint64 {
+	prev = prev ^ (state + 1)
+	prev = prev * (prev&0xFF + 2)
 	prev = ROL64(prev, 1, prev) + state
 	return prev
 }
