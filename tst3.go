@@ -98,6 +98,8 @@ func (self *State256_t) State(in byte, prev uint64) uint64 {
 	return self.state[self.a]
 }
 
+// 120: 96
+// 90: null
 func Mix(prev uint64, state uint64) uint64 {
 	prev = prev ^ state + 1
 	prev = prev*(prev&0xFF+2) + state
