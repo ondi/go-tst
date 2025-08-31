@@ -129,7 +129,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		var state State256_t
 		state.Reset()
 		for _, code := range value1 {
-			hx = Mix(hx, state.State(code))
+			hx = Mix(hx, state.State(code, hx))
 		}
 		conflict, value2, size := storage.Add(hx, string(value1))
 		if conflict {
@@ -290,34 +290,37 @@ func Test_Tst3_04(t *testing.T) {
 		state1.Reset()
 		state2.Reset()
 		for _, code := range []byte(v.A) {
-			h1 = Mix(h1, state1.State(code))
+			h1 = Mix(h1, state1.State(code, h1))
 		}
 		for _, code := range []byte(v.B) {
-			h2 = Mix(h2, state2.State(code))
+			h2 = Mix(h2, state2.State(code, h1))
 		}
 
 		if h1 == h2 || v.Debug {
 			var s1, s2 State256_t
-			var in1, in2 []uint64
+			var x1, x2 uint64
+			var a1, a2 []uint64
 			m1 := map[uint64]struct{}{}
 			m2 := map[uint64]struct{}{}
 			s1.Reset()
 			s2.Reset()
 			for _, code := range []byte(v.A) {
-				s := s1.State(code)
-				in1 = append(in1, s)
+				s := s1.State(code, x1)
+				x1 = Mix(x1, s)
+				a1 = append(a1, s)
 				m1[s] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
-				s := s2.State(code)
-				in2 = append(in2, s)
+				s := s2.State(code, x2)
+				x2 = Mix(x2, s)
+				a2 = append(a2, s)
 				m2[s] = struct{}{}
 			}
 
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
 			t.Logf("h2=%016X\tlen2=%v\ta2=%v\tb2=%v\tin2=%q", h2, len(v.B), state2.a, state2.b, v.B)
-			t.Logf("in1 = %v %v %v", len(m1), len(in1), in1)
-			t.Logf("in2 = %v %v %v", len(m2), len(in2), in2)
+			t.Logf("in1 = %v %v %v", len(m1), len(a1), a1)
+			t.Logf("in2 = %v %v %v", len(m2), len(a2), a2)
 
 			t.Logf("##### %v", h1 == h2)
 
@@ -327,14 +330,14 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	// 1C6092A0EBAA9B6E
-	in := "Xr$2^-te63qFnJ#"
+	// DD3DF87844DDCDA9
+	in := "~AIR5QHoLa3ZM"
 
 	var state State256_t
 	var res uint64
 	state.Reset()
 	for _, code := range []byte(in) {
-		res = Mix(res, state.State(code))
+		res = Mix(res, state.State(code, res))
 	}
 	t.Logf("RES=%016X", res)
 }
