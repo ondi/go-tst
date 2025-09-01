@@ -114,29 +114,12 @@ func Mix_v9(prev uint64, state uint64) uint64 {
 	return prev
 }
 
-// 60: 37, 45
-// 42: 20
-func Mix_v8(prev uint64, state uint64) uint64 {
-	prev = prev ^ state + 1
-	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, state)
-	return prev
-}
-
 // 77: 2
 // 80: 2, 8
 func Mix_v7(prev uint64, state uint64) uint64 {
 	prev = prev ^ (state + 1)
 	prev = prev * (prev&0xFF + 2)
 	prev = ROL64(prev, 1, state) + state
-	return prev
-}
-
-// 42: 7, 13, 15, 18, 27, 37
-func Mix_v6(prev uint64, state uint64) uint64 {
-	prev = prev ^ (state + 1)
-	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, prev) + state
 	return prev
 }
 
@@ -153,31 +136,6 @@ func Mix_v5(prev uint64, state uint64) uint64 {
 func Mix_v4(prev uint64, state uint64) uint64 {
 	prev = prev ^ (state + 1)
 	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, state)
-	return prev
-}
-
-// 70: 15, 42, 66
-func Mix_v3(prev uint64, state uint64) uint64 {
-	prev = (prev ^ (state + 1)) * (state + 2)
-	prev = ROL64(prev, 1, state)
-	return prev
-}
-
-// 120: 60, 109
-// 100: null
-func Mix_v2(prev uint64, state uint64) uint64 {
-	state += 3
-	prev = (prev ^ state) * state
-	prev = ROL64(prev, 1, state)
-	return prev
-}
-
-// 115: 56, 95
-// 80: 34, 37, 58
-func Mix_v1(prev uint64, state uint64) uint64 {
-	state += 3
-	prev = (prev + state) * state
 	prev = ROL64(prev, 1, state)
 	return prev
 }
