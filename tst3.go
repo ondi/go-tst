@@ -122,20 +122,20 @@ func Mix_v4(prev uint64, state uint64) uint64 {
 	return prev
 }
 
-// 130: 103
-// 110: null
+// 100: 71, 72
+// 115: 102
 func Mix_v3(prev uint64, state uint64) uint64 {
-	prev = prev ^ (state + 1)
-	prev = prev * (prev&0xFF + state + 2)
+	prev = prev ^ (state + 1) + state
+	prev = prev * (prev&0xFF + 2)
 	prev = ROL64(prev, 1, state)
 	return prev
 }
 
-// 100: 71, 72
-// 115: 102
+// 130: 103
+// 110: null
 func Mix_v2(prev uint64, state uint64) uint64 {
-	prev = prev ^ (state + 1) + state
-	prev = prev * (prev&0xFF + 2)
+	prev = prev ^ (state + 1)
+	prev = prev * (prev&0xFF + state + 2)
 	prev = ROL64(prev, 1, state)
 	return prev
 }
