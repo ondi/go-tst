@@ -31,8 +31,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 	state.Reset()
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
-		a, b := state.State(key.code, key.hash)
-		key.hash = Mix(key.hash, a, b)
+		key.hash = state.StateMix(key.code, key.hash)
 		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -53,8 +52,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	state.Reset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
-		a, b := state.State(key.code, key.hash)
-		key.hash = Mix(key.hash, a, b)
+		key.hash = state.StateMix(key.code, key.hash)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -93,14 +91,23 @@ func (self *State256_t) Reset() {
 	self.a, self.b = 0, 127
 }
 
-func (self *State256_t) State(in byte, prev uint64) (uint64, uint64) {
+func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = ( /*prev +*/ self.state[self.a] + self.state[self.b] + self.state[in]) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	return self.state[self.a], self.state[self.b]
+
+	return Mix(prev, self.state[self.a], self.state[self.b])
 }
 
+// 100: null
 func Mix(prev uint64, a uint64, b uint64) uint64 {
+	prev = prev ^ (a + 1)
+	prev = prev * (b + 2)
+	prev = ROL64(prev, 1, a+b)
+	return prev
+}
+
+func Mix_v4(prev uint64, a uint64, b uint64) uint64 {
 	prev = prev ^ (a + 1)
 	prev = prev * (prev&0xFF + b + 2)
 	prev = ROL64(prev, 1, a+b)
