@@ -129,7 +129,8 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		var state State256_t
 		state.Reset()
 		for _, code := range value1 {
-			hx = Mix(hx, state.State(code, hx))
+			a, b := state.State(code, hx)
+			hx = Mix(hx, a, b)
 		}
 		conflict, value2, size := storage.Add(hx, string(value1))
 		if conflict {
@@ -291,6 +292,7 @@ var in = []DebugState_t{
 	{A: "*D5ZZC/KtaCPxKRAy/b0CiM", B: "v%8HYFui0l32X9*RE~u4OJ1oqGc"},
 	{A: "ImLDafQpM@S9cd/o4@", B: "A~AmkGA1T@Waaeu"},
 	{A: "TqUZbJRM/sCaCN", B: "x@hdWwONwnal7uSDEOCp"},
+	{A: "$I297qG^b6rmzRLs5n", B: "zjimiwEv6E&AQ9f@@rN"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -300,10 +302,12 @@ func Test_Tst3_04(t *testing.T) {
 		state1.Reset()
 		state2.Reset()
 		for _, code := range []byte(v.A) {
-			h1 = Mix(h1, state1.State(code, h1))
+			a, b := state1.State(code, h1)
+			h1 = Mix(h1, a, b)
 		}
 		for _, code := range []byte(v.B) {
-			h2 = Mix(h2, state2.State(code, h1))
+			a, b := state2.State(code, h2)
+			h2 = Mix(h2, a, b)
 		}
 
 		if h1 == h2 || v.Debug {
@@ -315,16 +319,16 @@ func Test_Tst3_04(t *testing.T) {
 			s1.Reset()
 			s2.Reset()
 			for _, code := range []byte(v.A) {
-				s := s1.State(code, x1)
-				x1 = Mix(x1, s)
-				a1 = append(a1, s)
-				m1[s] = struct{}{}
+				a, b := s1.State(code, x1)
+				x1 = Mix(x1, a, b)
+				a1 = append(a1, a)
+				m1[a] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
-				s := s2.State(code, x2)
-				x2 = Mix(x2, s)
-				a2 = append(a2, s)
-				m2[s] = struct{}{}
+				a, b := s2.State(code, x2)
+				x2 = Mix(x2, a, b)
+				a2 = append(a2, a)
+				m2[a] = struct{}{}
 			}
 
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
@@ -347,7 +351,8 @@ func Test_Tst3_05(t *testing.T) {
 	var res uint64
 	state.Reset()
 	for _, code := range []byte(in) {
-		res = Mix(res, state.State(code, res))
+		a, b := state.State(code, res)
+		res = Mix(res, a, b)
 	}
 	t.Logf("RES=%016X", res)
 }
