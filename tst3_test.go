@@ -292,6 +292,7 @@ var in = []DebugState_t{
 	{A: "ImLDafQpM@S9cd/o4@", B: "A~AmkGA1T@Waaeu"},
 	{A: "TqUZbJRM/sCaCN", B: "x@hdWwONwnal7uSDEOCp"},
 	{A: "$I297qG^b6rmzRLs5n", B: "zjimiwEv6E&AQ9f@@rN"},
+	{A: "qT/1f@CDUww-1", B: "CY81c%Y85jslqdob"},
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -339,8 +340,8 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	// DD3DF87844DDCDA9
-	in := "~AIR5QHoLa3ZM"
+	// C2F3FCDE9228E21F
+	in := "7yuj4d7RV08zdcuHK4y0%X"
 
 	var state State256_t
 	var res uint64
