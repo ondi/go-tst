@@ -108,9 +108,9 @@ func Mix_v6(prev uint64, a uint64, b uint64) uint64 {
 
 func Mix(prev uint64, a uint64, b uint64) uint64 {
 	prev = prev ^ (a + 1)
-	prev = ROL64(prev, 1, b)
-	prev = prev * (b + 2)
 	prev = ROL64(prev, 1, a)
+	prev = prev * (b + 2)
+	prev = ROR64(prev, 1, b)
 	return prev
 }
 
