@@ -4,6 +4,8 @@
 
 package tst
 
+var MaxUint64 uint64 = 1<<64 - 1
+
 type key3_t struct {
 	hash uint64
 	pos  int32
@@ -31,7 +33,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 	state.Reset()
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
-		key.hash = Mix(key.hash, state.State(key.code, key.hash))
+		key.hash = state.StateMix(key.code, key.hash)
 		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -52,7 +54,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	state.Reset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
-		key.hash = Mix(key.hash, state.State(key.code, key.hash))
+		key.hash = state.StateMix(key.code, key.hash)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -91,88 +93,70 @@ func (self *State256_t) Reset() {
 	self.a, self.b = 0, 127
 }
 
-func (self *State256_t) State(in byte, prev uint64) uint64 {
+func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
-	self.b = ( /*prev +*/ self.state[self.b] + self.state[in] + 1) % 256
+	self.b = ( /*prev +*/ self.state[self.a] + self.state[self.b] + self.state[in]) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	return self.state[self.a]
+
+	return Mix(prev, self.state[self.a], self.state[self.b])
 }
 
-// 120: 96
-// 90: null
-func Mix(prev uint64, state uint64) uint64 {
-	prev = prev ^ state + 1
-	prev = prev*(prev&0xFF+2) + state
-	prev = ROL64(prev, 1, state)
+func Mix(prev uint64, a uint64, b uint64) uint64 {
+	prev = ROL64((prev&0xEFFF_FFFF^a+1)*(prev>>32^b+1), 1, a+b, a, b, 15) ^ prev
 	return prev
 }
 
-// 60: 37, 45
-// 42: 20
-func Mix_v8(prev uint64, state uint64) uint64 {
-	prev = prev ^ state + 1
-	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, state)
+// 413: 218, 304, 313
+func Mix_v3(prev uint64, a uint64, b uint64) uint64 {
+	prev = prev ^ (a + 1)
+	prev = prev * (b + 2)
+	prev = ROL64(prev, 1, a+b)
 	return prev
 }
 
-// 77: 2
-// 80: 2, 8
-func Mix_v7(prev uint64, state uint64) uint64 {
-	prev = prev ^ (state + 1)
-	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, state) + state
-	return prev
-}
-
-// 42: 7, 13, 15, 18, 27, 37
-func Mix_v6(prev uint64, state uint64) uint64 {
-	prev = prev ^ (state + 1)
-	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, prev) + state
-	return prev
-}
-
-// 42: 42
-func Mix_v5(prev uint64, state uint64) uint64 {
-	prev = prev ^ (state + 1)
-	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, prev+state)
+// 245: 227
+func Mix_v2(prev uint64, a uint64, b uint64) uint64 {
+	prev = prev ^ (a + 1)
+	prev = prev * (prev&0xFF + b + 2)
+	prev = ROL64(prev, 1, a+b)
 	return prev
 }
 
 // 105: 103
 // 150: 142
-func Mix_v4(prev uint64, state uint64) uint64 {
-	prev = prev ^ (state + 1)
+func Mix_v1(prev uint64, a uint64, b uint64) uint64 {
+	prev = prev ^ (a + 1)
 	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, state)
+	prev = ROL64(prev, 1, a)
 	return prev
 }
 
-// 70: 15, 42, 66
-func Mix_v3(prev uint64, state uint64) uint64 {
-	prev = (prev ^ (state + 1)) * (state + 2)
-	prev = ROL64(prev, 1, state)
-	return prev
+// min = [1,63]
+func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
+	for _, v := range shift {
+		if out = v % 64; out >= min {
+			return (in << out) | (in >> (64 - out))
+		}
+	}
+	return in
 }
 
-// 120: 60, 109
-// 100: null
-func Mix_v2(prev uint64, state uint64) uint64 {
-	state += 3
-	prev = (prev ^ state) * state
-	prev = ROL64(prev, 1, state)
-	return prev
+// min = [1,63]
+func ROR64(in uint64, min uint64, shift ...uint64) (out uint64) {
+	for _, v := range shift {
+		if out = v % 64; out >= min {
+			return (in >> out) | (in << (64 - out))
+		}
+	}
+	return in
 }
 
-// 115: 56, 95
-// 80: 34, 37, 58
-func Mix_v1(prev uint64, state uint64) uint64 {
-	state += 3
-	prev = (prev + state) * state
-	prev = ROL64(prev, 1, state)
-	return prev
+func Forward(size uint64, current uint64, offset uint64) uint64 {
+	return (size + current + offset%size) % size
+}
+
+func Backward(size uint64, current uint64, offset uint64) uint64 {
+	return (size + current - offset%size) % size
 }
 
 // 0x12345678 <-> []{0x78, 0x56, 0x34, 0x12}
@@ -199,50 +183,6 @@ func (self *State256_t) Uint64BE(i uint64, step uint64) uint64 {
 		self.state[(i+7*step)%256]<<(8*0)
 }
 
-func Forward(size uint64, current uint64, offset uint64) uint64 {
-	return (size + current + offset%size) % size
-}
-
-func Backward(size uint64, current uint64, offset uint64) uint64 {
-	return (size + current - offset%size) % size
-}
-
-func ROR64(in uint64, min uint64, shift ...uint64) (out uint64) {
-	for _, v := range shift {
-		if out = v % 64; out > min {
-			min = out
-		}
-	}
-	if min > 0 {
-		return (in >> min) | (in << (64 - min))
-	}
-	return in
-}
-
-func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
-	for _, v := range shift {
-		if out = v % 64; out > min {
-			min = out
-		}
-	}
-	if min > 0 {
-		return (in >> (64 - min)) | (in << min)
-	}
-	return in
-}
-
-func MOVR(shift ...uint64) (out uint64) {
-	for _, v := range shift {
-		for v > 0 {
-			if out = v % 64; out > 0 {
-				return
-			}
-			v = v >> 1
-		}
-	}
-	return
-}
-
 func Mul_u64(a uint64, b uint64) (hi uint64, lo uint64) {
 	a_hi, b_hi := a>>32, b>>32
 	a_lo, b_lo := a&0xFFFFFFFF, b&0xFFFFFFFF
@@ -258,4 +198,11 @@ func Mul_u64(a uint64, b uint64) (hi uint64, lo uint64) {
 	lo = (intermediate << 32) | (a_lo_b_lo & 0xFFFFFFFF)
 
 	return
+}
+
+func Overflow(a uint64, b uint64) bool {
+	if a > MaxUint64/b {
+		return true
+	}
+	return false
 }

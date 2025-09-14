@@ -129,7 +129,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		var state State256_t
 		state.Reset()
 		for _, code := range value1 {
-			hx = Mix(hx, state.State(code, hx))
+			hx = state.StateMix(code, hx)
 		}
 		conflict, value2, size := storage.Add(hx, string(value1))
 		if conflict {
@@ -282,6 +282,47 @@ var in = []DebugState_t{
 	{A: "uVItmKk60vHmJLrtuX", B: "FqoGVL8eQO7jzYkP4vs4~29GBq&h"},
 	{A: "DwV9d/ehbvXpiPn_pa", B: "48Sc2U8S68amd~uD^e19oJEZiY"},
 	{A: "xb4KVA/MBkUCGhPl^#V@a/", B: "DMYKFq-KS%u-"},
+	{A: "pafmW3O_vs", B: "7eTd//Ilm%0nn"},
+	{A: "H*&Rc~SDHf9", B: "mee74vJ@BoHSf4Xi/5LvC@h"},
+	{A: "$gzwh4Pimv", B: "W^w8X^60Ev"},
+	{A: "0rkvE53L@qJvk$yBy6xq*X8*@iz0", B: "X_K17v7kF@-%02u_MH8Zutyt"},
+	{A: "De4j/6HlZJhqoZA", B: "qG3mHgh06Qw8W@&@&"},
+	{A: "KKATO5mQH6X5aSFO4T06o", B: "E5Ras~Z6X4bh&$10xLxOaPApk_kL"},
+	{A: "*D5ZZC/KtaCPxKRAy/b0CiM", B: "v%8HYFui0l32X9*RE~u4OJ1oqGc"},
+	{A: "ImLDafQpM@S9cd/o4@", B: "A~AmkGA1T@Waaeu"},
+	{A: "TqUZbJRM/sCaCN", B: "x@hdWwONwnal7uSDEOCp"},
+	{A: "$I297qG^b6rmzRLs5n", B: "zjimiwEv6E&AQ9f@@rN"},
+	{A: "qT/1f@CDUww-1", B: "CY81c%Y85jslqdob"},
+	{A: "eyTgrxiK55wBOeBf58cwfb", B: "GxXHZmx0QVR"},
+	{A: "lPitRx1fnv", B: "OmO/-8~9_v"},
+	{A: "5@i527ldtj9", B: "LykBtgkjb_an"},
+	{A: "5*K7lp9Vqt", B: "E#m&58*%Ad"},
+	{A: "P9yfH2jyy3A", B: "3HIGqrjAj7A"},
+	{A: "~nR0b3~P#cqIk*HNnXZvM0X4QHg*", B: "IAxjeFpnqm9Eu_oBMqV6n"},
+	{A: "vNUgtHRAOa~O5y#71F-ZnT", B: "v4yP9/w_ai8i@qfXOg"},
+	{A: "55VcUtK%k*WZhH", B: "k*J-W27%hA"},
+	{A: "orhd3cJ3HYV3nhzJ", B: "#r*eDkQ3HKV*mp0%/W31b5jp"},
+	{A: "S&hV7ryWeu1yv$GAl", B: "EFy/funA8i/JoY$o7Pogfb_zl_DCW"},
+	{A: "~sCAdANJvme77WDCiF/&", B: "efU^88USk37Wc@oKc$#J29K-YQikV"},
+	{A: "eb1U59b6d~qG", B: "r6&$0^@c0KXeZcAdPYctKAN#Fv"},
+	{A: "q0r_4TKrzXnS~_~8", B: "8@X#PVFBC^e8R^BRQwTTHoJ6"},
+	{A: "rO&t@PpC&qAIqfqSOdINaet", B: "gDoWwjyRsqbV_"},
+	{A: "bTFU4^iHcqs1nk@BiBZ@4u_6Me", B: "yzpN&tWQCMgNeO$vpYG"},
+	{A: "h9JD*fwMDDZ&FboV6O#5", B: "fLFMky1Gr~z$YB5QU9@f/mU$DoGD"},
+	{A: "hO#dRFBt&jhaNZT~-2d_7K", B: "48EVT*bqz1fNI&eLb/k2Ksyo"},
+	{A: "i02p8xMQC8Z1biogw1^~gSK", B: "cq8f7roZ5tiTdIrS08O7^J"},
+	{A: "u_44Eim7hHhtbaojZXLIEeIO", B: "$cwVoWMtmMlpGa@Ei/I1sni"},
+	{A: "ZXl9e-WXx4Xa9/ayN5pPCTG&", B: "PmAJ-T2ZrPUoa"},
+	{A: "FjMSilsVx$xh1qra", B: "byiEV_urEaPdP*eBe"},
+	{A: "vl7fQsHY1YuqOhTmvn8U//TWg", B: "s@YSvbxEmot^4paW^9eHEt"},
+	{A: "k^GICsY7oV%ou$FAgb1&/eUSMAJN3", B: "d$2Dp#Z$6/4wAf6"},
+}
+
+func GetByIndex(in []uint64, i int) string {
+	if len(in) > i {
+		return fmt.Sprintf("%016X", in[i])
+	}
+	return ""
 }
 
 func Test_Tst3_04(t *testing.T) {
@@ -291,10 +332,10 @@ func Test_Tst3_04(t *testing.T) {
 		state1.Reset()
 		state2.Reset()
 		for _, code := range []byte(v.A) {
-			h1 = Mix(h1, state1.State(code, h1))
+			h1 = state1.StateMix(code, h1)
 		}
 		for _, code := range []byte(v.B) {
-			h2 = Mix(h2, state2.State(code, h1))
+			h2 = state2.StateMix(code, h2)
 		}
 
 		if h1 == h2 || v.Debug {
@@ -306,22 +347,27 @@ func Test_Tst3_04(t *testing.T) {
 			s1.Reset()
 			s2.Reset()
 			for _, code := range []byte(v.A) {
-				s := s1.State(code, x1)
-				x1 = Mix(x1, s)
-				a1 = append(a1, s)
-				m1[s] = struct{}{}
+				x1 = s1.StateMix(code, x1)
+				a1 = append(a1, x1)
+				m1[x1] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
-				s := s2.State(code, x2)
-				x2 = Mix(x2, s)
-				a2 = append(a2, s)
-				m2[s] = struct{}{}
+				x2 = s2.StateMix(code, x2)
+				a2 = append(a2, x2)
+				m2[x2] = struct{}{}
 			}
 
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
 			t.Logf("h2=%016X\tlen2=%v\ta2=%v\tb2=%v\tin2=%q", h2, len(v.B), state2.a, state2.b, v.B)
-			t.Logf("in1 = %v %v %v", len(m1), len(a1), a1)
-			t.Logf("in2 = %v %v %v", len(m2), len(a2), a2)
+			var my_max int
+			if len(a1) > len(a2) {
+				my_max = len(a1)
+			} else {
+				my_max = len(a2)
+			}
+			for i := 0; i < my_max; i++ {
+				t.Logf("%02d %16s %16s", i, GetByIndex(a1, i), GetByIndex(a2, i))
+			}
 
 			t.Logf("##### %v", h1 == h2)
 
@@ -331,14 +377,14 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	// DD3DF87844DDCDA9
-	in := "~AIR5QHoLa3ZM"
+	// 4948E914D379DF1D
+	in := "FUPY1eeZLch^"
 
 	var state State256_t
 	var res uint64
 	state.Reset()
 	for _, code := range []byte(in) {
-		res = Mix(res, state.State(code, res))
+		res = state.StateMix(code, res)
 	}
 	t.Logf("RES=%016X", res)
 }
