@@ -102,7 +102,7 @@ func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 }
 
 func Mix(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64((prev&0xEFFF_FFFF^a+1)*(prev>>32^b+2), 1, b, a, 42) ^ prev
+	prev = ROL64((prev&0xEFFF_FFFF^a+1)*(prev>>32^b+2), 1, a, b, 42) ^ prev
 	return prev
 }
 
