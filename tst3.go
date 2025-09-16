@@ -102,7 +102,7 @@ func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 }
 
 func Mix(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64((prev&0xEFFF_FFFF^a+1)*(prev>>32^b+2), 1, a+b, a, b, 15) ^ prev
+	prev = ROL64((prev&0xEFFF_FFFF^a+1)*(prev>>32^b+2), 1, a, b, 42) ^ prev
 	return prev
 }
 
@@ -131,7 +131,7 @@ func Mix_v1(prev uint64, a uint64, b uint64) uint64 {
 	return prev
 }
 
-// min = [1,63]
+// min = [1, 63]
 func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
 		if out = v % 64; out >= min {
@@ -141,7 +141,7 @@ func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	return in
 }
 
-// min = [1,63]
+// min = [1, 63]
 func ROR64(in uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
 		if out = v % 64; out >= min {
