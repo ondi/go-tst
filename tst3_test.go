@@ -324,6 +324,8 @@ var in = []DebugState_t{
 	{A: "p#@5Q5BQRF47MhT5V5lWJ6^q%", B: "mEWL9$^0n3Dq2"},
 	{A: "iK9Snzcd5rQT6wK", B: "GclbpPTdpT7ren5t8jN*"},
 	{A: "cw_Lisy3T3JtiisWo", B: "UT$Y-GNb@nAxV7u2Ql#cMSW"},
+	{A: "B0tPSVRBnucdIKc", B: "TooY-/p/vmtyEl^0^Yk"},
+	{A: "CWUu^R$RDWpnY--x&ZgHi/oYI2lD", B: "lC1T$%O2RzZZigfQPj8hWs"},
 }
 
 func GetByIndex(in []uint64, i int) string {
