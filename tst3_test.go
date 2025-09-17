@@ -382,8 +382,8 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	// 087632F041527038
-	in := "FUPY1eeZLch^"
+	// D61DFA406EBA0B62
+	in := "62#270FaqXxi0e"
 
 	var state State256_t
 	var res uint64
