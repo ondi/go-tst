@@ -390,8 +390,8 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xF96FA260F39D3B51
-	in := "62#270FaqXxi0e"
+	var expected uint64 = 0x2D4AFACBACF00C49
+	in := "c/bgL@XMk1jjj"
 
 	var state State256_t
 	var res uint64
@@ -399,5 +399,5 @@ func Test_Tst3_05(t *testing.T) {
 	for _, code := range []byte(in) {
 		res = state.StateMix(code, res)
 	}
-	t.Logf("IN=%q, OUT=%016X, EXPECTED=%v", in, res, res == expected)
+	t.Logf("IN=%q, OUT=%016X, EXPECTED=%016X %v", in, res, expected, res == expected)
 }
