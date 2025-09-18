@@ -327,6 +327,8 @@ var in = []DebugState_t{
 	{A: "B0tPSVRBnucdIKc", B: "TooY-/p/vmtyEl^0^Yk"},
 	{A: "CWUu^R$RDWpnY--x&ZgHi/oYI2lD", B: "lC1T$%O2RzZZigfQPj8hWs"},
 	{A: "P$V^OePNMV#lA4S", B: "F8~tSzeA-yj87/5fjS*JGaar"},
+	{A: "jclA9G^qqfDFMEre29/N_a#0g", B: "8~IZig1DhQ/"},
+	{A: "/^MAZFe*PcdPGY", B: "AgKIaSMEgcZw"},
 }
 
 func GetByIndex(in []uint64, i int) string {
@@ -388,7 +390,7 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	// B76B12AA047BAB0A
+	var expected uint64 = 0xF96FA260F39D3B51
 	in := "62#270FaqXxi0e"
 
 	var state State256_t
@@ -397,5 +399,5 @@ func Test_Tst3_05(t *testing.T) {
 	for _, code := range []byte(in) {
 		res = state.StateMix(code, res)
 	}
-	t.Logf("RES=%016X", res)
+	t.Logf("IN=%q, OUT=%016X, EXPECTED=%v", in, res, res == expected)
 }
