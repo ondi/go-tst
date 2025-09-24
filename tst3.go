@@ -90,61 +90,62 @@ func (self *State256_t) Reset() {
 		224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
 		240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
 	}
-	self.a, self.b = 0, 127
+	self.a, self.b = 32, 127
 }
 
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
-	self.b = ( /*prev +*/ self.state[self.a] + self.state[self.b] + self.state[in]) % 256
+	self.b = (self.state[self.a] + self.state[self.b] + self.state[in]) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 
-	return Mix(prev, self.state[self.a], self.state[self.b])
+	return Mix(
+		prev,
+		self.state[self.a]|self.state[(self.a+64)%256]<<8,
+		self.state[self.b]|self.state[(self.b+64)%256]<<8,
+	)
 }
 
 func Mix(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64((prev&0xEFFF_FFFF^a+1)*(prev>>32^b+2), 1, a+b, a, b, 15) ^ prev
+	prev = ROL64(prev^a, 32, 0, prev)
+	prev = ((prev & 0xFFFF_FFFF_FFFF) * b) ^ ROR64(prev, 64, 1, 16)
+	return prev
+}
+
+func Mix_v3(prev uint64, a uint64, b uint64) uint64 {
+	prev = ROL64((prev&0xFFFF_FFFF^a)*(prev>>32^b)^prev, 64, 1, a, b, 8)
 	return prev
 }
 
 // 413: 218, 304, 313
-func Mix_v3(prev uint64, a uint64, b uint64) uint64 {
+func Mix_v2(prev uint64, a uint64, b uint64) uint64 {
 	prev = prev ^ (a + 1)
 	prev = prev * (b + 2)
-	prev = ROL64(prev, 1, a+b)
+	prev = ROL64(prev, 64, 1, a+b)
 	return prev
 }
 
 // 245: 227
-func Mix_v2(prev uint64, a uint64, b uint64) uint64 {
-	prev = prev ^ (a + 1)
-	prev = prev * (prev&0xFF + b + 2)
-	prev = ROL64(prev, 1, a+b)
-	return prev
-}
-
-// 105: 103
-// 150: 142
 func Mix_v1(prev uint64, a uint64, b uint64) uint64 {
 	prev = prev ^ (a + 1)
-	prev = prev * (prev&0xFF + 2)
-	prev = ROL64(prev, 1, a)
+	prev = prev * (prev&0xFF + b + 2)
+	prev = ROL64(prev, 64, 1, a+b)
 	return prev
 }
 
-// min = [1,63]
-func ROL64(in uint64, min uint64, shift ...uint64) (out uint64) {
+// mod=64, min = [1, mod)
+func ROL64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out >= min {
+		if out = v % mod; out >= min {
 			return (in << out) | (in >> (64 - out))
 		}
 	}
 	return in
 }
 
-// min = [1,63]
-func ROR64(in uint64, min uint64, shift ...uint64) (out uint64) {
+// mod=64, min = [1, mod)
+func ROR64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % 64; out >= min {
+		if out = v % mod; out >= min {
 			return (in >> out) | (in << (64 - out))
 		}
 	}

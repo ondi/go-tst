@@ -1,5 +1,5 @@
 //
-// go test ./... -manual -v -count=1 -timeout 0
+// go test ./... -v -manual -count=1 -timeout=0
 //
 
 package tst
@@ -318,6 +318,35 @@ var in = []DebugState_t{
 	{A: "k^GICsY7oV%ou$FAgb1&/eUSMAJN3", B: "d$2Dp#Z$6/4wAf6"},
 	{A: "56^rAA%SBvDXwTLt2K", B: "UmC@AUGS6fK"},
 	{A: "IA$pa5hPLRcyW9C", B: "0R5OIzy*8Iu"},
+	{A: "&@2l2bl9D_XCj1JyyH8o46I$$Xg", B: "DB_mInEfwhX9HGv&WT"},
+	{A: "2jes9_c$tl&17BMdhGlK8@TyrtIbN", B: "Vt~/9Yi@b*#jIX"},
+	{A: "Go7wyFNoct1h1F$@jfiD%OPA", B: "QRU/vzg@Kb13Le"},
+	{A: "p#@5Q5BQRF47MhT5V5lWJ6^q%", B: "mEWL9$^0n3Dq2"},
+	{A: "iK9Snzcd5rQT6wK", B: "GclbpPTdpT7ren5t8jN*"},
+	{A: "cw_Lisy3T3JtiisWo", B: "UT$Y-GNb@nAxV7u2Ql#cMSW"},
+	{A: "B0tPSVRBnucdIKc", B: "TooY-/p/vmtyEl^0^Yk"},
+	{A: "CWUu^R$RDWpnY--x&ZgHi/oYI2lD", B: "lC1T$%O2RzZZigfQPj8hWs"},
+	{A: "P$V^OePNMV#lA4S", B: "F8~tSzeA-yj87/5fjS*JGaar"},
+	{A: "jclA9G^qqfDFMEre29/N_a#0g", B: "8~IZig1DhQ/"},
+	{A: "/^MAZFe*PcdPGY", B: "AgKIaSMEgcZw"},
+	{A: "ak^@Q*sX^4~", B: "$9wspye~cKPg0tErrGLa^"},
+	{A: "bfV#wNWQ^2dAjlN", B: "Uz%em2jq/2x"},
+	{A: "kExll0^q7vW4eYD1~Qf0b", B: "lSK0EIx&H_~oU@Y5qnS2"},
+	{A: "z0ojFWJo/Cs44WEy", B: "bBw1kk-Ex3aB8sU9~QG"},
+	{A: "lD6VC10pTs", B: "^*DVyWI#y1FyLVcN2@"},
+	{A: "X1DOviGmAZABIXGtc", B: "AKz*PKBTP_H5/RH&"},
+	{A: "-XNHIjcsEmwJ*5MsHO5R2y4VJLi$i", B: "K2Ayrs-pKhQ~eFLDHoY2p"},
+	{A: "dH--dxoCZ&Oh8R5lAP3", B: "O4L9S$dGVQu_/Lyd9vV"},
+	{A: "78n1grA~pnoVTX4pnfX#wb@*Vvj", B: "wd5BeXLC6c-&I0mw~_OM_%Ppl"},
+	{A: "/S#mPguPnRlpe*A7zYKPmrgQ*fGnb", B: "3duXlqY@J/1FgsLbh#YDtOsMhFN"},
+	{A: "X^yE1^J$Ua^", B: "v~@E798RPADz"},
+	{A: "ZM~ojDGeTIJlZ*dsSkcq_96xK", B: "db-D~K^kww_y^E"},
+	{A: "d*#9DW9XPT", B: "#916UaORXrMamxD*#ZG@X"},
+	{A: "XwIEMM$568A8YUL@gvETcUSgR", B: "%MeT1MU_uVMZr7J3b$Gdbm6aY3Xhk"},
+	{A: "y0/N#1T@hDg-vLb", B: "qm_u#d#BRp5QF$8MOYjD7UnZwR"},
+	{A: "Nr%7OsthcB&N~#YYerUr7uX", B: "aOF-fTglIJWaM7G^RBC3fYkvvsZ"},
+	{A: "Yx0OpGNv#W8etbc1", B: "S/$l9Li%860#pLZ#_C~^"},
+	{A: "gqO@FrS0bcq", B: "dLXaNPLek304c*%n4mgg9Z5F*9"},
 }
 
 func GetByIndex(in []uint64, i int) string {
@@ -379,8 +408,8 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	// 087632F041527038
-	in := "FUPY1eeZLch^"
+	var expected uint64 = 0xBE05A03766CB1BBA
+	in := "W~3~TY/hFKbD$"
 
 	var state State256_t
 	var res uint64
@@ -388,5 +417,5 @@ func Test_Tst3_05(t *testing.T) {
 	for _, code := range []byte(in) {
 		res = state.StateMix(code, res)
 	}
-	t.Logf("RES=%016X", res)
+	t.Logf("IN=%q, OUT=%016X, EXPECTED=%016X %v", in, res, expected, res == expected)
 }
