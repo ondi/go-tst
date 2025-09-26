@@ -113,7 +113,7 @@ func Mix(prev uint64, a uint64, b uint64) uint64 {
 }
 
 // 250: 217
-// 400: null
+// 425: 412
 func Mix_v3(prev uint64, a uint64, b uint64) uint64 {
 	prev = ROL64(prev^a, 32, 0, prev)
 	prev = ((prev & 0xFFFF_FFFF_FFFF) * b) ^ ROR64(prev, 64, 1, 16)
