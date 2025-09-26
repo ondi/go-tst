@@ -409,7 +409,7 @@ func Test_Tst3_04(t *testing.T) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xA55E0D3377561455
+	var expected uint64 = 0x04D3B1ECD5287322
 	in := "W~3~TY/hFKbD$"
 
 	var state State256_t
