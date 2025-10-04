@@ -347,6 +347,31 @@ var in = []DebugState_t{
 	{A: "Nr%7OsthcB&N~#YYerUr7uX", B: "aOF-fTglIJWaM7G^RBC3fYkvvsZ"},
 	{A: "Yx0OpGNv#W8etbc1", B: "S/$l9Li%860#pLZ#_C~^"},
 	{A: "gqO@FrS0bcq", B: "dLXaNPLek304c*%n4mgg9Z5F*9"},
+	{A: "wsJ*sr6*GK$yl~C#wN~LvZM3k", B: "YG^7tbeq#MUNbt3~ixzs*&"},
+	{A: "Pl$lWuTgVBjK*Cissx1", B: "3f9OTvO9sdZxQ3heBM"},
+	{A: "ZM_Q~Ok7NXYhM$s9@", B: "Q~0S95UC@X^rbrCXY"},
+	{A: "0/1vpkQr4CZ$9z859JP*YGW", B: "PrClun~zX4J^SO"},
+	{A: "_kHjVu3lN7KhdHbyQ", B: "y*V_%0BBnAT7c#_2e~"},
+	{A: "v/90C0T#6%~fLi9THecDG02", B: "t17kLva^pHFNUFcLVT"},
+	{A: "Qx8GMeeJmi__7E32d*8gl6Z", B: "*CokMPvn~0"},
+	{A: "WYW&PupxDGi7~WpbH", B: "TiAQT^TMM50KZ1g"},
+	{A: "Ey$^plnW#Q/BZHo9Oy&PDfaE2f-", B: "mo^AFgUqgn~_#5GEjpk7d"},
+	{A: "KD05700cig5BQowyrtEZ", B: "r0xZpQc&hS17auYsf"},
+	{A: "q9xyHC/fX8g3h_T2p*w47/uf0lF-I", B: "FvHvBZcAupBB93Xb2tqgDY"},
+	{A: "8^qUMRfpp%pxeLcM0d^*p8lH0", B: "GWbTG0ZVnE"},
+	{A: "%GuH-SPtxqCFsVKG", B: "1KE%6t91ZZ*TpOliI$nS"},
+	{A: "eVNvCtwjAd87h6V", B: "IMu_Sp_O5**sUgX7YYTB/uc2$dg"},
+	{A: "NIoqp^osv3ZK$i2vYxgXdJj7/I", B: "1qeTRYGhKvZs"},
+	{A: "AaAz3gZIlowVjIgdbmnAU0J/X", B: "o1Q**R5W-#xV8$"},
+	{A: "tbdON#Hq85mBQ$IL-rK%w7q^N", B: "7K#p9tw^e4v6uZXC^DVMHserL"},
+	{A: "_@EFPfTBtwp&J^hfdG", B: "sKsFuogvL/#"},
+	{A: "tI3t5_E&5Q", B: "_7E51#W6_&LjpdbpKi4"},
+	{A: "MSMps^NS1C", B: "IDlq31J@t5h%Ce"},
+	{A: "tKUkdU9Po5", B: "bMUHdtfMoE"},
+	{A: "mV&vLPdvN7bC2R7TZC", B: "p&y^sIhqSF41%/19nu51u"},
+	{A: "zB^_W9#Fph7yv", B: "Lgcmsj84M~b8wGOy__"},
+	{A: "AxPk2GCqQ2NfpulZ*y@9", B: "$ZS%M&Xqodk43ctr9"},
+	{A: "wspEBB00FyGlxWRVo_UQ-&^hIk", B: "Ri$DP5Qln-mY~"},
 }
 
 func GetByIndex(in []uint64, i int) string {
@@ -407,8 +432,17 @@ func Test_Tst3_04(t *testing.T) {
 	}
 }
 
+func MSB(in uint64) (res int) {
+	var v uint8
+	for v > 0 {
+		v >>= 1
+		res++
+	}
+	return
+}
+
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xBE05A03766CB1BBA
+	var expected uint64 = 0x30E7766534089E2D
 	in := "W~3~TY/hFKbD$"
 
 	var state State256_t
