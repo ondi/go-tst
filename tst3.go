@@ -117,16 +117,16 @@ func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 }
 
 func Mix(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64(prev^a, 64, 1, prev)
-	prev = ROL64(prev*b, 64, 1, prev, 16)
+	prev = ROL64(prev^a, Mod64(64), prev)
+	prev = ROL64(prev*b, Mod64(64), prev, 16)
 	return prev
 }
 
 // 250: 217
 // 425: 412
 func Mix_v3(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64(prev^a, 32, 1, prev)
-	prev = ((prev & 0x0000_FFFF_FFFF_FFFF) * b) ^ ROR64(prev, 64, 1, 16)
+	prev = ROL64(prev^a, 32, prev)
+	prev = ((prev & 0x0000_FFFF_FFFF_FFFF) * b) ^ ROR64(prev, 64, 16)
 	return prev
 }
 
@@ -134,7 +134,7 @@ func Mix_v3(prev uint64, a uint64, b uint64) uint64 {
 func Mix_v2(prev uint64, a uint64, b uint64) uint64 {
 	prev = prev ^ (a + 1)
 	prev = prev * (b + 2)
-	prev = ROL64(prev, 64, 1, a+b)
+	prev = ROL64(prev, 64, a+b)
 	return prev
 }
 
@@ -142,26 +142,33 @@ func Mix_v2(prev uint64, a uint64, b uint64) uint64 {
 func Mix_v1(prev uint64, a uint64, b uint64) uint64 {
 	prev = prev ^ (a + 1)
 	prev = prev * (prev&0xFF + b + 2)
-	prev = ROL64(prev, 64, 1, a+b)
+	prev = ROL64(prev, 64, a+b)
 	return prev
 }
 
-// mod=64, min = [1, mod)
-func ROL64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
+// mod = [2,64]
+func ROL64(in uint64, mod uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % mod; out >= min {
+		if out = v % mod; out > 0 {
 			return (in << out) | (in >> (64 - out))
 		}
 	}
 	return in
 }
 
-// mod=64, min = [1, mod)
-func ROR64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
+// mod = [2,64]
+func ROR64(in uint64, mod uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % mod; out >= min {
+		if out = v % mod; out > 0 {
 			return (in >> out) | (in << (64 - out))
 		}
+	}
+	return in
+}
+
+func Mod64(in uint64) uint64 {
+	if in = in % 65; in == 0 {
+		in = 1
 	}
 	return in
 }
