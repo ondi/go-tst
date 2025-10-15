@@ -347,6 +347,57 @@ var in = []DebugState_t{
 	{A: "Nr%7OsthcB&N~#YYerUr7uX", B: "aOF-fTglIJWaM7G^RBC3fYkvvsZ"},
 	{A: "Yx0OpGNv#W8etbc1", B: "S/$l9Li%860#pLZ#_C~^"},
 	{A: "gqO@FrS0bcq", B: "dLXaNPLek304c*%n4mgg9Z5F*9"},
+	{A: "wsJ*sr6*GK$yl~C#wN~LvZM3k", B: "YG^7tbeq#MUNbt3~ixzs*&"},
+	{A: "Pl$lWuTgVBjK*Cissx1", B: "3f9OTvO9sdZxQ3heBM"},
+	{A: "ZM_Q~Ok7NXYhM$s9@", B: "Q~0S95UC@X^rbrCXY"},
+	{A: "0/1vpkQr4CZ$9z859JP*YGW", B: "PrClun~zX4J^SO"},
+	{A: "_kHjVu3lN7KhdHbyQ", B: "y*V_%0BBnAT7c#_2e~"},
+	{A: "v/90C0T#6%~fLi9THecDG02", B: "t17kLva^pHFNUFcLVT"},
+	{A: "Qx8GMeeJmi__7E32d*8gl6Z", B: "*CokMPvn~0"},
+	{A: "WYW&PupxDGi7~WpbH", B: "TiAQT^TMM50KZ1g"},
+	{A: "Ey$^plnW#Q/BZHo9Oy&PDfaE2f-", B: "mo^AFgUqgn~_#5GEjpk7d"},
+	{A: "KD05700cig5BQowyrtEZ", B: "r0xZpQc&hS17auYsf"},
+	{A: "q9xyHC/fX8g3h_T2p*w47/uf0lF-I", B: "FvHvBZcAupBB93Xb2tqgDY"},
+	{A: "8^qUMRfpp%pxeLcM0d^*p8lH0", B: "GWbTG0ZVnE"},
+	{A: "%GuH-SPtxqCFsVKG", B: "1KE%6t91ZZ*TpOliI$nS"},
+	{A: "eVNvCtwjAd87h6V", B: "IMu_Sp_O5**sUgX7YYTB/uc2$dg"},
+	{A: "NIoqp^osv3ZK$i2vYxgXdJj7/I", B: "1qeTRYGhKvZs"},
+	{A: "AaAz3gZIlowVjIgdbmnAU0J/X", B: "o1Q**R5W-#xV8$"},
+	{A: "tbdON#Hq85mBQ$IL-rK%w7q^N", B: "7K#p9tw^e4v6uZXC^DVMHserL"},
+	{A: "_@EFPfTBtwp&J^hfdG", B: "sKsFuogvL/#"},
+	{A: "tI3t5_E&5Q", B: "_7E51#W6_&LjpdbpKi4"},
+	{A: "MSMps^NS1C", B: "IDlq31J@t5h%Ce"},
+	{A: "tKUkdU9Po5", B: "bMUHdtfMoE"},
+	{A: "mV&vLPdvN7bC2R7TZC", B: "p&y^sIhqSF41%/19nu51u"},
+	{A: "zB^_W9#Fph7yv", B: "Lgcmsj84M~b8wGOy__"},
+	{A: "AxPk2GCqQ2NfpulZ*y@9", B: "$ZS%M&Xqodk43ctr9"},
+	{A: "wspEBB00FyGlxWRVo_UQ-&^hIk", B: "Ri$DP5Qln-mY~"},
+	{A: "Q&2Ys__y@v*", B: "r9o2JCUojIIpX54/X_YX-F$It^Gy7"},
+	{A: "_Yvd43IOBT8GN8yerI", B: "zNWE~bP8Fda0tu9dYO"},
+	{A: "T_48s2g0RV", B: "xuJu4/$Cb_%-cgD83yATWAo"},
+	{A: "08fzDN#2vSdW_UU", B: "$oKS^Iq@Sg@DFQzm*eKX48_ak$z"},
+	{A: "uzcmP~huh8W-ojvvjQA_U6MK2o%UI", B: "zLu3uIOwG7BepRAh"},
+	{A: "/ea^5Ib&62tboter^QXkOxuI", B: "P@KjUs1Fyv/vSCD8bcsU*EL"},
+	{A: "5XE_/R*D8yHmQp", B: "UMLfpjrx41rD8bo"},
+	{A: "AUms@aUJ*D7-3j&yS9Mrv2tthCS", B: "qjLcEyd_SBM8Y@~"},
+	{A: "v-2f3$1iB-wxsAQ&E", B: "uWC8fj&7WOsMR*OZE"},
+	{A: "Okgk5bYbZv$grAQ@gEd34RB", B: "LoSJh4fK&S0%YtXv-OY0hb"},
+	{A: "Z-3fvZtBGJf/dWJGhK6j", B: "1aw6^cW4jgPs3~c6I/VO"},
+	{A: "d8Jy&K3WvjvLS73xUQXe0XCq4PR", B: "QfOFlx6iWZi85#RTusN^UqLPQ7"},
+	{A: "$7cF39_iGaP-MHoA_eZ^g@v9Y2", B: "Zd0FloD#aQyyWhKcEOd@gMDLOF2z"},
+	{A: "j$rryaFOgjpyzE*^", B: "Y~clW&vg~PVPkjX&Ud"},
+	{A: "nuFHg@^8%M%ioXhJ3OsnAXy0", B: "6&ldZHgy8WAEio"},
+	{A: "PuLq5Axx3P~aoIcK5hjAgOqul~JQ", B: "Xe/GfKnFazK9EK"},
+	{A: "c0aKr5ZEqjoQsQSk3V/Qj4QTd", B: "qf~1qYd7T^y~"},
+	{A: "-b%Wy-yD3g40", B: "Re*z2rzOdtd5_M"},
+	{A: "D%HjkRylvwr*BfCXfi$07eeQm@", B: "^nlc%vUO08T9A3eUd^a~ycC"},
+	{A: "%dSL5PM&aDKF-#XV2-cjWZ~pJA", B: "cmp2FwW&gKJNQJ6RDL"},
+	{A: "BdB-3i4R8Sv4w0j$XJpo88gZ", B: "UwJZPwm2F2%~wC%Yz*Hl37"},
+	{A: "YsM&9C848GA@TokU4P314ees25", B: "LMg3Put_-PBuf93yDCOKbSEG"},
+	{A: "ED5O@GRrsR95HIDZjxR5", B: "sRaR2h^UQMUcvcCmk"},
+	{A: "TVg5DmIOaJ$wM", B: "G1butYKdq9tvhGpEDDwD_$lzM"},
+	{A: "2RDHq0#g@PNDKIQzYL^er&", B: "A4gzMpH4G@bAP@mzb"},
+	{A: "97AxeNvE%KCR1@0VddO8QA8t0/", B: "&^jm3qxoXy^u"},
 }
 
 func GetByIndex(in []uint64, i int) string {
@@ -407,15 +458,26 @@ func Test_Tst3_04(t *testing.T) {
 	}
 }
 
+func MSB(in uint64) (res int) {
+	var v uint8
+	for v > 0 {
+		v >>= 1
+		res++
+	}
+	return
+}
+
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xBE05A03766CB1BBA
-	in := "W~3~TY/hFKbD$"
+	var expected uint64 = 0xF33A1D1F37FD5CEA
+	in := "/sDR5*zFq1g"
 
 	var state State256_t
 	var res uint64
 	state.Reset()
-	for _, code := range []byte(in) {
+	for i, code := range []byte(in) {
 		res = state.StateMix(code, res)
+		//t.Logf("%02d %016X", i, res)
+		_ = i
 	}
 	t.Logf("IN=%q, OUT=%016X, EXPECTED=%016X %v", in, res, expected, res == expected)
 }
