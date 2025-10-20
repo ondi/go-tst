@@ -90,30 +90,17 @@ func (self *State256_t) Reset() {
 		224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
 		240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
 	}
-	self.a, self.b = 32, 127
+	self.a, self.b = 0, 127
 }
 
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
-	self.b = (prev + self.state[in] + 1) % 256
+	self.b = (self.b + self.state[in] + 1) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 
-	return Mix(
-		prev,
-		self.state[self.a]|self.state[(self.a+64)%256]<<8,
-		self.state[self.b]|self.state[(self.b+64)%256]<<8,
-	)
-}
-
-func Mix(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64((prev^a)*b, Mod(a, 65, 2), b)
-	return prev
-}
-
-func Mix_v1(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64(prev^a, Mod(a, 65, 2), b)
-	prev = ROR64(prev*b, Mod(b, 65, 2), a)
-	return prev
+	a := self.state[self.a] | self.state[(self.a+64)%256]<<8
+	b := self.state[self.b] | self.state[(self.b+64)%256]<<8
+	return ROL64((prev^a)*b, Mod(b, 65, 2), self.a)
 }
 
 // mod = [2,64]
