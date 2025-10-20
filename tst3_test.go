@@ -408,6 +408,7 @@ var in = []DebugState_t{
 	{A: "%_8EWFaf6sIeMXy", B: "cDA~VvtbC%1UzMT1D_Na"},
 	{A: "AqTXF6%6^n1JPb&p8i~", B: "/LU*Ctr3wSSL$OFf@n8gAhv"},
 	{A: "_x02MhDBO/QYohG4a3rU$3tSkd0", B: "OxQKPVEQ3ssy0/k9R^"},
+	{A: "R#cS2tkaGkrjI", B: "JluhuvR9Jq1"},
 }
 
 func GetByIndex(in []uint64, i int) string {
@@ -478,8 +479,8 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x372DCDF31B5072E6
-	in := "/sDR5*zFq1g"
+	var expected uint64 = 0x1FA9F8C427BA040D
+	in := "T4e8S^X/&j6"
 
 	var state State256_t
 	var res uint64
