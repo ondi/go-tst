@@ -129,7 +129,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		var state State256_t
 		state.Reset()
 		for _, code := range value1 {
-			hx = state.StateMix(code, hx)
+			hx, _, _ = state.StateMix(code, hx)
 		}
 		conflict, value2, size := storage.Add(hx, string(value1))
 		if conflict {
@@ -408,13 +408,19 @@ var in = []DebugState_t{
 	{A: "%_8EWFaf6sIeMXy", B: "cDA~VvtbC%1UzMT1D_Na"},
 	{A: "AqTXF6%6^n1JPb&p8i~", B: "/LU*Ctr3wSSL$OFf@n8gAhv"},
 	{A: "_x02MhDBO/QYohG4a3rU$3tSkd0", B: "OxQKPVEQ3ssy0/k9R^"},
-	{A: "R#cS2tkaGkrjI", B: "JluhuvR9Jq1"},
+	{A: "R#cS2tkaGkrjI", B: "JluhuvR9Jq1", Debug: true},
 	{A: "5fjbC-dKuxNfpCK-gRyigI$uYIO", B: "$FlZ-tbdVVtSDsCmOM8vuqBIm3zX"},
 }
 
-func GetByIndex(in []uint64, i int) string {
+type Res_t struct {
+	h uint64
+	a uint64
+	b uint64
+}
+
+func GetByIndex(in []Res_t, i int) string {
 	if len(in) > i {
-		return fmt.Sprintf("%016X", in[i])
+		return fmt.Sprintf("%04X %04X %016X", in[i].a, in[i].b, in[i].h)
 	}
 	return ""
 }
@@ -426,29 +432,29 @@ func Test_Tst3_04(t *testing.T) {
 		state1.Reset()
 		state2.Reset()
 		for _, code := range []byte(v.A) {
-			h1 = state1.StateMix(code, h1)
+			h1, _, _ = state1.StateMix(code, h1)
 		}
 		for _, code := range []byte(v.B) {
-			h2 = state2.StateMix(code, h2)
+			h2, _, _ = state2.StateMix(code, h2)
 		}
 
 		if h1 == h2 || v.Debug {
 			var s1, s2 State256_t
-			var x1, x2 uint64
-			var a1, a2 []uint64
+			var r1, r2 Res_t
+			var a1, a2 []Res_t
 			m1 := map[uint64]struct{}{}
 			m2 := map[uint64]struct{}{}
 			s1.Reset()
 			s2.Reset()
 			for _, code := range []byte(v.A) {
-				x1 = s1.StateMix(code, x1)
-				a1 = append(a1, x1)
-				m1[x1] = struct{}{}
+				r1.h, r1.a, r1.b = s1.StateMix(code, r1.h)
+				a1 = append(a1, r1)
+				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
-				x2 = s2.StateMix(code, x2)
-				a2 = append(a2, x2)
-				m2[x2] = struct{}{}
+				r2.h, r2.a, r2.b = s2.StateMix(code, r2.h)
+				a2 = append(a2, r2)
+				m2[r2.h] = struct{}{}
 			}
 
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
@@ -487,8 +493,8 @@ func Test_Tst3_05(t *testing.T) {
 	var res uint64
 	state.Reset()
 	for i, code := range []byte(in) {
-		res = state.StateMix(code, res)
-		//t.Logf("%02d %016X", i, res)
+		res, _, _ = state.StateMix(code, res)
+		// t.Logf("%02d %016X", i, res)
 		_ = i
 	}
 	t.Logf("IN=%q, OUT=%016X, EXPECTED=%016X %v", in, res, expected, res == expected)
