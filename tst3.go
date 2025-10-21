@@ -99,9 +99,12 @@ func (self *State256_t) StateMix(in byte, prev uint64) (next uint64, a uint64, b
 
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 
-	a = self.state[self.a] | self.state[(self.a+64)%256]<<8
-	b = self.state[self.b] | self.state[(self.b+64)%256]<<8
-	next = ROL64((prev^a)*b, Mod(self.a, 65, 2), self.b)
+	// a = self.state[self.a] | self.state[(self.a+64)%256]<<8
+	// b = self.state[self.b] | self.state[(self.b+64)%256]<<8
+	a = self.state[self.a] + self.state[(self.a+64)%256]
+	b = self.state[self.b] + self.state[(self.b+64)%256]
+
+	next = ROR64((prev^a)*b, Mod(self.a, 65, 2), self.b)
 	return
 }
 

@@ -408,8 +408,9 @@ var in = []DebugState_t{
 	{A: "%_8EWFaf6sIeMXy", B: "cDA~VvtbC%1UzMT1D_Na"},
 	{A: "AqTXF6%6^n1JPb&p8i~", B: "/LU*Ctr3wSSL$OFf@n8gAhv"},
 	{A: "_x02MhDBO/QYohG4a3rU$3tSkd0", B: "OxQKPVEQ3ssy0/k9R^"},
-	{A: "R#cS2tkaGkrjI", B: "JluhuvR9Jq1", Debug: true},
+	{A: "R#cS2tkaGkrjI", B: "JluhuvR9Jq1"},
 	{A: "5fjbC-dKuxNfpCK-gRyigI$uYIO", B: "$FlZ-tbdVVtSDsCmOM8vuqBIm3zX"},
+	{A: "yEut3%z38$8rItGd-vgo/W", B: "QP7ZdG&%ryB@^4rvrNTP9wiDsPeIa"},
 }
 
 type Res_t struct {
@@ -466,7 +467,7 @@ func Test_Tst3_04(t *testing.T) {
 				my_max = len(a2)
 			}
 			for i := 0; i < my_max; i++ {
-				t.Logf("%02d %16s %16s", i, GetByIndex(a1, i), GetByIndex(a2, i))
+				t.Logf("%02d %26s %26s", i, GetByIndex(a1, i), GetByIndex(a2, i))
 			}
 
 			t.Logf("##### %v", h1 == h2)
@@ -486,7 +487,7 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x69A0C2E1423648B2
+	var expected uint64 = 0x113D821ADCBFAB22
 	in := "T4e8S^X/&j6"
 
 	var state State256_t
