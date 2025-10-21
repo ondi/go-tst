@@ -129,7 +129,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		var state State256_t
 		state.Reset()
 		for _, code := range value1 {
-			hx, _, _ = state.StateMix(code, hx)
+			hx = state.StateMix(code, hx)
 		}
 		conflict, value2, size := storage.Add(hx, string(value1))
 		if conflict {
@@ -411,18 +411,20 @@ var in = []DebugState_t{
 	{A: "R#cS2tkaGkrjI", B: "JluhuvR9Jq1"},
 	{A: "5fjbC-dKuxNfpCK-gRyigI$uYIO", B: "$FlZ-tbdVVtSDsCmOM8vuqBIm3zX"},
 	{A: "yEut3%z38$8rItGd-vgo/W", B: "QP7ZdG&%ryB@^4rvrNTP9wiDsPeIa"},
-	{A: "iWDPopK3qhR@X4", B: "YEx*0NgH@smY-HYyGw/U4vG/"},
+	{A: "iWDPopK3qhR@X4", B: "YEx*0NgH@smY-HYyGw/U4vG/", Debug: true},
 }
 
 type Res_t struct {
-	h uint64
-	a uint64
-	b uint64
+	h       uint64
+	a       uint64
+	b       uint64
+	state_a uint64
+	state_b uint64
 }
 
 func GetByIndex(in []Res_t, i int) string {
 	if len(in) > i {
-		return fmt.Sprintf("%04X %04X %016X", in[i].a, in[i].b, in[i].h)
+		return fmt.Sprintf("%04X %04X %04X %04X %016X", in[i].a, in[i].b, in[i].state_a, in[i].state_b, in[i].h)
 	}
 	return ""
 }
@@ -434,10 +436,10 @@ func Test_Tst3_04(t *testing.T) {
 		state1.Reset()
 		state2.Reset()
 		for _, code := range []byte(v.A) {
-			h1, _, _ = state1.StateMix(code, h1)
+			h1 = state1.StateMix(code, h1)
 		}
 		for _, code := range []byte(v.B) {
-			h2, _, _ = state2.StateMix(code, h2)
+			h2 = state2.StateMix(code, h2)
 		}
 
 		if h1 == h2 || v.Debug {
@@ -449,12 +451,14 @@ func Test_Tst3_04(t *testing.T) {
 			s1.Reset()
 			s2.Reset()
 			for _, code := range []byte(v.A) {
-				r1.h, r1.a, r1.b = s1.StateMix(code, r1.h)
+				r1.h = s1.StateMix(code, r1.h)
+				r1.state_a, r1.state_b, r1.a, r1.b = s1.state_a, s1.state_b, s1.a, s1.b
 				a1 = append(a1, r1)
 				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
-				r2.h, r2.a, r2.b = s2.StateMix(code, r2.h)
+				r2.h = s2.StateMix(code, r2.h)
+				r2.state_a, r2.state_b, r2.a, r2.b = s2.state_a, s2.state_b, s2.a, s2.b
 				a2 = append(a2, r2)
 				m2[r2.h] = struct{}{}
 			}
@@ -468,7 +472,7 @@ func Test_Tst3_04(t *testing.T) {
 				my_max = len(a2)
 			}
 			for i := 0; i < my_max; i++ {
-				t.Logf("%02d %26s %26s", i, GetByIndex(a1, i), GetByIndex(a2, i))
+				t.Logf("%02d %36s %36s", i, GetByIndex(a1, i), GetByIndex(a2, i))
 			}
 
 			t.Logf("##### %v", h1 == h2)
@@ -488,14 +492,14 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x113D821ADCBFAB22
+	var expected uint64 = 0x5274F3CE99481F39
 	in := "T4e8S^X/&j6"
 
 	var state State256_t
 	var res uint64
 	state.Reset()
 	for i, code := range []byte(in) {
-		res, _, _ = state.StateMix(code, res)
+		res = state.StateMix(code, res)
 		// t.Logf("%02d %016X", i, res)
 		_ = i
 	}
