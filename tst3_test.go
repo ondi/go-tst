@@ -417,7 +417,15 @@ var in = []DebugState_t{
 	{A: "l1n$*aHh*E1oeT_@v", B: "Dvt7feoONr/fE1K~"},
 	{A: "3#th1ioie_XF~o$4Tnqo&HhtB", B: "3B%yq~E-OEH4faQ"},
 	{A: "J287iIdbDO2B-wPhL3m2&315$Et4", B: "D/ixvvM#ja6U~_uh*$KN"},
-	{A: "_LmwIr3RQ8", B: "dH-rMniWb#C", Debug: true},
+	{A: "VHUITwL&uGBaWgRdEns#$3", B: "_QUR*T/GDLcyX"},
+	{A: "JkMtpgT5N9aD&%Jg9^*0I#2UMQy", B: "8n%0RT4cBzPZX9h#MlV6V&es"},
+	{A: "Q7#6*ED0oEKCSV#c&RTYQkf~ieg", B: "dKAy2hTNB%/m2_bSKf45_Oe%j6~"},
+	{A: "@%LX~1HmUxtlg", B: "G8ZZtfb/*q94~~#_QPp-"},
+	{A: "2pYM6vg&p0Gt3J3FC1WA3J", B: "N-0ySpt-sX_2~zp"},
+	{A: "q*xI1rZz2cozGV##0IEEXx", B: "5DV$_E-XU78Zb~i"},
+	{A: "E8V1tnBbR-tt9mutCF&YlK", B: "AV3*Ir@XGn$7@P&$k%A0"},
+	{A: "Iu_9mrbJceLdmm%b4sH4C#MM/", B: "fV%^/CFRYy6vaKAMNIBa"},
+	{A: "wvEZso~SYDItH1", B: "iZr1f*4afWWIN5t8Ykw4"},
 }
 
 type Res_t struct {
@@ -498,7 +506,7 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xEE8B292BF9EDD850
+	var expected uint64 = 0x037F2A7644D93A8F
 	in := "T4e8S^X/&j6"
 
 	var state State256_t

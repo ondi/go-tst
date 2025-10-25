@@ -96,14 +96,13 @@ func (self *State256_t) Reset() {
 
 func (self *State256_t) StateMix(in byte, prev uint64) (next uint64) {
 	self.a = (self.a + 1) % 256
-	self.b = (self.b + self.state[self.b] + self.state[in] + uint64(in)) % 256
-
+	self.b = (self.b + self.state[self.a] + self.state[in] + uint64(in)) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 
 	self.state_a = self.state[self.a] + self.state[(self.a+64)%256]<<3
 	self.state_b = self.state[self.b] + self.state[(self.b+64)%256]<<5
 
-	next = ROR64((prev^self.state_a)*self.state_b, Mod(self.a, 65, 2), self.b)
+	next = ROR64((prev^self.state_b)*self.state_a, Mod(self.b, 65, 2), self.a)
 	return
 }
 
