@@ -347,11 +347,110 @@ var in = []DebugState_t{
 	{A: "Nr%7OsthcB&N~#YYerUr7uX", B: "aOF-fTglIJWaM7G^RBC3fYkvvsZ"},
 	{A: "Yx0OpGNv#W8etbc1", B: "S/$l9Li%860#pLZ#_C~^"},
 	{A: "gqO@FrS0bcq", B: "dLXaNPLek304c*%n4mgg9Z5F*9"},
+	{A: "wsJ*sr6*GK$yl~C#wN~LvZM3k", B: "YG^7tbeq#MUNbt3~ixzs*&"},
+	{A: "Pl$lWuTgVBjK*Cissx1", B: "3f9OTvO9sdZxQ3heBM"},
+	{A: "ZM_Q~Ok7NXYhM$s9@", B: "Q~0S95UC@X^rbrCXY"},
+	{A: "0/1vpkQr4CZ$9z859JP*YGW", B: "PrClun~zX4J^SO"},
+	{A: "_kHjVu3lN7KhdHbyQ", B: "y*V_%0BBnAT7c#_2e~"},
+	{A: "v/90C0T#6%~fLi9THecDG02", B: "t17kLva^pHFNUFcLVT"},
+	{A: "Qx8GMeeJmi__7E32d*8gl6Z", B: "*CokMPvn~0"},
+	{A: "WYW&PupxDGi7~WpbH", B: "TiAQT^TMM50KZ1g"},
+	{A: "Ey$^plnW#Q/BZHo9Oy&PDfaE2f-", B: "mo^AFgUqgn~_#5GEjpk7d"},
+	{A: "KD05700cig5BQowyrtEZ", B: "r0xZpQc&hS17auYsf"},
+	{A: "q9xyHC/fX8g3h_T2p*w47/uf0lF-I", B: "FvHvBZcAupBB93Xb2tqgDY"},
+	{A: "8^qUMRfpp%pxeLcM0d^*p8lH0", B: "GWbTG0ZVnE"},
+	{A: "%GuH-SPtxqCFsVKG", B: "1KE%6t91ZZ*TpOliI$nS"},
+	{A: "eVNvCtwjAd87h6V", B: "IMu_Sp_O5**sUgX7YYTB/uc2$dg"},
+	{A: "NIoqp^osv3ZK$i2vYxgXdJj7/I", B: "1qeTRYGhKvZs"},
+	{A: "AaAz3gZIlowVjIgdbmnAU0J/X", B: "o1Q**R5W-#xV8$"},
+	{A: "tbdON#Hq85mBQ$IL-rK%w7q^N", B: "7K#p9tw^e4v6uZXC^DVMHserL"},
+	{A: "_@EFPfTBtwp&J^hfdG", B: "sKsFuogvL/#"},
+	{A: "tI3t5_E&5Q", B: "_7E51#W6_&LjpdbpKi4"},
+	{A: "MSMps^NS1C", B: "IDlq31J@t5h%Ce"},
+	{A: "tKUkdU9Po5", B: "bMUHdtfMoE"},
+	{A: "mV&vLPdvN7bC2R7TZC", B: "p&y^sIhqSF41%/19nu51u"},
+	{A: "zB^_W9#Fph7yv", B: "Lgcmsj84M~b8wGOy__"},
+	{A: "AxPk2GCqQ2NfpulZ*y@9", B: "$ZS%M&Xqodk43ctr9"},
+	{A: "wspEBB00FyGlxWRVo_UQ-&^hIk", B: "Ri$DP5Qln-mY~"},
+	{A: "Q&2Ys__y@v*", B: "r9o2JCUojIIpX54/X_YX-F$It^Gy7"},
+	{A: "_Yvd43IOBT8GN8yerI", B: "zNWE~bP8Fda0tu9dYO"},
+	{A: "T_48s2g0RV", B: "xuJu4/$Cb_%-cgD83yATWAo"},
+	{A: "08fzDN#2vSdW_UU", B: "$oKS^Iq@Sg@DFQzm*eKX48_ak$z"},
+	{A: "uzcmP~huh8W-ojvvjQA_U6MK2o%UI", B: "zLu3uIOwG7BepRAh"},
+	{A: "/ea^5Ib&62tboter^QXkOxuI", B: "P@KjUs1Fyv/vSCD8bcsU*EL"},
+	{A: "5XE_/R*D8yHmQp", B: "UMLfpjrx41rD8bo"},
+	{A: "AUms@aUJ*D7-3j&yS9Mrv2tthCS", B: "qjLcEyd_SBM8Y@~"},
+	{A: "v-2f3$1iB-wxsAQ&E", B: "uWC8fj&7WOsMR*OZE"},
+	{A: "Okgk5bYbZv$grAQ@gEd34RB", B: "LoSJh4fK&S0%YtXv-OY0hb"},
+	{A: "Z-3fvZtBGJf/dWJGhK6j", B: "1aw6^cW4jgPs3~c6I/VO"},
+	{A: "d8Jy&K3WvjvLS73xUQXe0XCq4PR", B: "QfOFlx6iWZi85#RTusN^UqLPQ7"},
+	{A: "$7cF39_iGaP-MHoA_eZ^g@v9Y2", B: "Zd0FloD#aQyyWhKcEOd@gMDLOF2z"},
+	{A: "j$rryaFOgjpyzE*^", B: "Y~clW&vg~PVPkjX&Ud"},
+	{A: "nuFHg@^8%M%ioXhJ3OsnAXy0", B: "6&ldZHgy8WAEio"},
+	{A: "PuLq5Axx3P~aoIcK5hjAgOqul~JQ", B: "Xe/GfKnFazK9EK"},
+	{A: "c0aKr5ZEqjoQsQSk3V/Qj4QTd", B: "qf~1qYd7T^y~"},
+	{A: "-b%Wy-yD3g40", B: "Re*z2rzOdtd5_M"},
+	{A: "D%HjkRylvwr*BfCXfi$07eeQm@", B: "^nlc%vUO08T9A3eUd^a~ycC"},
+	{A: "%dSL5PM&aDKF-#XV2-cjWZ~pJA", B: "cmp2FwW&gKJNQJ6RDL"},
+	{A: "BdB-3i4R8Sv4w0j$XJpo88gZ", B: "UwJZPwm2F2%~wC%Yz*Hl37"},
+	{A: "YsM&9C848GA@TokU4P314ees25", B: "LMg3Put_-PBuf93yDCOKbSEG"},
+	{A: "ED5O@GRrsR95HIDZjxR5", B: "sRaR2h^UQMUcvcCmk"},
+	{A: "TVg5DmIOaJ$wM", B: "G1butYKdq9tvhGpEDDwD_$lzM"},
+	{A: "2RDHq0#g@PNDKIQzYL^er&", B: "A4gzMpH4G@bAP@mzb"},
+	{A: "97AxeNvE%KCR1@0VddO8QA8t0/", B: "&^jm3qxoXy^u"},
+	{A: "vMZK#IqHSehzve5f", B: "b&FAU1-H9x@@GaVuBZM0I2k"},
+	{A: "kSzno4uqw^s4TuCx*E", B: "Rxu~xSkyMQwDV107"},
+	{A: "xOfVgExdCb5^ljv", B: "lj@SUnxnr@*ANx4Z9#I$_"},
+	{A: "Y~WqV1nF3wRw", B: "~SEYR_KILCr/"},
+	{A: "cA-xluViheqkcok", B: "_z8J^P25DXCi-UZz"},
+	{A: "S-^DJR%0hL2Fd5tuW", B: "IUc#Qy7z4f_~$Q^LdptBU0rMr$"},
+	{A: "G73yeWsRxJPzWM80i&xI", B: "K9N%3/FTwdMo_BT"},
+	{A: "%_8EWFaf6sIeMXy", B: "cDA~VvtbC%1UzMT1D_Na"},
+	{A: "AqTXF6%6^n1JPb&p8i~", B: "/LU*Ctr3wSSL$OFf@n8gAhv"},
+	{A: "_x02MhDBO/QYohG4a3rU$3tSkd0", B: "OxQKPVEQ3ssy0/k9R^"},
+	{A: "R#cS2tkaGkrjI", B: "JluhuvR9Jq1"},
+	{A: "5fjbC-dKuxNfpCK-gRyigI$uYIO", B: "$FlZ-tbdVVtSDsCmOM8vuqBIm3zX"},
+	{A: "yEut3%z38$8rItGd-vgo/W", B: "QP7ZdG&%ryB@^4rvrNTP9wiDsPeIa"},
+	{A: "iWDPopK3qhR@X4", B: "YEx*0NgH@smY-HYyGw/U4vG/"},
+	{A: "_I@c7sCPRtTAjB3RTv_", B: "@B8Gt*s&TlKXqX3FFO"},
+	{A: "&TPq1moev3GvLLYDP%y/7@h", B: "VX7/NJbu/4c@FlLIY_4O7~"},
+	{A: "l1n$*aHh*E1oeT_@v", B: "Dvt7feoONr/fE1K~"},
+	{A: "3#th1ioie_XF~o$4Tnqo&HhtB", B: "3B%yq~E-OEH4faQ"},
+	{A: "J287iIdbDO2B-wPhL3m2&315$Et4", B: "D/ixvvM#ja6U~_uh*$KN"},
+	{A: "VHUITwL&uGBaWgRdEns#$3", B: "_QUR*T/GDLcyX"},
+	{A: "JkMtpgT5N9aD&%Jg9^*0I#2UMQy", B: "8n%0RT4cBzPZX9h#MlV6V&es"},
+	{A: "Q7#6*ED0oEKCSV#c&RTYQkf~ieg", B: "dKAy2hTNB%/m2_bSKf45_Oe%j6~"},
+	{A: "@%LX~1HmUxtlg", B: "G8ZZtfb/*q94~~#_QPp-"},
+	{A: "2pYM6vg&p0Gt3J3FC1WA3J", B: "N-0ySpt-sX_2~zp"},
+	{A: "q*xI1rZz2cozGV##0IEEXx", B: "5DV$_E-XU78Zb~i"},
+	{A: "E8V1tnBbR-tt9mutCF&YlK", B: "AV3*Ir@XGn$7@P&$k%A0"},
+	{A: "Iu_9mrbJceLdmm%b4sH4C#MM/", B: "fV%^/CFRYy6vaKAMNIBa"},
+	{A: "wvEZso~SYDItH1", B: "iZr1f*4afWWIN5t8Ykw4"},
+	{A: "OS4#m#OKMuBONx%", B: "QkNbt$~_4SPg%K6T&_5"},
+	{A: "QoSCSacz3v7mbf90e&1", B: "XAs4bIgpX9L8"},
+	{A: "qOjTOHHvLiHegNP9BLDZhS-", B: "jpvh%RH#CmpAbaAs*U8"},
+	{A: "O&05h7NrA1~ZOpsCv%d-k2LDw2", B: "pGBnHvfyC3p#3_CWCO"},
+	{A: "6&7z0$VdZpTEiNcgfs67q", B: "wzO%/Bn8YyY*3eTt"},
+	{A: "N8aXn*mGdHhFwrN7pDERAzH6s_y7", B: "%UiLpiCuw$sVRdRqvgwydA*aGq"},
+	{A: "oHK64I8uqg", B: "kn8n8qhw45#hJ*mY8XMQr"},
+	{A: "b/VgT^GV^$VV^vIg&SiuBEx3", B: "w_EVRAW9~x@Ymoy8ee%sd&wA"},
+	{A: "EpE_npjY14_OE10lzN/9lz", B: "OhfvRGXcxf3vT%Ia%uyN~"},
+	{A: "4i~ivqXOzjUT", B: "9O##Kb9q5WUT"},
+	{A: "&5v7TRoKy/EDN60VFRNVM", B: "wxkzr#0#aJg^GHtC&hC*fR6@jbX"},
+	{A: "mi8Z05hl4/Ai", B: "#hmc3GTazP"},
 }
 
-func GetByIndex(in []uint64, i int) string {
+type Res_t struct {
+	h       uint64
+	a       uint64
+	b       uint64
+	state_a uint64
+	state_b uint64
+}
+
+func GetByIndex(in []Res_t, i int) string {
 	if len(in) > i {
-		return fmt.Sprintf("%016X", in[i])
+		return fmt.Sprintf("%04X %04X %016X %016X %016X", in[i].a, in[i].b, in[i].state_a, in[i].state_b, in[i].h)
 	}
 	return ""
 }
@@ -371,21 +470,23 @@ func Test_Tst3_04(t *testing.T) {
 
 		if h1 == h2 || v.Debug {
 			var s1, s2 State256_t
-			var x1, x2 uint64
-			var a1, a2 []uint64
+			var r1, r2 Res_t
+			var a1, a2 []Res_t
 			m1 := map[uint64]struct{}{}
 			m2 := map[uint64]struct{}{}
 			s1.Reset()
 			s2.Reset()
 			for _, code := range []byte(v.A) {
-				x1 = s1.StateMix(code, x1)
-				a1 = append(a1, x1)
-				m1[x1] = struct{}{}
+				r1.h = s1.StateMix(code, r1.h)
+				r1.state_a, r1.state_b, r1.a, r1.b = s1.state_a, s1.state_b, s1.a, s1.b
+				a1 = append(a1, r1)
+				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
-				x2 = s2.StateMix(code, x2)
-				a2 = append(a2, x2)
-				m2[x2] = struct{}{}
+				r2.h = s2.StateMix(code, r2.h)
+				r2.state_a, r2.state_b, r2.a, r2.b = s2.state_a, s2.state_b, s2.a, s2.b
+				a2 = append(a2, r2)
+				m2[r2.h] = struct{}{}
 			}
 
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
@@ -397,7 +498,7 @@ func Test_Tst3_04(t *testing.T) {
 				my_max = len(a2)
 			}
 			for i := 0; i < my_max; i++ {
-				t.Logf("%02d %16s %16s", i, GetByIndex(a1, i), GetByIndex(a2, i))
+				t.Logf("%02d %64s %64s", i, GetByIndex(a1, i), GetByIndex(a2, i))
 			}
 
 			t.Logf("##### %v", h1 == h2)
@@ -407,15 +508,26 @@ func Test_Tst3_04(t *testing.T) {
 	}
 }
 
+func MSB(in uint64) (res int) {
+	var v uint8
+	for v > 0 {
+		v >>= 1
+		res++
+	}
+	return
+}
+
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xBE05A03766CB1BBA
-	in := "W~3~TY/hFKbD$"
+	var expected uint64 = 0x5B42FCD4BB792BF7
+	in := "4i~ivqXOzjUT"
 
 	var state State256_t
 	var res uint64
 	state.Reset()
-	for _, code := range []byte(in) {
+	for i, code := range []byte(in) {
 		res = state.StateMix(code, res)
+		// t.Logf("%02d %016X", i, res)
+		_ = i
 	}
 	t.Logf("IN=%q, OUT=%016X, EXPECTED=%016X %v", in, res, expected, res == expected)
 }

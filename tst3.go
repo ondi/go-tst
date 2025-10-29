@@ -67,8 +67,9 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state [256]uint64
-	a, b  uint64
+	state            [256]uint64
+	a, b             uint64
+	state_a, state_b uint64
 }
 
 func (self *State256_t) Reset() {
@@ -90,66 +91,62 @@ func (self *State256_t) Reset() {
 		224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239,
 		240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255,
 	}
-	self.a, self.b = 32, 127
+	self.a, self.b = 0, 127
 }
 
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
-	self.b = (self.state[self.a] + self.state[self.b] + self.state[in]) % 256
+	self.b = (self.state[self.a] + self.state[self.b] + self.state[in] + uint64(in)) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 
-	return Mix(
-		prev,
-		self.state[self.a]|self.state[(self.a+64)%256]<<8,
-		self.state[self.b]|self.state[(self.b+64)%256]<<8,
-	)
-}
+	self.state_a = self.state[self.a] | self.state[(self.a+128)%256]<<8
+	self.state_b = self.state[self.b] | self.state[(self.b+128)%256]<<8
 
-func Mix(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64(prev^a, 32, 0, prev)
-	prev = ((prev & 0xFFFF_FFFF_FFFF) * b) ^ ROR64(prev, 64, 1, 16)
+	prev = ROL64(prev^self.state_a, 32, self.b, 1)*self.state_b + self.b
 	return prev
 }
 
-func Mix_v3(prev uint64, a uint64, b uint64) uint64 {
-	prev = ROL64((prev&0xFFFF_FFFF^a)*(prev>>32^b)^prev, 64, 1, a, b, 8)
-	return prev
-}
-
-// 413: 218, 304, 313
-func Mix_v2(prev uint64, a uint64, b uint64) uint64 {
-	prev = prev ^ (a + 1)
-	prev = prev * (b + 2)
-	prev = ROL64(prev, 64, 1, a+b)
-	return prev
-}
-
-// 245: 227
-func Mix_v1(prev uint64, a uint64, b uint64) uint64 {
-	prev = prev ^ (a + 1)
-	prev = prev * (prev&0xFF + b + 2)
-	prev = ROL64(prev, 64, 1, a+b)
-	return prev
-}
-
-// mod=64, min = [1, mod)
-func ROL64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
+// mod = [2,64]
+func ROL64(in uint64, mod uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % mod; out >= min {
+		if out = v % mod; out > 0 {
 			return (in << out) | (in >> (64 - out))
 		}
 	}
 	return in
 }
 
-// mod=64, min = [1, mod)
-func ROR64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
+// mod = [2,64]
+func ROR64(in uint64, mod uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % mod; out >= min {
+		if out = v % mod; out > 0 {
 			return (in >> out) | (in << (64 - out))
 		}
 	}
 	return in
+}
+
+func Mod(in uint64, mod uint64, min uint64) uint64 {
+	if in = in % mod; in <= min {
+		return min
+	}
+	return in
+}
+
+func ScanRight(in uint64, mask uint64) (count uint64) {
+	for in&mask == 0 && mask > 0 {
+		mask >>= 1
+		count++
+	}
+	return
+}
+
+func ScanLeft(in uint64, mask uint64) (count uint64) {
+	for in&mask == 0 && mask > 0 {
+		mask <<= 1
+		count++
+	}
+	return
 }
 
 func Forward(size uint64, current uint64, offset uint64) uint64 {
@@ -158,6 +155,30 @@ func Forward(size uint64, current uint64, offset uint64) uint64 {
 
 func Backward(size uint64, current uint64, offset uint64) uint64 {
 	return (size + current - offset%size) % size
+}
+
+func Overflow(a uint64, b uint64) bool {
+	if a > MaxUint64/b {
+		return true
+	}
+	return false
+}
+
+func Mul_u64(a uint64, b uint64) (hi uint64, lo uint64) {
+	a_hi, b_hi := a>>32, b>>32
+	a_lo, b_lo := a&0xFFFFFFFF, b&0xFFFFFFFF
+
+	a_hi_b_hi := a_hi * b_hi
+	a_hi_b_lo := a_hi * b_lo
+	a_lo_b_hi := a_lo * b_hi
+	a_lo_b_lo := a_lo * b_lo
+
+	intermediate := a_hi_b_lo + a_lo_b_hi + (a_lo_b_lo >> 32)
+
+	hi = a_hi_b_hi + (intermediate >> 32)
+	lo = (intermediate << 32) | (a_lo_b_lo & 0xFFFFFFFF)
+
+	return
 }
 
 // 0x12345678 <-> []{0x78, 0x56, 0x34, 0x12}
@@ -182,28 +203,4 @@ func (self *State256_t) Uint64BE(i uint64, step uint64) uint64 {
 		self.state[(i+5*step)%256]<<(8*2) |
 		self.state[(i+6*step)%256]<<(8*1) |
 		self.state[(i+7*step)%256]<<(8*0)
-}
-
-func Mul_u64(a uint64, b uint64) (hi uint64, lo uint64) {
-	a_hi, b_hi := a>>32, b>>32
-	a_lo, b_lo := a&0xFFFFFFFF, b&0xFFFFFFFF
-
-	a_hi_b_hi := a_hi * b_hi
-	a_hi_b_lo := a_hi * b_lo
-	a_lo_b_hi := a_lo * b_hi
-	a_lo_b_lo := a_lo * b_lo
-
-	intermediate := a_hi_b_lo + a_lo_b_hi + (a_lo_b_lo >> 32)
-
-	hi = a_hi_b_hi + (intermediate >> 32)
-	lo = (intermediate << 32) | (a_lo_b_lo & 0xFFFFFFFF)
-
-	return
-}
-
-func Overflow(a uint64, b uint64) bool {
-	if a > MaxUint64/b {
-		return true
-	}
-	return false
 }
