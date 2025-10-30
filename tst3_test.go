@@ -438,6 +438,7 @@ var in = []DebugState_t{
 	{A: "4i~ivqXOzjUT", B: "9O##Kb9q5WUT"},
 	{A: "&5v7TRoKy/EDN60VFRNVM", B: "wxkzr#0#aJg^GHtC&hC*fR6@jbX"},
 	{A: "mi8Z05hl4/Ai", B: "#hmc3GTazP"},
+	{A: "Kc1KP~Vf2#&N4YEW5ukX", B: "M-3o8Yh&20Df1JKD~DCnAV", Debug: true},
 }
 
 type Res_t struct {
@@ -489,8 +490,10 @@ func Test_Tst3_04(t *testing.T) {
 				m2[r2.h] = struct{}{}
 			}
 
+			t.Logf("COLLISION: %v", h1 == h2)
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
 			t.Logf("h2=%016X\tlen2=%v\ta2=%v\tb2=%v\tin2=%q", h2, len(v.B), state2.a, state2.b, v.B)
+
 			var my_max int
 			if len(a1) > len(a2) {
 				my_max = len(a1)
@@ -500,8 +503,6 @@ func Test_Tst3_04(t *testing.T) {
 			for i := 0; i < my_max; i++ {
 				t.Logf("%02d %64s %64s", i, GetByIndex(a1, i), GetByIndex(a2, i))
 			}
-
-			t.Logf("##### %v", h1 == h2)
 
 			assert.Assert(t, v.Skip || v.Debug)
 		}
