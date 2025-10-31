@@ -438,7 +438,8 @@ var in = []DebugState_t{
 	{A: "4i~ivqXOzjUT", B: "9O##Kb9q5WUT"},
 	{A: "&5v7TRoKy/EDN60VFRNVM", B: "wxkzr#0#aJg^GHtC&hC*fR6@jbX"},
 	{A: "mi8Z05hl4/Ai", B: "#hmc3GTazP"},
-	{A: "Kc1KP~Vf2#&N4YEW5ukX", B: "M-3o8Yh&20Df1JKD~DCnAV", Debug: true},
+	{A: "Kc1KP~Vf2#&N4YEW5ukX", B: "M-3o8Yh&20Df1JKD~DCnAV"},
+	{A: "xq0&H@Gh~JA~", B: "OU&p_r1%AZWo#SIfS2ag~#_SOs3wP"},
 }
 
 type Res_t struct {
@@ -519,7 +520,7 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x5B42FCD4BB792BF7
+	var expected uint64 = 0x1AAE605E0296159F
 	in := "4i~ivqXOzjUT"
 
 	var state State256_t
