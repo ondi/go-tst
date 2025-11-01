@@ -103,11 +103,11 @@ func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.state_b = self.state[self.b] | self.state[(self.b+128)%256]<<8
 
 	if self.state_b&1 > 0 {
-		prev = ROL64(prev^self.state_a, 32, self.b)*self.state_b + self.a
+		prev = ROL64(prev^self.state_a, 32, self.b) * self.state_b
 	} else if self.state_a&1 > 0 {
-		prev = ROL64(prev^self.state_b, 32, self.b)*self.state_a + self.b
+		prev = ROL64(prev^self.state_b, 32, self.a) * self.state_a
 	} else {
-		prev = ROL64(prev^(self.state_a+self.state_b), 32, self.b) * (self.a + self.b + 1)
+		prev = ROL64(prev^(self.state_a+self.state_b), 32, self.a+self.b) * (self.a + self.b + 1)
 	}
 	return prev
 }
