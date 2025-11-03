@@ -438,6 +438,19 @@ var in = []DebugState_t{
 	{A: "4i~ivqXOzjUT", B: "9O##Kb9q5WUT"},
 	{A: "&5v7TRoKy/EDN60VFRNVM", B: "wxkzr#0#aJg^GHtC&hC*fR6@jbX"},
 	{A: "mi8Z05hl4/Ai", B: "#hmc3GTazP"},
+	{A: "Kc1KP~Vf2#&N4YEW5ukX", B: "M-3o8Yh&20Df1JKD~DCnAV"},
+	{A: "xq0&H@Gh~JA~", B: "OU&p_r1%AZWo#SIfS2ag~#_SOs3wP"},
+	{A: "3GHBN^N/mGMBBrEo9bzIa8o", B: "qG&ef@Bc2L$YB729ps^iX^N"},
+	{A: "@Mx4gu2yoxDomWB~", B: "owDPc72/M5_"},
+	{A: "CIKqON_O9JZMQLYCC%eq", B: "s&PQ_q/V_hQ$qU"},
+	{A: "#ZzOxKGMDmH", B: "oytaV69$G*PMwZJ"},
+	{A: "jmffJt/JwFO2-sY8ORNU&0mqS^~G", B: "6bgZ3K2qttcU"},
+	{A: "RFp5N2yES8%-52_0w5ow*nrN", B: "nT3yoTOEh&li1xoje4M_"},
+	{A: "Q7wFn%WykfBpKrsNf", B: "_8G9GyE8c8zQ**d#eF5^rmZcRK"},
+	{A: "t&cGP-Vj7/DRQPR", B: "93_nWxTXJ-BAacC$Wq-os"},
+	{A: "eH-x^dglLS^Ud~5&a05IB88O", B: "g_KCqjWr@%"},
+	{A: "DdA#2Ij3PrXuYT/JRzD", B: "QC&3T#OBEcZiPUE@iXvW%$x"},
+	{A: "_ui/%yBG95J", B: "C&Vr&7MbIa~4OQ7OwN"},
 }
 
 type Res_t struct {
@@ -489,8 +502,10 @@ func Test_Tst3_04(t *testing.T) {
 				m2[r2.h] = struct{}{}
 			}
 
+			t.Logf("COLLISION: %v", h1 == h2)
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
 			t.Logf("h2=%016X\tlen2=%v\ta2=%v\tb2=%v\tin2=%q", h2, len(v.B), state2.a, state2.b, v.B)
+
 			var my_max int
 			if len(a1) > len(a2) {
 				my_max = len(a1)
@@ -500,8 +515,6 @@ func Test_Tst3_04(t *testing.T) {
 			for i := 0; i < my_max; i++ {
 				t.Logf("%02d %64s %64s", i, GetByIndex(a1, i), GetByIndex(a2, i))
 			}
-
-			t.Logf("##### %v", h1 == h2)
 
 			assert.Assert(t, v.Skip || v.Debug)
 		}
@@ -518,7 +531,7 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x5B42FCD4BB792BF7
+	var expected uint64 = 0xA79B28FAB52F4064
 	in := "4i~ivqXOzjUT"
 
 	var state State256_t
