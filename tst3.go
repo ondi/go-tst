@@ -67,9 +67,8 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state            [256]uint64
-	a, b             uint64
-	state_a, state_b uint64
+	state [256]uint64
+	a, b  uint64
 }
 
 func (self *State256_t) Reset() {
@@ -91,21 +90,16 @@ func (self *State256_t) Reset() {
 		225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240,
 		241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256,
 	}
-	self.a, self.b = 0, 127
+	self.a, self.b = 0, 0
 }
 
-const test_state_a = 0b00100000_10000100_00100001_00001000_10001000_01000100_00100010_01001001
+const test_state_a = 0b00000001_00000010_00000100_00001000_00001000_00000100_00000010_00000001
 
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
-	self.b = (self.state[self.a] + self.state[self.b] + self.state[in] + uint64(in)) % 256
+	self.b = (self.b + self.state[self.a] + self.state[in] + uint64(in)) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-
-	self.state_a = self.state[self.a]
-	self.state_b = self.state[self.b]
-
-	prev = prev ^ test_state_a
-	prev = ROL64((prev*self.state_a)^self.state_b, 64, self.b)
+	prev = ROL64((prev^test_state_a)*self.state[self.b]^self.state[self.a], 64, self.b)
 	return prev
 }
 

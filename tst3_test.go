@@ -458,6 +458,16 @@ var in = []DebugState_t{
 	{A: "bqyQBjCIvn1ivToJ", B: "JiC%we/pnzRT_%AZ"},
 	{A: "GGU&Ay8EW/U50", B: "ykz7ok%E3FQJ3dbckTl&%u3z"},
 	{A: "tXyPx3C~swVi&aPo2x", B: "9/95sLB4IWw~ECIN@kmY"},
+	{A: "KGCM9-uDJlFER%T_@w1*E7", B: "U0bVmFdDoOqEM~E1"},
+	{A: "g5V561ICTZ-Y~icvVpj", B: "/8%*/obgDgmpebR#Tr"},
+	{A: "UXGk6Uvo^^7ts", B: "P9469GSCCYl6TeLxGS_yym/6%p2"},
+	{A: "pV/mCVpUGw*3Da", B: "gpP3na~b9IEY_tu3pG%E"},
+	{A: "gU~1zK%&3wu", B: "9ShR1U-Pdby"},
+	{A: "N3#-HS73jI#c8_AqXSLgq1oR6bkxc", B: "Z5/F3ePdGEV&v"},
+	{A: "wPfcwlEwdxA6TOvIv^", B: "8R^S1BVL#UDUbpvffcxqdhWW#w3"},
+	{A: "9gcHHEF0Qs7L-B&v&~*5Iniczklea", B: "ys7cy-dbb6WMC$i"},
+	{A: "pq--%I7&tVKvqkh", B: "v*mwhk2h*/L9M"},
+	{A: "zki@9&d#qQZ~XYBh@D$pD", B: "K~5&N7TNmbOe^/974$KxQ25T*-iMe"},
 }
 
 type Res_t struct {
@@ -498,13 +508,13 @@ func Test_Tst3_04(t *testing.T) {
 			s2.Reset()
 			for _, code := range []byte(v.A) {
 				r1.h = s1.StateMix(code, r1.h)
-				r1.state_a, r1.state_b, r1.a, r1.b = s1.state_a, s1.state_b, s1.a, s1.b
+				r1.state_a, r1.state_b, r1.a, r1.b = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b
 				a1 = append(a1, r1)
 				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
 				r2.h = s2.StateMix(code, r2.h)
-				r2.state_a, r2.state_b, r2.a, r2.b = s2.state_a, s2.state_b, s2.a, s2.b
+				r2.state_a, r2.state_b, r2.a, r2.b = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b
 				a2 = append(a2, r2)
 				m2[r2.h] = struct{}{}
 			}
@@ -538,7 +548,7 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x61A4D43E8236E866
+	var expected uint64 = 0xE1DE5EB41B1292F4
 	in := "4i~ivqXOzjUT"
 
 	var state State256_t
