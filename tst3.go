@@ -93,7 +93,7 @@ func (self *State256_t) Reset() {
 	self.a, self.b = 0, 0
 }
 
-const test_state_a = 0b00000001_00000010_00000100_00001000_00001000_00000100_00000010_00100101
+const test_state_a = 0b00000000_01000000_00100000_00010000_00001000_00000100_00000010_00100101
 
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
