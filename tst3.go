@@ -93,14 +93,15 @@ func (self *State256_t) Reset() {
 	self.a, self.b = 0, 0
 }
 
-const test_state_a = 0b00000000_01000000_00100000_00010000_00001000_00000100_00000010_00100101
+const test_state_a = 0b00000001_01000000_00100000_00010000_00001000_00000100_00000010_10000000
 
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.b + self.state[self.a] + self.state[in] + uint64(in)) % 256
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	prev = ROL64((prev^self.state[self.a])*self.state[self.b], 64, 8)
-	prev = ROL64((prev^self.state[self.b])*self.state[self.a], 64, 8)
+	prev = ROL64((prev^test_state_a)*self.state[self.a]+self.state[self.b], 64, self.b)
+	// prev = ROL64((prev^self.state[self.a])*self.state[self.b], 64, self.b)
+	// prev = ROL64((prev^self.state[self.b])*self.state[self.a], 64, self.a)
 	return prev
 }
 
