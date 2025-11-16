@@ -91,14 +91,14 @@ func (self *State256_t) Reset() {
 		241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256,
 	}
 	self.a, self.b = 0, 32
-	self.c = 0b00000000_01000000_00100000_00010000_00001000_00000100_00000010_00000001
+	self.c = 0b00100000_01000000_00100000_00010000_00001000_00000100_00000010_00001000
 }
 
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.b + self.state[self.a] + self.state[in] + uint64(in)) % 256
 	self.c = ROL64(self.c, 64, self.a)
-	prev = ROL64((prev^self.state[self.b])*self.c+self.state[self.a], 64, self.b)
+	prev = ROL64((prev^self.state[self.b])*(self.c^self.state[self.a]), 64, self.b)
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return prev
 }
