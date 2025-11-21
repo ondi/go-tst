@@ -92,13 +92,13 @@ func (self *State256_t) Reset() {
 	}
 	self.a, self.b = 0, 32
 	self.c = 0b00100000_01000000_00100000_00010000_00001000_00000100_00000010_00001000
-	self.d = 1
+	self.d = 0
 }
 
 func (self *State256_t) StateAdd(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.state[self.b] + self.state[self.a] + self.state[in] + uint64(in)) % 256
-	self.d = ROL64((self.d*self.state[self.b]), 24, self.b) ^ ROR64(self.c*self.state[self.b], 48, self.b, 1)
+	self.d = ROL64((self.d^self.state[self.b]), 64, self.b) ^ ROR64(self.c*self.state[self.b], 64, self.b)
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.d
 }

@@ -489,6 +489,7 @@ var in = []DebugState_t{
 	{A: "GzJP-uy1UDt", B: "~@qYFop9TdH2j1C"},
 	{A: "eJ&q%bQualir@#v3y2ufSE", B: "3pfhfPPxcuU$CIKINI^nPlWdm"},
 	{A: "O_B/s$avG0%PtU", B: "ss4AijohNazXfpLlzxaHEtUi"},
+	{A: "oY9u1svy5FPJZ1fhyphxJ", B: "9tNQB5vW&oC8"},
 }
 
 type Res_t struct {
@@ -543,7 +544,7 @@ func Test_Tst3_04(t *testing.T) {
 				m2[r2.h] = struct{}{}
 			}
 
-			t.Logf("COLLISION: %v", h1 == h2)
+			t.Logf("COLLISION: %v, DEBUG: %v", h1 == h2, v.Debug)
 			t.Logf("h1=%016X\tlen1=%v\ta1=%v\tb1=%v\tin1=%q", h1, len(v.A), state1.a, state1.b, v.A)
 			t.Logf("h2=%016X\tlen2=%v\ta2=%v\tb2=%v\tin2=%q", h2, len(v.B), state2.a, state2.b, v.B)
 
@@ -572,7 +573,7 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x11C2A6A03D7E3748
+	var expected uint64 = 0x6C37BB6A4E737208
 	in := "4i~ivqXOzjUT"
 
 	var state State256_t
