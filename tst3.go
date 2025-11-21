@@ -97,7 +97,7 @@ func (self *State256_t) Reset() {
 func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.state[self.b] + self.state[self.a] + self.state[in] + uint64(in)) % 256
-	prev = ROL64((prev^self.state[self.b]), 24, self.b) * ROR64(self.c*self.state[self.b], 32, self.b, 1)
+	prev = ROL64((prev*self.state[self.b]), 24, self.b) ^ ROR64(self.c*self.state[self.b], 48, self.b, 1)
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return prev
 }
