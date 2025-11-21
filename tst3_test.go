@@ -129,7 +129,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 		var state State256_t
 		state.Reset()
 		for _, code := range value1 {
-			hx = state.StateMix(code, hx)
+			hx = state.StateAdd(code)
 		}
 		conflict, value2, size := storage.Add(hx, string(value1))
 		if conflict {
@@ -509,15 +509,18 @@ func GetByIndex(in []Res_t, i int) string {
 func Test_Tst3_04(t *testing.T) {
 	for _, v := range in {
 		var state1, state2 State256_t
-		var h1, h2 uint64
+
 		state1.Reset()
 		state2.Reset()
+
 		for _, code := range []byte(v.A) {
-			h1 = state1.StateMix(code, h1)
+			state1.StateAdd(code)
 		}
 		for _, code := range []byte(v.B) {
-			h2 = state2.StateMix(code, h2)
+			state2.StateAdd(code)
 		}
+
+		h1, h2 := state1.Sum64(), state2.Sum64()
 
 		if h1 == h2 || v.Debug {
 			var s1, s2 State256_t
@@ -528,13 +531,13 @@ func Test_Tst3_04(t *testing.T) {
 			s1.Reset()
 			s2.Reset()
 			for _, code := range []byte(v.A) {
-				r1.h = s1.StateMix(code, r1.h)
+				r1.h = s1.StateAdd(code)
 				r1.state_a, r1.state_b, r1.a, r1.b = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b
 				a1 = append(a1, r1)
 				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
-				r2.h = s2.StateMix(code, r2.h)
+				r2.h = s2.StateAdd(code)
 				r2.state_a, r2.state_b, r2.a, r2.b = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b
 				a2 = append(a2, r2)
 				m2[r2.h] = struct{}{}
@@ -576,7 +579,7 @@ func Test_Tst3_05(t *testing.T) {
 	var res uint64
 	state.Reset()
 	for i, code := range []byte(in) {
-		res = state.StateMix(code, res)
+		res = state.StateAdd(code)
 		// t.Logf("%02d %016X", i, res)
 		_ = i
 	}

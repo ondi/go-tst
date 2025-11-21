@@ -33,7 +33,7 @@ func (self *Tree3_t[Value_t]) Add(prefix string, value Value_t) (mapped *Mapped_
 	state.Reset()
 	for i, key.code = range []byte(prefix) {
 		key.pos = int32(i)
-		key.hash = state.StateMix(key.code, key.hash)
+		key.hash = state.StateAdd(key.code)
 		if mapped, ok = self.root[key]; !ok {
 			self.root[key] = nil
 		}
@@ -54,7 +54,7 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 	state.Reset()
 	for length, key.code = range []byte(in) {
 		key.pos = int32(length)
-		key.hash = state.StateMix(key.code, key.hash)
+		key.hash = state.StateAdd(key.code)
 		if temp, ok = self.root[key]; !ok {
 			return
 		}
@@ -67,8 +67,8 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state   [256]uint64
-	a, b, c uint64
+	state      [256]uint64
+	a, b, c, d uint64
 }
 
 func (self *State256_t) Reset() {
@@ -92,14 +92,19 @@ func (self *State256_t) Reset() {
 	}
 	self.a, self.b = 0, 32
 	self.c = 0b00100000_01000000_00100000_00010000_00001000_00000100_00000010_00001000
+	self.d = 1
 }
 
-func (self *State256_t) StateMix(in byte, prev uint64) uint64 {
+func (self *State256_t) StateAdd(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.state[self.b] + self.state[self.a] + self.state[in] + uint64(in)) % 256
-	prev = ROL64((prev*self.state[self.b]), 24, self.b) ^ ROR64(self.c*self.state[self.b], 48, self.b, 1)
+	self.d = ROL64((self.d*self.state[self.b]), 24, self.b) ^ ROR64(self.c*self.state[self.b], 48, self.b, 1)
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	return prev
+	return self.d
+}
+
+func (self *State256_t) Sum64() uint64 {
+	return self.d
 }
 
 // mod = [2,64]
