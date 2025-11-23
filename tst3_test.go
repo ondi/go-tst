@@ -599,6 +599,8 @@ func Test_Tst3_06(t *testing.T) {
 		for i := 0; i < 256; i++ {
 			self.a = (self.a + 1) % 256
 			self.b = (self.a + 1 + (self.state[self.a]+self.state[self.b])%(256-self.a)) % 256
+			// self.b = (self.a + 1 + (255)%(256-self.a)) % 256
+			// assert.Assert(t, self.a != self.b)
 			m1[self.state[self.b]] = struct{}{}
 			self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 		}
