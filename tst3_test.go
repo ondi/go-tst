@@ -490,6 +490,9 @@ var in = []DebugState_t{
 	{A: "eJ&q%bQualir@#v3y2ufSE", B: "3pfhfPPxcuU$CIKINI^nPlWdm"},
 	{A: "O_B/s$avG0%PtU", B: "ss4AijohNazXfpLlzxaHEtUi"},
 	{A: "oY9u1svy5FPJZ1fhyphxJ", B: "9tNQB5vW&oC8"},
+	{A: "auDX5GD*An1t", B: "xUISSfUuNaMobjBMVDcVlmKb"},
+	{A: "2%E3i2Q-s69Vgi_@6", B: "4cI9W%l8V%ZOx8qvdgwD/JX"},
+	{A: "VQYkC*sc/4W_r", B: "2vkDt&QzyV"},
 }
 
 type Res_t struct {
@@ -585,4 +588,21 @@ func Test_Tst3_05(t *testing.T) {
 		_ = i
 	}
 	t.Logf("IN=%q, OUT=%016X, EXPECTED=%016X %v", in, res, expected, res == expected)
+}
+
+// go test -v -count=1 -run Test_Tst3_06
+func Test_Tst3_06(t *testing.T) {
+	var self State256_t
+	self.Reset()
+	for k := 0; k < 10; k++ {
+		m1 := map[uint64]struct{}{}
+		for i := 0; i < 256; i++ {
+			self.a = (self.a + 1) % 256
+			self.b = (self.a + 1 + (self.state[self.a]+self.state[self.b])%(256-self.a)) % 256
+			m1[self.state[self.b]] = struct{}{}
+			self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
+		}
+		assert.Assert(t, len(m1) == 255)
+		// t.Logf("m1: %v %v\n", k, len(m1))
+	}
 }
