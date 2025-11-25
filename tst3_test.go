@@ -497,6 +497,8 @@ var in = []DebugState_t{
 	{A: "5IgU7DuClXTE$8y1PKTHQgpQE", B: "HvwPB3R~2a&VD4Ay*%qNoYi0"},
 	{A: "SW_AgTre#s", B: "_%-wJ8KCR/lKB#"},
 	{A: "24mfxrNQgIVbO$NDTaf", B: "xIXVB^2OkT8n9@5s1GjU"},
+	{A: "cJJSAUI0~#b4Re_#L4lGn5", B: "SuHJMot71GK-1CVTyFfc5lCzCP"},
+	{A: "^BI4GxvUo*", B: "^Bh4fxvUZB"},
 }
 
 type Res_t struct {
