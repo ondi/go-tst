@@ -612,7 +612,7 @@ func Test_Tst3_06(t *testing.T) {
 			m1[self.state[self.b]] = struct{}{}
 			self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 		}
-		assert.Assert(t, len(m1) == 255)
+		assert.Assert(t, len(m1) == 255, len(m1))
 		// t.Logf("m1: %v %v\n", k, len(m1))
 	}
 }
