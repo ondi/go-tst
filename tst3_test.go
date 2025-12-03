@@ -521,16 +521,15 @@ var in = []DebugState_t{
 }
 
 type Res_t struct {
-	h       uint64
-	a       uint64
-	b       uint64
-	state_a uint64
-	state_b uint64
+	h          uint64
+	a, b, c, d uint64
+	state_a    uint64
+	state_b    uint64
 }
 
 func GetByIndex(in []Res_t, i int) string {
 	if len(in) > i {
-		return fmt.Sprintf("%04X %04X %016X %016X %016X", in[i].a, in[i].b, in[i].state_a, in[i].state_b, in[i].h)
+		return fmt.Sprintf("%04X %04X %04X %04X %016X %016X %016X", in[i].a, in[i].b, in[i].c, in[i].d, in[i].state_a, in[i].state_b, in[i].h)
 	}
 	return ""
 }
@@ -561,13 +560,13 @@ func Test_Tst3_04(t *testing.T) {
 			s2.Reset()
 			for _, code := range []byte(v.A) {
 				r1.h = s1.StateAdd(code)
-				r1.state_a, r1.state_b, r1.a, r1.b = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b
+				r1.state_a, r1.state_b, r1.a, r1.b, r1.c, r1.d = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b, s1.c, s1.d
 				a1 = append(a1, r1)
 				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
 				r2.h = s2.StateAdd(code)
-				r2.state_a, r2.state_b, r2.a, r2.b = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b
+				r2.state_a, r2.state_b, r2.a, r2.b, r2.c, r2.d = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b, s2.c, s2.d
 				a2 = append(a2, r2)
 				m2[r2.h] = struct{}{}
 			}
@@ -583,7 +582,7 @@ func Test_Tst3_04(t *testing.T) {
 				my_max = len(a2)
 			}
 			for i := 0; i < my_max; i++ {
-				t.Logf("%02d %64s %64s", i, GetByIndex(a1, i), GetByIndex(a2, i))
+				t.Logf("%02d %70s %70s", i, GetByIndex(a1, i), GetByIndex(a2, i))
 			}
 
 			assert.Assert(t, v.Skip || v.Debug)
