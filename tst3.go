@@ -102,7 +102,8 @@ func (self *State256_t) StateAdd(in byte) uint64 {
 	self.b = (self.state[self.d] + self.state[in]) % 256
 	self.c = (self.state[self.b] + self.state[self.c]) % 128
 	self.d = 128 + (self.state[self.c]+self.state[self.d])%128
-	self.e = ROL64((self.e^self.state[self.c])*self.state[self.b], 64, self.state[self.d])
+	self.e = self.e ^ self.state[self.b]
+	self.e = ROL64(self.e, 64, self.e)*self.state[self.c] + self.state[self.d]
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	self.state[self.c], self.state[self.d] = self.state[self.d], self.state[self.c]
 	return self.e
