@@ -521,6 +521,7 @@ var in = []DebugState_t{
 	{A: "mtgrSDS5cmgcqqJ-d", B: "HtB0A579_4Ocw/2*3ONUSJ1PFpNQ"},
 	{A: "ycFdbXf%gL-4AZMT2", B: "l6KRwZkNro/5N3Ohf#tduh@q"},
 	{A: "W9wgHBwK9Q", B: "NvRjpqIsF03BIJUktHlArO_dU7"},
+	{A: "i92nEChTC4OauK", B: "WjJ1RRvnre/viH4-K"},
 }
 
 type Res_t struct {
@@ -563,13 +564,13 @@ func Test_Tst3_04(t *testing.T) {
 			s2.Reset()
 			for _, code := range []byte(v.A) {
 				r1.h = s1.StateAdd(code)
-				r1.state_a, r1.state_b, r1.a, r1.b, r1.c, r1.d = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b, s1.c, s1.d
+				r1.state_a, r1.state_b, r1.a, r1.b, r1.c, r1.d = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b, 0, 0
 				a1 = append(a1, r1)
 				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
 				r2.h = s2.StateAdd(code)
-				r2.state_a, r2.state_b, r2.a, r2.b, r2.c, r2.d = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b, s2.c, s2.d
+				r2.state_a, r2.state_b, r2.a, r2.b, r2.c, r2.d = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b, 0, 0
 				a2 = append(a2, r2)
 				m2[r2.h] = struct{}{}
 			}
