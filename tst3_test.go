@@ -138,7 +138,7 @@ func test_02(t *testing.T, storage Shards_t, count int) {
 			t.Errorf("%v collision=%v i=%v, hash=%016X, value1=%q, value2=%q\n", t.Name(), collisions, i, hx, value1, value2)
 		}
 		if i%1_000_000 == 0 {
-			t.Logf("%v i=%v, collision=%v, repeat=%v, storage=%v, hash=%016X, buf=%q", t.Name(), i, collisions, repeat, size, hx, value1)
+			t.Logf("%v i=%v, collision=%v, repeat=%v, storage=%v, hash=%016X, in:=%q", t.Name(), i, collisions, repeat, size, hx, value1)
 		}
 	}
 }
@@ -614,8 +614,8 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xB6836B13577EA24A
-	in := "o*b-CQo0qXB*vsfuQ1&7vocS6ETe^"
+	var expected uint64 = 0x07429F22E27ADBD8
+	in := "8yOxfK2&DKbEyfIrfoo3_/clgvw"
 
 	var state State256_t
 	var res uint64
