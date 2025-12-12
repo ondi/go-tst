@@ -4,6 +4,8 @@
 
 package tst
 
+import "fmt"
+
 var MaxUint64 uint64 = 1<<64 - 1
 
 type key3_t struct {
@@ -96,10 +98,17 @@ func (self *State256_t) Reset() {
 }
 
 func (self *State256_t) StateAdd(in byte) uint64 {
-	self.a = (self.e + self.state[in] + 1) % 256
-	self.b = (self.a + self.state[in] + 2) % 256
+	self.a = (self.b + 1) % 256
+	if self.state[in] == 0 {
+		self.b = (self.a + 1) % 256
+	} else {
+		self.b = (self.a + self.state[in]) % 256
+	}
+	if self.a == self.b {
+		panic(fmt.Sprintf("%v %v %v %v", self.a, self.b, self.state[in], in))
+	}
 	self.e = self.e ^ self.state[self.b]
-	self.e = ROL64(self.e, self.e%57+8, self.b, self.a)*(self.state[self.b]+1) + self.state[self.a]
+	self.e = ROL64(self.e, 64, self.b, self.a)*(self.state[self.b]+1) + self.state[self.a]
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
