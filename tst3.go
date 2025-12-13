@@ -98,17 +98,13 @@ func (self *State256_t) Reset() {
 }
 
 func (self *State256_t) StateAdd(in byte) uint64 {
-	self.a = (self.b + 1) % 256
-	if self.state[in] == 0 {
-		self.b = (self.a + 1) % 256
-	} else {
-		self.b = (self.a + self.state[in]) % 256
-	}
+	self.a = (self.e + 1) % 256
+	self.b = (self.a + 2*self.state[in] + 1) % 256
 	if self.a == self.b {
-		panic(fmt.Sprintf("%v %v %v %v", self.a, self.b, self.state[in], in))
+		panic(fmt.Sprintf("a=%v, b=%v, state[%v]=%v", self.a, self.b, in, self.state[in]))
 	}
 	self.e = self.e ^ self.state[self.b]
-	self.e = ROL64(self.e, 64, self.b, self.a)*(self.state[self.b]+1) + self.state[self.a]
+	self.e = ROL64(self.e, 64, self.e, self.b, self.a)*(self.state[self.b]+1) + self.state[self.a]
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
