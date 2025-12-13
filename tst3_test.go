@@ -617,8 +617,8 @@ func MSB(in uint64) (res int) {
 }
 
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x07429F22E27ADBD8
-	in := "8yOxfK2&DKbEyfIrfoo3_/clgvw"
+	var expected uint64 = 0x91111148DC9724D3
+	in := "ZVlSO3fzZO0qIleZT^ti26@X&EgD"
 
 	var state State256_t
 	var res uint64
