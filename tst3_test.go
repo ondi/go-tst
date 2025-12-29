@@ -537,18 +537,67 @@ var in = []DebugState_t{
 	{A: "BqwsOOW%L1", B: "2yEGwW4JfC1&BXnM@faaA#jg0#Nvl"},
 	{A: "29~fPZKVg8nmZNoALA/", B: "9vORoq8jVP*EP5A~%d^^aWHp14Gm"},
 	{A: "XvQa^6#pd&Yjo2@*GVYLTVZN&uuxQ", B: "#fy21$6I3/32dBs@ty"},
+	{A: "D_T0ZiI_0SW", B: "9J~7rqIkhasC2ZHmkhrl"},
+	{A: "D_T0ZiI_0SW", B: "9J~7rqIkhasC2ZHmkhrl"},
+	{A: "&qLvL%Pf&Hcc_pyzr$*tjDfUrKTHA", B: "l/f3@IPdGWl381C~YtF"},
+	{A: "/3XToPwoF^$ft8r", B: "/Lkj16H#6-aBfkfC4~bg"},
+	{A: "D_T0ZiI_0SW", B: "9J~7rqIkhasC2ZHmkhrl"},
+	{A: "&qLvL%Pf&Hcc_pyzr$*tjDfUrKTHA", B: "l/f3@IPdGWl381C~YtF"},
+	{A: "/3XToPwoF^$ft8r", B: "/Lkj16H#6-aBfkfC4~bg"},
+	{A: "m5MepA4ieI-", B: "d3u7e$L/7x&7QxQ%%Z5oTvGQ"},
+	{A: "1PZYJrm&*$W&Gu8$0GF4zG5*HR6YZ", B: "__$1^6&-faAW0z"},
+	{A: "K7jtIdT7EP1L1a_-XymwNn", B: "QKGz8BcZ8syFBSjwGICM7$rT"},
+	{A: "vmle6u2N1jLwH@$Mq2~xtZV0O7#", B: "oZ_6mzkbi7mB6ixa~SgnXYCi^FVU"},
+	{A: "6xuk8G8b0s5h", B: "~zgwOw6F9/Frd"},
+	{A: "#CrvElITyZY@DSjkFPCTX", B: "LcdmbDsHfupnw^FCTHQVKeSQ_"},
+	{A: "upnHtCk9F9Ju$tCQW2X", B: "SaHk0j#bofvYQlIg8"},
+	{A: "CtJGJOWZL8wv&c@7/ZLB5^", B: "VK9bcaR/rh^"},
+	{A: "2ZDFBQ45SlTny", B: "HAz0yeObb*IXXkMw5IDuFSr"},
+	{A: "yI1EOKPBc6U", B: "enFJz7kS4A8"},
+	{A: "hw3rJt1aImVAUCM8Dqtlg@SrtcT", B: "@N#_-lRxVUu"},
+	{A: "O%_g2Iyy5J/Ze@jtW_a#NNs#bk", B: "FN5u0P#~^x*DwdPPg3_/PuR8r"},
+	{A: "w6CH38#6xa", B: "-^SSAGRJ7K@oqM$lOlp@^Ta/VQNu"},
+	{A: "0rqF^9GYeF%1q8iRWm", B: "IspxgRsHZV"},
+	{A: "$&~BONXSEXd", B: "daTp~vVZs9#77Q%z5p"},
+	{A: "lQBZ3Jm1@&2d7^oxJeB9bU5YcKV", B: "C-ykf3QC9OwWfzK"},
+	{A: "QooDZ-$oYG", B: "jiq/nhsIptkiw-V&$8KP7_OwA"},
+	{A: "5YFOx80-#1snaCLs-0S", B: "/s0ihpllKN7$TxOLB^"},
+	{A: "iQ5iwdp7-n", B: "T7sIs%Kk-1g4@9w*"},
+	{A: "u24dhi^o56", B: "E*yzZ5ni%z7E~J*KoLcl~~dm7rV"},
+	{A: "CbqiJM&vi-894%NRq%WDxe*c", B: "K4g&Y$9UGM*NbjSkD5S7"},
+	{A: "Tm4iT-m2Qmn2y80bPZE2", B: "Hmje*$q#_a8E_u7rP77C"},
+	{A: "8D^1P&881/sHcXfb_RbVnz4V", B: "KG83jqeiO@57KSr1@9Js@Kc"},
+	{A: "Y#LmiyGWE9ud%fB", B: "Khj&Hy/4rV/-"},
+	{A: "IC$@MOcxYhhpaIyU0", B: "%-1GiRLy%n&TuiI%2yzi^5O"},
+	{A: "8oo^uIEydNVJYV9z@5ZQ", B: "pqGFgyhHgjuOD4*"},
+	{A: "ob%JTXldUhI", B: "00L%$&d6$XMf0gEph"},
+	{A: "/pIyb/c8zy6yfwVSfojNUE~", B: "rJoya_3_GQdOA-mdcm5"},
+	{A: "Hh%jjj#v-2woADs%yIx0eXQE_", B: "&tYbN7j~2HeoaqP6VnWrjqhxmUJGf"},
+	{A: "n0-hE2Mzy#N9%fth4~P0bh-Sd", B: "tisKUwuv20i6"},
+	{A: "iFN-fR1-l8YSYlgUQ", B: "O9Vr*BYcgFjVX-~_HYf~DFz11l"},
+	{A: "$IY7BN#^d7Xk6dWUjcHekC##6Fc", B: "57B4$59l466o%o5gj/K%*xKy@s9g9"},
+	{A: "qmc/lOIG4E@BJ", B: "^jpX$nxkKS1Q5rDDJ*ehRts"},
+	{A: "5Kx*Bsfz5ejKCJvG2_1Qv", B: "%1/CVNC6tr_@PV$zd85r"},
+	{A: "l^o$fO9mPD", B: "m^o$fN9mQD"}, // bad or
+	{A: "S2oieLGyks", B: "S3ohdMFxjr"}, // bad or
+	{A: "r*_z/U1NG4#IzzVw44t", B: "zz*UvOLI^gv0j$T"},
+	{A: "&trAIU-lbXW2Wl#Ma", B: "45v~/#1467GpT/TaTGj"},
+	{A: "D*MI6kDqvDY4U7qyWPlZ0", B: "pMXtLXswmgh-p%VffpTCU"},
+	{A: "X2&cip~Wvlck7", B: "%JuXDhNn#tmi_Q9YB-HmeI"},
+	{A: "Gu~cSXAoaOrxt", B: "Fs4#U^ShONLwd"},
+	{A: "^2SLQNGni6c#5r", B: "uU7jp@A_eVpW3FA4"},
 }
 
 type Res_t struct {
-	h          uint64
-	a, b, c, d uint64
-	state_a    uint64
-	state_b    uint64
+	h       uint64
+	a, b    uint64
+	state_a uint64
+	state_b uint64
 }
 
 func GetByIndex(in []Res_t, i int) string {
 	if len(in) > i {
-		return fmt.Sprintf("%04X %04X %04X %04X %016X %016X %016X", in[i].a, in[i].b, in[i].c, in[i].d, in[i].state_a, in[i].state_b, in[i].h)
+		return fmt.Sprintf("%04X %04X %016X %016X %016X", in[i].a, in[i].b, in[i].state_a, in[i].state_b, in[i].h)
 	}
 	return ""
 }
@@ -579,13 +628,13 @@ func Test_Tst3_04(t *testing.T) {
 			s2.Reset()
 			for _, code := range []byte(v.A) {
 				r1.h = s1.StateAdd(code)
-				r1.state_a, r1.state_b, r1.a, r1.b, r1.c, r1.d = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b, 0, 0
+				r1.state_a, r1.state_b, r1.a, r1.b = s1.state[s1.a], s1.state[s1.b], s1.a, s1.b
 				a1 = append(a1, r1)
 				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
 				r2.h = s2.StateAdd(code)
-				r2.state_a, r2.state_b, r2.a, r2.b, r2.c, r2.d = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b, 0, 0
+				r2.state_a, r2.state_b, r2.a, r2.b = s2.state[s2.a], s2.state[s2.b], s2.a, s2.b
 				a2 = append(a2, r2)
 				m2[r2.h] = struct{}{}
 			}
@@ -601,7 +650,7 @@ func Test_Tst3_04(t *testing.T) {
 				my_max = len(a2)
 			}
 			for i := 0; i < my_max; i++ {
-				t.Logf("%02d %70s %70s", i, GetByIndex(a1, i), GetByIndex(a2, i))
+				t.Logf("%02d %60s %60s", i, GetByIndex(a1, i), GetByIndex(a2, i))
 			}
 
 			assert.Assert(t, v.Skip || v.Debug)
@@ -609,18 +658,9 @@ func Test_Tst3_04(t *testing.T) {
 	}
 }
 
-func MSB(in uint64) (res int) {
-	var v uint8
-	for v > 0 {
-		v >>= 1
-		res++
-	}
-	return
-}
-
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xFAF04D5427198875
-	in := "ZVlSO3fzZO0qIleZT^ti26@X&EgD"
+	var expected uint64 = 0x690A131A77BACA2D
+	in := "5Fzwl~~dE0sAb1t2DnW33ZgGL66"
 
 	var state State256_t
 	var res uint64

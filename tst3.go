@@ -4,8 +4,6 @@
 
 package tst
 
-import "fmt"
-
 type key3_t struct {
 	prev uint64
 	next uint64
@@ -94,30 +92,29 @@ func (self *State256_t) Reset() {
 	}
 	self.a = 0
 	self.b = 0
-	self.e = 0b01000000_00100000_00010000_00001000_00000100_00000010_00000001_00000000
+	self.e = 0b01000000_00100000_00010000_00001000_00000100_00000010_00000001_11111111
 }
 
-func (self *State256_t) _StateAdd(in byte) uint64 {
-	self.a = (self.b + 1) % 256
-	if self.state[in] == 0 {
-		self.b = (self.a + 1) % 256
-	} else {
-		self.b = (self.a + self.state[in]) % 256
-	}
-	if self.a == self.b {
-		panic(fmt.Sprintf("%v %v %v %v", self.a, self.b, self.state[in], in))
-	}
-	self.e = self.e ^ self.state[self.b]
-	self.e = ROL64(self.e, 64, self.b, self.a)*(self.state[self.b]+1) + self.state[self.a]
+// 300: 3
+func (self *State256_t) StateAdd01(in byte) uint64 {
+	self.a = (self.e + 1) % 256
+	self.b = (self.a + 2*self.state[in] + 1) % 256
+	self.e = ROL64((self.e^self.state[self.b])*(self.state[self.a]+1)+self.state[self.b], 64, 0, self.b, self.a) + self.state[self.a]
+	// self.e = self.e * (self.e ^ self.state[self.b] + self.state[self.a])
+	// self.e = self.e * (self.e ^ self.state[self.a] + self.state[self.b])
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
 
+// self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
 func (self *State256_t) StateAdd(in byte) uint64 {
-	self.a = (self.e + 1) % 256
-	self.b = (self.a + 2*self.state[in] + 1) % 256
-	self.e = (self.e^self.state[self.b])*(self.state[self.a]+1) + self.state[self.b]
-	self.e = ROL64(self.e, 64, self.b, self.a)
+	self.a = (self.a + 1) % 256
+	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
+	// if self.a == self.b {
+	// 	panic(1)
+	// }
+	self.e = ROL64(self.e^self.state[self.b], 9, 1, self.b, self.a, 1)
+	self.e = self.e*(self.state[self.a]+self.state[self.b]) + self.state[self.a]
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
@@ -126,20 +123,20 @@ func (self *State256_t) Sum64() uint64 {
 	return self.e
 }
 
-// mod = [2,64]
-func ROL64(in uint64, mod uint64, shift ...uint64) (out uint64) {
+// mod = [2,64], min = 0
+func ROL64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % mod; out > 0 {
+		if out = v % mod; out > min {
 			return (in << out) | (in >> (64 - out))
 		}
 	}
 	return in
 }
 
-// mod = [2,64]
-func ROR64(in uint64, mod uint64, shift ...uint64) (out uint64) {
+// mod = [2,64], min = 0
+func ROR64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
-		if out = v % mod; out > 0 {
+		if out = v % mod; out > min {
 			return (in >> out) | (in << (64 - out))
 		}
 	}
