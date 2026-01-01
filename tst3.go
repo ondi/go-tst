@@ -113,7 +113,7 @@ func (self *State256_t) StateAdd(in byte) uint64 {
 	if self.a == self.b {
 		panic(1)
 	}
-	self.e = ROL64(self.e^self.state[self.b], 8, 0, self.b, self.a, 1)
+	self.e = ROL64(self.e^self.state[self.b], 8, 0, self.a, self.b, 7)
 	self.e = self.e*(self.state[self.a]+self.state[self.b]) + self.state[self.a]
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
