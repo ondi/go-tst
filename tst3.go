@@ -113,8 +113,8 @@ func (self *State256_t) StateAdd(in byte) uint64 {
 	if self.a == self.b {
 		panic(1)
 	}
-	self.e = ROL64(self.e^self.state[self.b], 8, 0, self.a, self.b, 7)
-	self.e = self.e*(self.state[self.a]+self.state[self.b]) + self.state[self.a]
+	self.e = ROL64(self.e^self.state[self.b], 8, 0, self.a, self.b, 7) ^ self.state[self.a]
+	self.e = self.e * (self.state[self.a] + self.state[self.b])
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
@@ -127,8 +127,11 @@ func (self *State256_t) Sum64() uint64 {
 func ROL64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
 		if out = v % mod; out > min {
-			return (in << out) | (in >> (64 - out))
+			min = out
 		}
+	}
+	if min > 0 {
+		return (in << min) | (in >> (64 - min))
 	}
 	return in
 }
@@ -137,8 +140,11 @@ func ROL64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
 func ROR64(in uint64, mod uint64, min uint64, shift ...uint64) (out uint64) {
 	for _, v := range shift {
 		if out = v % mod; out > min {
-			return (in >> out) | (in << (64 - out))
+			min = out
 		}
+	}
+	if min > 0 {
+		return (in >> min) | (in << (64 - min))
 	}
 	return in
 }
