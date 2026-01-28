@@ -128,6 +128,7 @@ func (self *State256_t) StateAdd03(in byte) uint64 {
 	return self.e
 }
 
+// 352: 3
 // self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
 func (self *State256_t) StateAdd04(in byte) uint64 {
 	self.a = (self.a + 1) % 256
