@@ -101,7 +101,7 @@ func (self *State256_t) StateAdd01(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
-	self.e = ROL64(self.e, Max(self.a%63+2, self.a, self.b))
+	self.e = ROL64(self.e, Max(self.a%63+2, 0, self.a, self.b))
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
@@ -134,7 +134,7 @@ func (self *State256_t) StateAdd04(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
-	self.e = ROL64(self.e, Min((self.a+self.b)%63+2, self.a, self.b))
+	self.e = ROL64(self.e, Min((self.a+self.b)%63+2, 1, self.a, self.b))
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
@@ -144,7 +144,7 @@ func (self *State256_t) StateAdd(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
-	self.e = ROL64(self.e, Max((self.a+self.b)%63+2, self.a, self.b))
+	self.e = ROL64(self.e, Max((self.a+self.b)%63+2, 0, self.a, self.b))
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
@@ -153,22 +153,28 @@ func (self *State256_t) Sum64() uint64 {
 	return self.e
 }
 
-func Min(mod uint64, a uint64, in ...uint64) uint64 {
+func Min(mod uint64, min uint64, a uint64, in ...uint64) uint64 {
 	a = a % mod
 	for _, b := range in {
-		if b = b % mod; b < a {
+		if b = b % mod; b < a && b > min {
 			a = b
 		}
+	}
+	if a < min {
+		return min
 	}
 	return a
 }
 
-func Max(mod uint64, a uint64, in ...uint64) uint64 {
+func Max(mod uint64, min uint64, a uint64, in ...uint64) uint64 {
 	a = a % mod
 	for _, b := range in {
-		if b = b % mod; b > a {
+		if b = b % mod; b > a && b > min {
 			a = b
 		}
+	}
+	if a < min {
+		return min
 	}
 	return a
 }
