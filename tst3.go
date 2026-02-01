@@ -67,8 +67,8 @@ func (self *Tree3_t[Value_t]) Search(in string) (value Value_t, length int, foun
 }
 
 type State256_t struct {
-	state   [256]uint64
-	a, b, e uint64
+	state         [256]uint64
+	a, b, c, d, e uint64
 }
 
 func (self *State256_t) Reset() {
@@ -92,34 +92,14 @@ func (self *State256_t) Reset() {
 	}
 	self.a = 0
 	self.b = 0
+	self.c = 0
+	self.d = 0
 	self.e = 0b00010000_00000010_01000000_00001000_00000001_00100000_00000100_10000000
-}
-
-// 400: 4
-// self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd01(in byte) uint64 {
-	self.a = (self.a + 1) % 256
-	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
-	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
-	self.e = ROL64(self.e, Max(self.a%63+2, 0, self.a, self.b))
-	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	return self.e
-}
-
-// 400: 4
-// self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd02(in byte) uint64 {
-	self.a = (self.a + 1) % 256
-	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
-	self.e = (self.e^self.state[self.b])*(self.a+self.b) ^ self.state[self.a]
-	self.e = ROL64(self.e, Max(self.a%63+2, 1, self.b))
-	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	return self.e
 }
 
 // 350: 0
 // self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd03(in byte) uint64 {
+func (self *State256_t) StateAdd01(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
@@ -130,10 +110,22 @@ func (self *State256_t) StateAdd03(in byte) uint64 {
 
 // 352: 3
 // self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd(in byte) uint64 {
+func (self *State256_t) StateAdd02(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
+	self.e = ROL64(self.e, Min((self.a+self.b)%63+2, 1, self.a, self.b))
+	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
+	return self.e
+}
+
+// self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
+func (self *State256_t) StateAdd(in byte) uint64 {
+	self.a = (self.a + 1) % 256
+	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
+	self.c = self.c<<8 | self.state[self.b]
+	self.d = self.d<<8 | self.state[self.a]
+	self.e = (self.e^self.c)*(self.a+self.b) ^ self.d
 	self.e = ROL64(self.e, Min((self.a+self.b)%63+2, 1, self.a, self.b))
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
