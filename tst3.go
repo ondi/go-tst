@@ -99,7 +99,7 @@ func (self *State256_t) Reset() {
 
 // 350: 0
 // self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd(in byte) uint64 {
+func (self *State256_t) StateAdd01(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	self.e = (self.e^self.state[self.b])*(self.a+self.b) ^ self.state[self.a]
@@ -109,7 +109,7 @@ func (self *State256_t) StateAdd(in byte) uint64 {
 }
 
 // self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd01(in byte) uint64 {
+func (self *State256_t) StateAdd(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	self.c = self.c ^ self.state[self.b] + self.state[self.a]
