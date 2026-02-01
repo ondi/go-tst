@@ -99,32 +99,21 @@ func (self *State256_t) Reset() {
 
 // 350: 0
 // self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd01(in byte) uint64 {
+func (self *State256_t) StateAdd(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
-	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
+	self.e = (self.e^self.state[self.b])*(self.a+self.b) ^ self.state[self.a]
 	self.e = ROL64(self.e, Max(self.a%63+2, 1, self.b+self.a))
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
 
-// 352: 3
 // self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd02(in byte) uint64 {
+func (self *State256_t) StateAdd01(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
-	self.e = (self.e^self.state[self.b])*(self.a+self.b) + self.state[self.a]
-	self.e = ROL64(self.e, Min((self.a+self.b)%63+2, 1, self.a, self.b))
-	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	return self.e
-}
-
-// self.b = (self.a ^ ((self.b ^ self.state[in]) | 1)) // bad or
-func (self *State256_t) StateAdd(in byte) uint64 {
-	self.a = (self.a + 1) % 256
-	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
-	self.c = self.c<<8 | self.state[self.b]
-	self.d = self.d<<8 | self.state[self.a]
+	self.c = self.c ^ self.state[self.b] + self.state[self.a]
+	self.d = self.d ^ self.state[self.a] + self.state[self.b]
 	self.e = (self.e^self.c)*(self.a+self.b) ^ self.d
 	self.e = ROL64(self.e, Min((self.a+self.b)%63+2, 1, self.a, self.b))
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
