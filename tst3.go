@@ -144,6 +144,7 @@ func (self *State256_t) StateAdd04(in byte) uint64 {
 func (self *State256_t) StateAdd(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
+	// self.e = (self.e ^ (self.state[self.a] + self.state[self.b])) * (self.a + self.b)
 	if self.a&1 > 0 {
 		self.e = (self.e ^ self.state[self.b]) * (self.a + self.b)
 		self.e = ROR64(self.e, Max(self.a%63+2, 1, self.b+self.a))
