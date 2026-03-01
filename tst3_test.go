@@ -811,3 +811,24 @@ func Test_Tst3_06(t *testing.T) {
 		// t.Logf("m1: %v %v\n", k, len(m1))
 	}
 }
+
+// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07 |& tee log.txt
+func Test_Tst3_07(t *testing.T) {
+	if flag_manual == nil || *flag_manual == false {
+		t.Skip("skipped, add -manual to run")
+	}
+	for N := 0; N < 257; N++ {
+		var total int
+		for P := 0; P < N; P++ {
+			for Q := 0; Q < N; Q++ {
+				if (P*Q)%N == 1 {
+					// t.Logf("%v: %v,", P, Q)
+					total++
+				}
+			}
+		}
+		// if total+1 == N {
+		t.Logf("N=%v, total=%v, diff=%v", N, total, N-total)
+		// }
+	}
+}
