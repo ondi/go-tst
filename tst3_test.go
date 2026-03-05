@@ -709,6 +709,8 @@ var in = []DebugState_t{
 	{A: "O#@_rdPH1SYUQ7#/qyg%BADysrj", B: "J^JNUzAOK9f#QN"},
 	{A: "FrlK6iAW6wBV&_9p0MU&5K9$2L", B: "rieOm6MiLk^hX8MoaAjKZ_XP"},
 	{A: "pNs@dfgbYk*-", B: "FR&MzmBXtm~q4wdf7*&d3RQ%*R"},
+	{A: "FoM&7PK~VHw8^6uWb2H%qSqi&lbW9", B: "2WQn6mWXXM--gutvG2kpQj*hU6"},
+	{A: "wTI3/YN~a1HM", B: "LjaRpDO#O89XjGbONXbomRN@"},
 }
 
 type Res_t struct {
