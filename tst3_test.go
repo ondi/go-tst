@@ -711,6 +711,8 @@ var in = []DebugState_t{
 	{A: "pNs@dfgbYk*-", B: "FR&MzmBXtm~q4wdf7*&d3RQ%*R"},
 	{A: "FoM&7PK~VHw8^6uWb2H%qSqi&lbW9", B: "2WQn6mWXXM--gutvG2kpQj*hU6"},
 	{A: "wTI3/YN~a1HM", B: "LjaRpDO#O89XjGbONXbomRN@"},
+	{A: "NJ@LW@BQxtnQMq", B: "qmQTBVsOLo0Fu&Cj^Ow"},
+	{A: "5WlJ#h%f8B", B: "XCLxrzr3ohao"},
 }
 
 type Res_t struct {
@@ -844,7 +846,7 @@ func Test_Tst3_07(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
-	for p := uint64(3); p < 256; p += 2 {
+	for p := uint64(3); p < 512; p += 2 {
 		q := invMod2pow64(p)
 		check := p * q // uint64 overflow = mod 2^64
 		t.Logf("P=%-10d Q=%-25X check: P·Q mod 2^64 = %d\n", p, q, check)
