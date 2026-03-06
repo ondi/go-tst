@@ -846,7 +846,7 @@ func Test_Tst3_07(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
-	for p := uint64(3); p < 512; p += 2 {
+	for p := uint64(1); p < 512; p += 2 {
 		q := invMod2pow64(p)
 		check := p * q // uint64 overflow = mod 2^64
 		t.Logf("P=%-10d Q=%-25X check: P·Q mod 2^64 = %d\n", p, q, check)

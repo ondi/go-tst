@@ -136,6 +136,7 @@ var invertible_uint8 = map[uint64]uint64{
 }
 
 var invertible_uint64 = map[uint64]uint64{
+	1:   0x0000000000000001,
 	3:   0xAAAAAAAAAAAAAAAB,
 	5:   0xCCCCCCCCCCCCCCCD,
 	7:   0x6DB6DB6DB6DB6DB7,
