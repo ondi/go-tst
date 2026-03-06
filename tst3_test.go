@@ -852,4 +852,7 @@ func Test_Tst3_07(t *testing.T) {
 		check := p * q // uint64 overflow = mod 2^64
 		t.Logf("P=%-10d Q=%-25X check: P·Q mod 2^64 = %d\n", p, q, check)
 	}
+	for k, v := range invertible_uint64 {
+		assert.Assert(t, k*v == 1)
+	}
 }
