@@ -112,7 +112,7 @@ func (self *State256_t) StateAdd(in byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[in]) + 1) % 256
 	// self.a + self.b always odd
-	self.e = (self.e ^ (self.state[self.b] + self.state[self.a])) * (self.a ^ self.b)
+	self.e = (self.e ^ (self.state[self.b] + self.state[self.a])) * invertible_uint64[self.a+self.b]
 	self.e = ROL64(self.e, Max(32, 1, self.a, self.b))
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
