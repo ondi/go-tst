@@ -904,6 +904,7 @@ var in = []DebugState_t{
 	{A: "~98Lq9hBtn/EkV//W", B: "W6&Zkd2w_nsY#pe*91jRUFbNbWdY"},
 	{A: "rmnbY*/tII", B: "_Z0zuNc&UCIWnq_pkD"},
 	{A: "sId*oq_priTl&28e7p2TJUQKD", B: "%TNnECu%VQEQ$A1o-DpNPc"},
+	{A: "r~$mc-CBSiscBWLTe5@g7K", B: "fRO561hTg%A"},
 }
 
 type Res_t struct {
@@ -1005,7 +1006,7 @@ func invUint64(a uint64) uint64 {
 
 func check_bits(in uint64) bool {
 	for i := uint64(0); i < 8; i++ {
-		test := (in >> (8 * i)) & 0xFF
+		test := (in >> (8 * i)) & 0b_11111111
 		if test > 0 && test&(test-1) != 0 {
 			return false
 		}
@@ -1025,8 +1026,8 @@ func Test_Tst3_07(t *testing.T) {
 		q := invUint64(p)
 		check := p * q // B·C mod 2^64, uint64 overflow = mod 2^64
 		assert.Assert(t, check == 1)
-		// 0b00000000_00000000_00000000_00000000
-		// if p&q != p && p&q != q && p&0b10101010_10101010_10101010_10101010 == 0 {
+		// 0b_00000000_00000000_00000000_00000000
+		// if p&q != p && p&q != q && p&0b_10101010_10101010_10101010_10101010 == 0 {
 		if check_bits(p) {
 			t.Logf("{A: %3d, B:%5d , C:0x%016X}, // %016b %064b\n", count, p, q, p, q)
 			count++
