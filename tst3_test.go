@@ -906,6 +906,7 @@ var in = []DebugState_t{
 	{A: "sId*oq_priTl&28e7p2TJUQKD", B: "%TNnECu%VQEQ$A1o-DpNPc"},
 	{A: "r~$mc-CBSiscBWLTe5@g7K", B: "fRO561hTg%A"},
 	{A: "$$@xN~97iMnhW$ssU&$c73nf-", B: "M/WNFV~N9sT_OW"},
+	{A: "b1s1&JJ@b0W@q7%&9Dx5jIU", B: "16c&Z-&/Jp%G2yk1@2ei^fmgS*9/X"},
 }
 
 type Res_t struct {
@@ -1005,22 +1006,27 @@ func invUint64(a uint64) uint64 {
 	return x
 }
 
-func count_bits(in uint64) (count int) {
+func count_bits(in uint64) (total_count int, max_count int) {
+	var current_count int
 	for in > 0 {
 		if in&1 > 0 {
-			count++
+			total_count++
+			current_count++
+			if current_count > max_count {
+				max_count = current_count
+			}
+		} else {
+			current_count = 0
 		}
 		in = in >> 1
 	}
-	return count
+	return
 }
 
-func check_bits(in uint64, count int) bool {
-	for i := uint64(0); i < 8; i++ {
-		test := (in >> (8 * i)) & 0b_11111111
-		if count_bits(test) > count {
-			return false
-		}
+func check_bits2(in uint64, count int) bool {
+	_, b := count_bits(in)
+	if b > count {
+		return false
 	}
 	return true
 }
@@ -1030,9 +1036,9 @@ func Test_Tst3_07(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
-	var count int
+	var count int = 0
 	var p uint64 = 1
-	for count < 256 && p < 10_000_000_000 {
+	for count < 256 && p < 100_000_000_000 {
 		p += 2
 		q := invUint64(p)
 		check := p * q // B·C mod 2^64, uint64 overflow = mod 2^64
@@ -1040,8 +1046,8 @@ func Test_Tst3_07(t *testing.T) {
 		// 0b_00000000_00000000_00000000_00000000
 		// 857: 6 140h37m56.229347572s
 		// if p&q != p && p&q != q && p&0b_10101010_10101010_10101010_10101010 == 0 {
-		if p&q != p && p&q != q && check_bits(p, 3) && check_bits(q, 3) {
-			t.Logf("{A: %3d, B:%5d , C:0x%016X}, // %016b %064b\n", count, p, q, p, q)
+		if p&q != p && p&q != q && check_bits2(p, 2) && check_bits2(q, 1) {
+			t.Logf("{A: %3d, B:%12d , C:0x%016X}, // %040b %064b\n", count, p, q, p, q)
 			count++
 		}
 	}
