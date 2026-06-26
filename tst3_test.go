@@ -1037,6 +1037,7 @@ func Test_Tst3_07(t *testing.T) {
 		check := p * q // B·C mod 2^64, uint64 overflow = mod 2^64
 		assert.Assert(t, check == 1)
 		// 0b_00000000_00000000_00000000_00000000
+		// 857: 6 140h37m56.229347572s
 		// if p&q != p && p&q != q && p&0b_10101010_10101010_10101010_10101010 == 0 {
 		if p&q != p && p&q != q && check_bits(p, 3) && check_bits(q, 3) {
 			t.Logf("{A: %3d, B:%5d , C:0x%016X}, // %016b %064b\n", count, p, q, p, q)
