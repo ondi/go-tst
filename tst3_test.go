@@ -907,6 +907,7 @@ var in = []DebugState_t{
 	{A: "r~$mc-CBSiscBWLTe5@g7K", B: "fRO561hTg%A"},
 	{A: "$$@xN~97iMnhW$ssU&$c73nf-", B: "M/WNFV~N9sT_OW"},
 	{A: "b1s1&JJ@b0W@q7%&9Dx5jIU", B: "16c&Z-&/Jp%G2yk1@2ei^fmgS*9/X"},
+	{A: "_T%XwQrbC0n3Y#d@UGXkHe7", B: "/QS_n3l4*@7-#uQYL8Oi"},
 }
 
 type Res_t struct {
@@ -1023,7 +1024,7 @@ func count_bits(in uint64) (total_count int, max_count int) {
 	return
 }
 
-func check_bits2(in uint64, count int) bool {
+func check_bits(in uint64, count int) bool {
 	_, b := count_bits(in)
 	if b > count {
 		return false
@@ -1046,7 +1047,7 @@ func Test_Tst3_07(t *testing.T) {
 		// 0b_00000000_00000000_00000000_00000000
 		// 857: 6 140h37m56.229347572s
 		// if p&q != p && p&q != q && p&0b_10101010_10101010_10101010_10101010 == 0 {
-		if p&q != p && p&q != q && check_bits2(p, 2) && check_bits2(q, 1) {
+		if check_bits(p, 2) && check_bits(q, 1) {
 			t.Logf("{A: %3d, B:%12d , C:0x%016X}, // %040b %064b\n", count, p, q, p, q)
 			count++
 		}
