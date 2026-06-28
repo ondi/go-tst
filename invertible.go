@@ -8,6 +8,7 @@ type U64_iv_t struct {
 	A uint64
 	B uint64
 	C uint64
+	D uint64
 }
 
 var iv64_1 = [256]*U64_iv_t{
