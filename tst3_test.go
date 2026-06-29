@@ -1040,20 +1040,23 @@ func Test_Tst3_07(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 	var count int = 0
-	var p uint64 = 1
-	for count < 256 && p < 100_000_000_000 {
-		p += 2
-		q := invUint64(p)
-		check := p * q // B·C mod 2^64, uint64 overflow = mod 2^64
+	var b uint64 = 1
+	bits := map[uint64]uint64{}
+	for count < 256 && b < 100_000_000_000 {
+		b += 2
+		c := invUint64(b)
+		check := b * c // b*c mod 2^64, uint64 overflow = mod 2^64
 		assert.Assert(t, check == 1)
 		// 0b_00000000_00000000_00000000_00000000
 		// 857: 6 140h37m56.229347572s
 		// if p&q != p && p&q != q && p&0b_10101010_10101010_10101010_10101010 == 0 {
-		if check_bits(p, 2) && check_bits(q, 1) {
-			t.Logf("{A: %3d, B:%12d , C:0x%016X}, // %040b %064b\n", count, p, q, p, q)
+		if bits[c&0b_00000001_11111111_11111111] == 0 && /*check_bits(b, 2) &&*/ check_bits(c, 1) {
+			bits[c&0b_00000001_11111111_11111111]++
+			t.Logf("{A:%3d, B:%12d , C:0x%016X, D:%d}, // %040b %064b %d\n", count, b, c, 0, b, c, len(bits))
 			count++
 		}
 	}
+	t.Logf("bits: %+v\n", bits)
 	for _, v := range iv64_1 {
 		assert.Assert(t, v.B*v.C == 1)
 	}
@@ -1065,9 +1068,9 @@ func Test_Tst3_08(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 	for i, v := range iv64_1 {
-		q := invUint64(v.B)
-		check := v.B * q // check: B·C mod 2^64, uint64 overflow = mod 2^64
+		c := invUint64(v.B)
+		check := v.B * c // check: b*c mod 2^64, uint64 overflow = mod 2^64
 		assert.Assert(t, check == 1)
-		t.Logf("{A: %3d, B:%5d , C:0x%016X}, // %016b %064b\n", i, v.B, q, v.B, q)
+		t.Logf("{A:%3d, B:%5d , C:0x%016X, D:%d}, // %016b %064b\n", i, v.B, c, v.D, v.B, c)
 	}
 }
