@@ -1034,6 +1034,8 @@ func check_bits(in uint64, count int) bool {
 	return true
 }
 
+var MASK1 uint64 = 0b_00000000_00_111111_111111_11
+
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07 |& tee log.txt
 func Test_Tst3_07(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
@@ -1050,9 +1052,9 @@ func Test_Tst3_07(t *testing.T) {
 		// 0b_00000000_00000000_00000000_00000000
 		// 857: 6 140h37m56.229347572s
 		// if p&q != p && p&q != q && p&0b_10101010_10101010_10101010_10101010 == 0 {
-		if bits[c&0b_00000000_00_111111_111111_11] == 0 && /*check_bits(b, 2) &&*/ check_bits(c, 1) {
-			bits[c&0b_00000000_00_111111_111111_11]++
-			t.Logf("{A:%3d, B:%12d , C:0x%016X, D:%d}, // %040b %064b %d\n", count, b, c, 0, b, c, len(bits))
+		if bits[c&MASK1] == 0 && /*check_bits(b, 2) &&*/ check_bits(c, 1) {
+			bits[c&MASK1]++
+			t.Logf("{A:%3d, B:%12d , C:0x%016X, D:%5d}, // %040b %064b %d\n", count, b, c, (c&MASK1)/256, b, c, len(bits))
 			count++
 		}
 	}
