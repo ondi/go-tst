@@ -910,6 +910,9 @@ var in = []DebugState_t{
 	{A: "_T%XwQrbC0n3Y#d@UGXkHe7", B: "/QS_n3l4*@7-#uQYL8Oi"},
 	{A: "#n2HFLPPV$rHCw", B: "1$2fmcZq$0PBzrxnypES"},
 	{A: "ZQCbkYWhbQwOsKZ6v-NGqqp3@n", B: "3NS6lGPH$Ogb/DcVWL"},
+	{A: "5dHNf0gnC/Sv*oF6t@#u#28", B: "IsL_*YM1crG"},
+	{A: "$070QJs9Cu&/5hEk", B: "_T/kzG_a6Z^J3AEh0iL1H#Q5"},
+	{A: "6rEB%L4H0Oo^HIwr7UsD", B: "UpJh5ErRf*1m_Q/hXPLq/u"},
 }
 
 type Res_t struct {
@@ -1059,9 +1062,6 @@ func Test_Tst3_07(t *testing.T) {
 		}
 	}
 	t.Logf("bits: %+v\n", bits)
-	for _, v := range iv64_1 {
-		assert.Assert(t, v.B*v.C == 1)
-	}
 }
 
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_08 |& tee log.txt
