@@ -1059,7 +1059,7 @@ func Test_Tst3_07(t *testing.T) {
 		// if b&c != b && b&c != c && b&MASK1 == 0 {
 		if bits[c&MASK2] == 0 && /*check_bits(b, 2) &&*/ check_bits(c, 1) {
 			bits[c&MASK2]++
-			t.Logf("{A:%3d, B:%12d , C:0x%016X, D:%5d}, // %040b %064b %d\n", count, b, c, len(bits), b, c, len(bits))
+			t.Logf("{A:%3d, B:%12d , C:0x%016X, D:%5d}, // %040b %064b %d\n", count, b, c, len(bits)/4-1, b, c, len(bits))
 			count++
 		}
 	}
