@@ -1039,7 +1039,7 @@ func check_bits(in uint64, count int) bool {
 }
 
 var MASK1 uint64 = 0b_10101010_10101010_10101010_10101010_10101010_10101010_10101010_10101010
-var MASK2 uint64 = 0b_00000000_00_111111_111111_11
+var MASK2 uint64 = 0b_10101010_10101010_10101010_10101010
 
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07 |& tee log.txt
 func Test_Tst3_07(t *testing.T) {
@@ -1057,7 +1057,7 @@ func Test_Tst3_07(t *testing.T) {
 		// 0b_00000000_00000000_00000000_00000000
 		// 857: 6 140h37m56.229347572s
 		// if b&c != b && b&c != c && b&MASK1 == 0 {
-		if bits[c&MASK2] == 0 && /*check_bits(b, 2) &&*/ check_bits(c, 1) {
+		if check_bits(b, 2) && c&MASK2 == 0 {
 			bits[c&MASK2]++
 			t.Logf("{A:%3d, B:%12d , C:0x%016X, D:%5d}, // %040b %064b %d\n", count, b, c, len(bits)/4-1, b, c, len(bits))
 			count++
