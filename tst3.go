@@ -98,18 +98,8 @@ func (self *State256_t) StateAdd02(in byte) uint64 {
 	return self.e
 }
 
-// odd*odd=odd, even*odd=even, even*even=even
-func (self *State256_t) StateAdd03(in byte) uint64 {
-	// self.a + self.b always odd
-	self.a = (self.a + 1) % 256
-	self.b = (self.b + 2*(self.a+self.state[in].A) + 1) % 256
-	self.e = ROR64N((self.e^self.state[self.b].C)*self.state[self.b].B, self.state[self.b].D)
-	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
-	return self.e
-}
-
 // 160: 0
-func (self *State256_t) StateAdd04(in byte) uint64 {
+func (self *State256_t) StateAdd03(in byte) uint64 {
 	// self.a + self.b always odd
 	self.a = (self.a + 1) % 256
 	self.b = (self.b + 2*(self.a+self.state[in].A) + 1) % 256
@@ -120,6 +110,16 @@ func (self *State256_t) StateAdd04(in byte) uint64 {
 }
 
 func (self *State256_t) StateAdd(in byte) uint64 {
+	// self.a + self.b always odd
+	self.a = (self.a + 1)                               // % 256
+	self.b = (self.b + 2*(self.a+self.state[in].A) + 1) // % 256
+	self.c = MyBits((self.e + (self.a ^ self.b)) % 43_046_721)
+	self.e = ROR64N((self.e^self.c)*(self.a+self.b), 1)
+	// self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
+	return self.e
+}
+
+func (self *State256_t) StateAdd_new(in byte) uint64 {
 	// self.a + self.b always odd
 	self.a = (self.a + 1) % 256
 	self.b = (self.b + 2*(self.a+self.state[in].A) + 1) % 256
