@@ -950,18 +950,18 @@ var in = []DebugState_t{
 	{A: "cjO3GvAU8y1pv3", B: "&sUNtpzz74bxnPIMogqSO"},
 	{A: "4cvu$hKzgSTrzZYPcJ6s&", B: "rau&~_qN/@9R"},
 	{A: "-Qgudm~uLtwk^REQoKcfgE^IEK", B: "t@e0pn__gJ/GqEEr@FzC-A6RGk$"},
+	{A: "Y@zA#9GzOUvq2X1Y6zDZ@C#", B: "*bmmLluIVyxWlQWLb9Y/"},
 }
 
 type Res_t struct {
 	h       uint64
 	a, b    uint64
-	state_a uint64
-	state_b uint64
+	B, C, D uint64
 }
 
 func GetByIndex(in []Res_t, i int) string {
 	if len(in) > i {
-		return fmt.Sprintf("%04X %04X %016X %016X %016X", in[i].a, in[i].b, in[i].state_a, in[i].state_b, in[i].h)
+		return fmt.Sprintf("%04X %04X %016X %016X %04X %016X", in[i].a, in[i].b, in[i].B, in[i].C, in[i].D, in[i].h)
 	}
 	return ""
 }
@@ -992,15 +992,15 @@ func Test_Tst3_04(t *testing.T) {
 			s2.Reset()
 			for _, code := range []byte(v.A) {
 				r1.h = s1.StateAdd(code)
-				// r1.state_a, r1.state_b = s1.state[s1.a].A, s1.state[s1.b].A
 				r1.a, r1.b = s1.a, s1.b
+				r1.B, r1.C, r1.D = s1.state[s1.a].B, s1.state[s1.a].C, s1.state[s1.a].D
 				a1 = append(a1, r1)
 				m1[r1.h] = struct{}{}
 			}
 			for _, code := range []byte(v.B) {
 				r2.h = s2.StateAdd(code)
-				// r2.state_a, r2.state_b = s2.state[s2.a].A, s2.state[s2.b].A
 				r2.a, r2.b = s2.a, s2.b
+				r2.B, r2.C, r2.D = s2.state[s2.a].B, s2.state[s2.a].C, s2.state[s2.a].D
 				a2 = append(a2, r2)
 				m2[r2.h] = struct{}{}
 			}
@@ -1026,8 +1026,8 @@ func Test_Tst3_04(t *testing.T) {
 
 // go test -v -manual -count=1 -timeout=0 -parallel 1024 -run Test_Tst3_05
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xF33E4CEA365DB17D
-	in := "A9nZYJICtKFYHI"
+	var expected uint64 = 0xEBB0011192342D73
+	in := "H9RxzP1xP^4v8F0G"
 
 	var state State256_t
 	var res uint64
