@@ -80,7 +80,7 @@ func (self *State256_t) Reset() {
 func (self *State256_t) StateAdd1(c byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[c].A) + 1) % 256
-	self.e = RORL64N((self.e^self.state[self.b].B), self.state[self.b].D) * self.state[self.b].C
+	self.e = ROL64N((self.e^self.state[self.b].B), self.state[self.b].D) * self.state[self.b].C
 	self.state[self.b].B += 512
 	self.state[self.b].C = InvUint64(self.state[self.b].B)
 	// self.state[self.b].D = self.state[self.b].D%63 + 1
@@ -102,6 +102,8 @@ func (self *State256_t) StateAdd(c byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[c].A) + 1) % 256
 	self.e = ROL64N(self.e^(self.a+self.b), 7) * (self.a ^ self.b)
+	// temp, n := MinROL64(self.e)
+	// fmt.Fprintf(os.Stderr, "%v %v\n", temp, n)
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
@@ -147,13 +149,16 @@ func ROR64N(in, n uint64) uint64 {
 	return in
 }
 
-func RORL64N(in, n uint64) (out uint64) {
-	if n&1 > 0 {
-		return (in >> n) | (in << (64 - n))
-	} else if n > 0 {
-		return (in << n) | (in >> (64 - n))
+func MinROL64(in uint64) (out uint64, p int) {
+	out = in
+	for n := 1; n < 64; n++ {
+		temp := (in << n) | (in >> (64 - n))
+		if temp < out {
+			out = temp
+			p = n
+		}
 	}
-	return in
+	return
 }
 
 func Forward(size uint64, current uint64, offset uint64) uint64 {
