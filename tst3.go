@@ -98,22 +98,23 @@ func (self *State256_t) StateAdd2(c byte) uint64 {
 	return self.e
 }
 
-func (self *State256_t) StateAdd(c byte) uint64 {
+func (self *State256_t) StateAdd3(c byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[c].A) + 1) % 256
 	self.e = ROL64N(self.e^(self.a+self.b), 7) * (self.a ^ self.b)
-	// temp, n := MinROL64(self.e)
-	// fmt.Fprintf(os.Stderr, "%v %v\n", temp, n)
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
 
-func (self *State256_t) StateAdd4(c byte) uint64 {
+func (self *State256_t) StateAdd(c byte) uint64 {
 	self.a = (self.a + 1) % 256
 	self.b = (self.a + 2*(self.b+self.state[c].A) + 1) % 256
-	a := ROL64N((self.e^self.a), 9) * (self.a ^ self.b)
-	b := ROR64N((self.e^self.b), 9) * (self.a + self.b)
-	self.e = a ^ b
+	self.e = self.e ^ (self.a + self.b)
+	if 0xFFFF_FFFF_FFFF_FFFF/self.e >= (self.a ^ self.b) {
+		self.e = ROL64N(self.e*(self.a^self.b), 7)
+	} else {
+		self.e = ROL64N(self.e, 7)
+	}
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }
@@ -149,13 +150,12 @@ func ROR64N(in, n uint64) uint64 {
 	return in
 }
 
-func MinROL64(in uint64) (out uint64, p int) {
+func MinROL64(in uint64) (out uint64) {
 	out = in
 	for n := 1; n < 64; n++ {
 		temp := (in << n) | (in >> (64 - n))
 		if temp < out {
 			out = temp
-			p = n
 		}
 	}
 	return
