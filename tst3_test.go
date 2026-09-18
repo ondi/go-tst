@@ -984,6 +984,7 @@ var in = []DebugState_t{
 	{A: "5YbB67oluos_DbHkQA$Cgx", B: "/lFFLGMUn_6SKt^Jqf"},
 	{A: "Rl*m5Eo0ZOSgYdnTmL~6Hx^e0k", B: "_bLFmcI01tBjQURxXlcrTvN6ytuJ"},
 	{A: "/HpNCtQixFftsxS7gszH~VVEM5^QJ", B: "tZvlt_5X9d106o_/BH"},
+	{A: "7lLy_1fmihrR", B: "W-888jlOhg2~NriGnVh-8yUgx"},
 }
 
 type Res_t struct {
@@ -1079,13 +1080,15 @@ func Test_Tst3_06(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 	var b uint64 = 1
-	var c uint64
+	var c, d uint64
 	for a, v := range NewInv64() {
 		b += 2
 		v.B = b
 		c = InvUint64(v.B)
 		assert.Assert(t, v.B*c == 1)
-		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, v.B, c, 0, v.B, c, a)
+		// d = msb_pos(bit_mask(v.B) * v.B)
+		d = msb_pos(v.B)
+		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, v.B, c, d, v.B, c, d)
 	}
 }
 
@@ -1108,7 +1111,6 @@ func Test_Tst3_07(t *testing.T) {
 }
 
 func msb_mask(x uint64) uint64 {
-	// Размазываем единицу во все младшие биты
 	x |= x >> 1
 	x |= x >> 2
 	x |= x >> 4
@@ -1118,8 +1120,34 @@ func msb_mask(x uint64) uint64 {
 	return x - (x >> 1)
 }
 
+func msb_pos(x uint64) (res uint64) {
+	if x>>32 != 0 {
+		res += 32
+		x >>= 32
+	}
+	if x>>16 != 0 {
+		res += 16
+		x >>= 16
+	}
+	if x>>8 != 0 {
+		res += 8
+		x >>= 8
+	}
+	if x>>4 != 0 {
+		res += 4
+		x >>= 4
+	}
+	if x>>2 != 0 {
+		res += 2
+		x >>= 2
+	}
+	if x>>1 != 0 {
+		res += 1
+	}
+	return
+}
+
 func bit_mask(x uint64) uint64 {
-	// Размазываем единицу во все младшие биты
 	x |= x >> 1
 	x |= x >> 2
 	x |= x >> 4
