@@ -1080,7 +1080,7 @@ func Test_Tst3_06(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 	var b uint64 = 1
-	var c, d uint64
+	var c, d, e uint64
 	for a, v := range NewInv64() {
 		b += 2
 		v.B = b
@@ -1088,7 +1088,8 @@ func Test_Tst3_06(t *testing.T) {
 		assert.Assert(t, v.B*c == 1)
 		// d = msb_pos(bit_mask(v.B) * v.B)
 		d = msb_pos(v.B)
-		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, v.B, c, d, v.B, c, d)
+		e = msb_pos(bit_mask(v.B)*v.B) - msb_pos(v.B)
+		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, v.B, c, d, v.B, c, e)
 	}
 }
 
@@ -1105,7 +1106,7 @@ func Test_Tst3_07(t *testing.T) {
 		c = InvUint64(b)
 		if c&bit_mask(b) == b {
 			a++
-			t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, b, c, 1, b, c, a)
+			t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, b, c, 1, b, c, c)
 		}
 	}
 }
