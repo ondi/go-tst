@@ -1088,7 +1088,7 @@ func Test_Tst3_06(t *testing.T) {
 		assert.Assert(t, v.B*c == 1)
 		// d = msb_pos(bit_mask(v.B) * v.B)
 		d = msb_pos(v.B)
-		e = msb_pos(bit_mask(v.B)*v.B) - msb_pos(v.B)
+		e = msb_pos(bit_mask(v.B)*v.B) - d
 		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, v.B, c, d, v.B, c, e)
 	}
 }
