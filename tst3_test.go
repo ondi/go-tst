@@ -1080,7 +1080,7 @@ func Test_Tst3_06(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
-	var b uint64 = 1
+	var b uint64 = 255
 	var c, d uint64
 	for a, v := range NewInv64() {
 		b += 2
