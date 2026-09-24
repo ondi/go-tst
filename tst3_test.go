@@ -988,6 +988,7 @@ var in = []DebugState_t{
 	{A: "cA$oK@%eMCh~DBI^", B: "zM^$aqUl*J&Q/5-9paha#0CZqFO_"},
 	{A: "Ztz6_L96/%YRHMExTu#~T", B: "vbrQ@5*OLz"},
 	{A: "ZTHKm%qY@JM4b1TLsRgRsfu8fFz", B: "bG0$UrHf$ZlRb_d4wuWhEXJ06ty"},
+	{A: "zlyJRH$heV/wn#gzHhWQYQ", B: "_KZFOg6*2obqnv"},
 }
 
 type Res_t struct {
@@ -1063,8 +1064,8 @@ func Test_Tst3_04(t *testing.T) {
 
 // go test -v -manual -count=1 -timeout=0 -parallel 1024 -run Test_Tst3_05
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0xE1817340666EACC4
-	in := "v5TBt/9OEC"
+	var expected uint64 = 0x9DE66330E62C1044
+	in := "ncQw*k7hPGXz"
 
 	var state State256_t
 	var res uint64
