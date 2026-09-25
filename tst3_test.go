@@ -1066,8 +1066,8 @@ func Test_Tst3_04(t *testing.T) {
 
 // go test -v -manual -count=1 -timeout=0 -parallel 1024 -run Test_Tst3_05
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x98203F0948486D77
-	in := "v5TBt/9OEC"
+	var expected uint64 = 0x4992E335992D882B
+	in := "kd4xWlrv*@UWr"
 
 	var state State256_t
 	var res uint64
