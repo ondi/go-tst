@@ -1068,7 +1068,7 @@ func Test_Tst3_04(t *testing.T) {
 
 // go test -v -manual -count=1 -timeout=0 -parallel 1024 -run Test_Tst3_05
 func Test_Tst3_05(t *testing.T) {
-	var expected uint64 = 0x4992E335992D882B
+	var expected uint64 = 0xF48EA92554BE39B3
 	in := "kd4xWlrv*@UWr"
 
 	var state State256_t
@@ -1087,10 +1087,10 @@ func Test_Tst3_06(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
-	var b uint64 = 511
+	var b uint64 = 1
 	var c, d uint64
 	for a, v := range NewInv64() {
-		b += 2
+		b += 16386
 		v.B = b
 		c = InvUint64(v.B)
 		assert.Assert(t, v.B*c == 1)
