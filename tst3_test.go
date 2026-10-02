@@ -1209,7 +1209,7 @@ func Test_Tst3_063(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 
-	for i, b := range GenerateSparsePatterns(1, 10, 256) {
+	for i, b := range GenerateSparsePatterns(1, 64, 256) {
 		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v, D: %v}, // %064b %064b\n", i, b, InvUint64(b), i%64, b, InvUint64(b))
 	}
 }
