@@ -1100,7 +1100,7 @@ func Test_Tst3_06(t *testing.T) {
 	}
 }
 
-// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_061 |& tee log.txt
+// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_061 |& tee log1.txt
 func Test_Tst3_061(t *testing.T) {
 	var a, b, count uint64
 
@@ -1111,7 +1111,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_00000000_00000001
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1120,7 +1120,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_00000000_00000101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1129,7 +1129,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_00000000_00010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1138,7 +1138,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_00000000_01010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1147,7 +1147,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_00000001_01010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1156,7 +1156,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_00000101_01010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1165,7 +1165,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_00010101_01010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1174,7 +1174,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000000_01010101_01010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1183,7 +1183,7 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000001_01010101_01010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
 	}
 
@@ -1192,8 +1192,31 @@ func Test_Tst3_061(t *testing.T) {
 		a = a << 2
 		b = a | 0b_00000101_01010101_01010101
 		uniq[b]++
-		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
 		count++
+	}
+
+	t.Logf("uniq=%v", len(uniq))
+}
+
+// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_062 |& tee log2.txt
+func Test_Tst3_062(t *testing.T) {
+	var a, b, count uint64
+
+	uniq := map[uint64]uint64{}
+
+	counts := []int{31, 30, 29, 28, 27, 26, 25, 24, 23, 13}
+	var mask uint64
+	for j, n := range counts {
+		mask |= 1 << (2 * j)
+		a = uint64(1 << (2 * j))
+		for i := 0; i < n; i++ {
+			a <<= 2
+			b = a | mask
+			uniq[b]++
+			fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
+			count++
+		}
 	}
 
 	t.Logf("uniq=%v", len(uniq))
