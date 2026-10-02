@@ -1100,6 +1100,105 @@ func Test_Tst3_06(t *testing.T) {
 	}
 }
 
+// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_061 |& tee log.txt
+func Test_Tst3_061(t *testing.T) {
+	var a, b, count uint64
+
+	uniq := map[uint64]uint64{}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001
+	for i := 0; i < 31; i++ {
+		a = a << 2
+		b = a | 0b_00000000_00000000_00000001
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000100
+	for i := 0; i < 30; i++ {
+		a = a << 2
+		b = a | 0b_00000000_00000000_00000101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00010000
+	for i := 0; i < 29; i++ {
+		a = a << 2
+		b = a | 0b_00000000_00000000_00010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_01000000
+	for i := 0; i < 28; i++ {
+		a = a << 2
+		b = a | 0b_00000000_00000000_01010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000001_00000000
+	for i := 0; i < 27; i++ {
+		a = a << 2
+		b = a | 0b_00000000_00000001_01010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000100_00000000
+	for i := 0; i < 26; i++ {
+		a = a << 2
+		b = a | 0b_00000000_00000101_01010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00010000_00000000
+	for i := 0; i < 25; i++ {
+		a = a << 2
+		b = a | 0b_00000000_00010101_01010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_01000000_00000000
+	for i := 0; i < 24; i++ {
+		a = a << 2
+		b = a | 0b_00000000_01010101_01010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000001_00000000_00000000
+	for i := 0; i < 23; i++ {
+		a = a << 2
+		b = a | 0b_00000001_01010101_01010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	a = 0b00000000_00000000_00000000_00000000_00000000_00000100_00000000_00000000
+	for i := 0; i < 13; i++ {
+		a = a << 2
+		b = a | 0b_00000101_01010101_01010101
+		uniq[b]++
+		t.Logf("{A: %v, B: %v, C: %v} // %064b %064b", count, b, InvUint64(b), b, InvUint64(b))
+		count++
+	}
+
+	t.Logf("uniq=%v", len(uniq))
+}
+
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07 |& tee log.txt
 func Test_Tst3_07(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
