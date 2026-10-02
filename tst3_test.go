@@ -5,6 +5,7 @@
 package tst
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"hash/fnv"
@@ -1108,7 +1109,24 @@ type pattern struct {
 	minDst int
 }
 
-// getMinDist вычисляет минимальный разрыв между 1 в периоде p
+// nCr вычисляет число сочетаний
+func nCr(n, r int) uint64 {
+	if r < 0 || r > n {
+		return 0
+	}
+	if r == 0 || r == n {
+		return 1
+	}
+	if r > n/2 {
+		r = n - r
+	}
+	res := uint64(1)
+	for i := 1; i <= r; i++ {
+		res = res * uint64(n-i+1) / uint64(i)
+	}
+	return res
+}
+
 func getMinDist(mask uint64, p int) int {
 	var pos []int
 	for b := 0; b < p; b++ {
@@ -1119,7 +1137,6 @@ func getMinDist(mask uint64, p int) int {
 	if len(pos) <= 1 {
 		return p
 	}
-
 	minD := p
 	for i := 0; i < len(pos)-1; i++ {
 		if d := pos[i+1] - pos[i]; d < minD {
@@ -1132,30 +1149,34 @@ func getMinDist(mask uint64, p int) int {
 	return minD
 }
 
-// Рекурсивная генерация масок с ровно k установленными битами, где нет двух 1 подряд
 func generateMasks(p, k, start int, currentMask uint64, callback func(uint64)) {
 	if k == 0 {
 		callback(currentMask)
 		return
 	}
 	for i := start; i < p; i++ {
-		// Чтобы не было 11, следующий бит должен быть минимум через один
 		generateMasks(p, k-1, i+2, currentMask|(1<<i), callback)
 	}
 }
 
-func GenerateSparsePatterns(minBits, maxBits, targetCount int) []uint64 {
+func GenerateSparsePatterns(minBits, maxBits, targetCount int) ([]uint64, error) {
+	// 1. Математическая проверка на возможность выполнения
+	var maxPossible uint64
+	for k := minBits; k <= maxBits; k++ {
+		maxPossible += nCr(64-k, k-1)
+	}
+
+	if maxPossible < uint64(targetCount) {
+		return nil, fmt.Errorf("impossible: only %d unique patterns exist for given constraints, but %d requested", maxPossible, targetCount)
+	}
+
 	var candidates []pattern
 	uniq := make(map[uint64]bool)
 
-	// p — длина периода от 2 до 64
+	// 2. Генерация периодических паттернов
 	for p := 2; p <= 64; p++ {
-		// k — количество единиц внутри одного периода
-		// Максимум p/2, так как единицы не могут стоять рядом
 		for k := 1; k <= p/2; k++ {
-			// Генерируем все возможные маски с k битами для периода p
 			generateMasks(p, k, 0, 0, func(mask uint64) {
-				// Условия: нечётное (0-й бит = 1) и нет 11 на стыке (p-1 бит = 0)
 				if mask&1 == 0 || (mask&(1<<(p-1))) != 0 {
 					return
 				}
@@ -1170,25 +1191,19 @@ func GenerateSparsePatterns(minBits, maxBits, targetCount int) []uint64 {
 				c := bits.OnesCount64(val)
 				if c >= minBits && c <= maxBits && !uniq[val] {
 					uniq[val] = true
-					candidates = append(candidates, pattern{
-						val:    val,
-						cnt:    c,
-						minDst: getMinDist(mask, p),
-					})
+					candidates = append(candidates, pattern{val, c, getMinDist(mask, p)})
 				}
 			})
-			if len(candidates) > 5000 {
+			if len(candidates) > 10000 {
 				break
 			}
 		}
-		if len(candidates) > 5000 {
+		if len(candidates) > 10000 {
 			break
 		}
 	}
 
-	// Сортировка для "идеальной разряженности":
-	// 1. Сначала самые редкие (минимум установленных бит в рамках [min, max])
-	// 2. Затем максимальный разрыв между ними
+	// 3. Сортировка по идеальной разряженности
 	sort.Slice(candidates, func(i, j int) bool {
 		if candidates[i].cnt != candidates[j].cnt {
 			return candidates[i].cnt < candidates[j].cnt
@@ -1196,11 +1211,15 @@ func GenerateSparsePatterns(minBits, maxBits, targetCount int) []uint64 {
 		return candidates[i].minDst > candidates[j].minDst
 	})
 
-	res := make([]uint64, 0, targetCount)
-	for i := 0; i < len(candidates) && i < targetCount; i++ {
-		res = append(res, candidates[i].val)
+	if len(candidates) < targetCount {
+		return nil, errors.New("could not find enough periodic patterns to satisfy targetCount")
 	}
-	return res
+
+	res := make([]uint64, targetCount)
+	for i := 0; i < targetCount; i++ {
+		res[i] = candidates[i].val
+	}
+	return res, nil
 }
 
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_063 |& tee log3.txt
@@ -1209,7 +1228,10 @@ func Test_Tst3_063(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 
-	for i, b := range GenerateSparsePatterns(1, 64, 256) {
+	res, err := GenerateSparsePatterns(1, 64, 256)
+	assert.NilError(t, err)
+
+	for i, b := range res {
 		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v, D: %v}, // %064b %064b\n", i, b, InvUint64(b), i%64, b, InvUint64(b))
 	}
 }
