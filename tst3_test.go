@@ -9,9 +9,11 @@ import (
 	"fmt"
 	"hash/fnv"
 	"io"
+	"math/bits"
 	"math/rand/v2"
 	"os"
 	"runtime"
+	"sort"
 	"sync"
 	"testing"
 	"time"
@@ -1100,126 +1102,90 @@ func Test_Tst3_06(t *testing.T) {
 	}
 }
 
-// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_061 |& tee log1.txt
-func Test_Tst3_061(t *testing.T) {
-	var a, b, count uint64
-
-	uniq := map[uint64]uint64{}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000001
-	for i := 0; i < 31; i++ {
-		a = a << 2
-		b = a | 0b_00000000_00000000_00000001
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00000100
-	for i := 0; i < 30; i++ {
-		a = a << 2
-		b = a | 0b_00000000_00000000_00000101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_00010000
-	for i := 0; i < 29; i++ {
-		a = a << 2
-		b = a | 0b_00000000_00000000_00010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000000_01000000
-	for i := 0; i < 28; i++ {
-		a = a << 2
-		b = a | 0b_00000000_00000000_01010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000001_00000000
-	for i := 0; i < 27; i++ {
-		a = a << 2
-		b = a | 0b_00000000_00000001_01010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00000100_00000000
-	for i := 0; i < 26; i++ {
-		a = a << 2
-		b = a | 0b_00000000_00000101_01010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_00010000_00000000
-	for i := 0; i < 25; i++ {
-		a = a << 2
-		b = a | 0b_00000000_00010101_01010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000000_01000000_00000000
-	for i := 0; i < 24; i++ {
-		a = a << 2
-		b = a | 0b_00000000_01010101_01010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000001_00000000_00000000
-	for i := 0; i < 23; i++ {
-		a = a << 2
-		b = a | 0b_00000001_01010101_01010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	a = 0b00000000_00000000_00000000_00000000_00000000_00000100_00000000_00000000
-	for i := 0; i < 13; i++ {
-		a = a << 2
-		b = a | 0b_00000101_01010101_01010101
-		uniq[b]++
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-		count++
-	}
-
-	t.Logf("uniq=%v", len(uniq))
+type pattern struct {
+	val    uint64
+	cnt    int
+	minDst int
 }
 
-// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_062 |& tee log2.txt
-func Test_Tst3_062(t *testing.T) {
-	var a, b, count uint64
+// Функция вычисляет минимальное расстояние между соседними 1 в периоде
+func getMinDist(mask uint64, p int) int {
+	var pos []int
+	for b := 0; b < p; b++ {
+		if (mask & (1 << b)) != 0 {
+			pos = append(pos, b)
+		}
+	}
+	if len(pos) == 0 {
+		return 0
+	}
+	if len(pos) == 1 {
+		return p
+	} // Один бит в периоде -> расстояние равно периоду
 
-	uniq := map[uint64]uint64{}
+	minD := p
+	for i := 0; i < len(pos)-1; i++ {
+		if d := pos[i+1] - pos[i]; d < minD {
+			minD = d
+		}
+	}
+	// Проверяем расстояние от последнего бита до первого бита следующего периода
+	if d := p + pos[0] - pos[len(pos)-1]; d < minD {
+		minD = d
+	}
+	return minD
+}
 
-	counts := []int{31, 30, 29, 28, 27, 26, 25, 24, 23, 13}
-	var mask uint64
-	for j, n := range counts {
-		mask |= 1 << (2 * j)
-		a = uint64(1 << (2 * j))
-		for i := 0; i < n; i++ {
-			a <<= 2
-			b = a | mask
-			uniq[b]++
-			fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v} // %064b %064b\n", count, b, InvUint64(b), b, InvUint64(b))
-			count++
+// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_063 |& tee log3.txt
+func Test_Tst3_063(t *testing.T) {
+	var candidates []pattern
+	uniq := make(map[uint64]bool)
+
+	for p := 2; p <= 64; p++ {
+		// Для больших p перебираем только маски с малым количеством бит, чтобы не зависнуть
+		for mask := uint64(1); mask < (1 << p); mask++ {
+			if mask&1 == 0 || (mask&(mask>>1)) != 0 || (mask&(1<<(p-1))) != 0 {
+				continue
+			}
+
+			var val uint64
+			for b := 0; b < 64; b++ {
+				if (mask & (1 << (b % p))) != 0 {
+					val |= (1 << b)
+				}
+			}
+
+			if !uniq[val] {
+				uniq[val] = true
+				candidates = append(candidates, pattern{
+					val:    val,
+					cnt:    bits.OnesCount64(val),
+					minDst: getMinDist(mask, p),
+				})
+			}
+			if len(candidates) > 20000 {
+				break
+			}
+		}
+		if len(candidates) > 20000 {
+			break
 		}
 	}
 
-	t.Logf("uniq=%v", len(uniq))
+	// Сортировка:
+	// 1. Сначала те, у кого меньше всего единиц (минимум 1)
+	// 2. При равенстве — те, у кого расстояние между ними максимально (макс разрыв)
+	sort.Slice(candidates, func(i, j int) bool {
+		if candidates[i].cnt != candidates[j].cnt {
+			return candidates[i].cnt < candidates[j].cnt
+		}
+		return candidates[i].minDst > candidates[j].minDst
+	})
+
+	for i := 0; i < 256; i++ {
+		b := candidates[i].val
+		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v, D: %v}, // %064b %064b\n", i, b, InvUint64(b), i%64, b, InvUint64(b))
+	}
 }
 
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07 |& tee log.txt
