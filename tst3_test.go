@@ -1138,6 +1138,10 @@ func getMinDist(mask uint64, p int) int {
 
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_063 |& tee log3.txt
 func Test_Tst3_063(t *testing.T) {
+	if flag_manual == nil || *flag_manual == false {
+		t.Skip("skipped, add -manual to run")
+	}
+
 	var candidates []pattern
 	uniq := make(map[uint64]bool)
 
