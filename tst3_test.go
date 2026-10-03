@@ -5,16 +5,14 @@
 package tst
 
 import (
-	"errors"
 	"flag"
 	"fmt"
 	"hash/fnv"
 	"io"
-	"math/bits"
 	"math/rand/v2"
 	"os"
 	"runtime"
-	"sort"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -1103,123 +1101,22 @@ func Test_Tst3_06(t *testing.T) {
 	}
 }
 
-type pattern struct {
-	val    uint64
-	cnt    int
-	minDst int
-}
+// formatBinary превращает число в строку вида 0b_00000000_...
+func formatBinary(n uint64) string {
+	// Получаем бинарное представление с ведущими нулями до 64 знаков
+	s := fmt.Sprintf("%064b", n)
 
-// nCr вычисляет число сочетаний
-func nCr(n, r int) uint64 {
-	if r < 0 || r > n {
-		return 0
-	}
-	if r == 0 || r == n {
-		return 1
-	}
-	if r > n/2 {
-		r = n - r
-	}
-	res := uint64(1)
-	for i := 1; i <= r; i++ {
-		res = res * uint64(n-i+1) / uint64(i)
-	}
-	return res
-}
+	var res strings.Builder
+	res.WriteString("0b_")
 
-func getMinDist(mask uint64, p int) int {
-	var pos []int
-	for b := 0; b < p; b++ {
-		if (mask & (1 << b)) != 0 {
-			pos = append(pos, b)
+	for i, char := range s {
+		// Добавляем подчеркивание каждые 8 бит
+		if i > 0 && i%8 == 0 {
+			res.WriteString("_")
 		}
+		res.WriteRune(char)
 	}
-	if len(pos) <= 1 {
-		return p
-	}
-	minD := p
-	for i := 0; i < len(pos)-1; i++ {
-		if d := pos[i+1] - pos[i]; d < minD {
-			minD = d
-		}
-	}
-	if d := p + pos[0] - pos[len(pos)-1]; d < minD {
-		minD = d
-	}
-	return minD
-}
-
-func generateMasks(p, k, start int, currentMask uint64, callback func(uint64)) {
-	if k == 0 {
-		callback(currentMask)
-		return
-	}
-	for i := start; i < p; i++ {
-		generateMasks(p, k-1, i+2, currentMask|(1<<i), callback)
-	}
-}
-
-func GenerateSparsePatterns(minBits, maxBits, targetCount int) ([]uint64, error) {
-	// 1. Математическая проверка на возможность выполнения
-	var maxPossible uint64
-	for k := minBits; k <= maxBits; k++ {
-		maxPossible += nCr(64-k, k-1)
-	}
-
-	if maxPossible < uint64(targetCount) {
-		return nil, fmt.Errorf("impossible: only %d unique patterns exist for given constraints, but %d requested", maxPossible, targetCount)
-	}
-
-	var candidates []pattern
-	uniq := make(map[uint64]bool)
-
-	// 2. Генерация периодических паттернов
-	for p := 2; p <= 64; p++ {
-		for k := 1; k <= p/2; k++ {
-			generateMasks(p, k, 0, 0, func(mask uint64) {
-				if mask&1 == 0 || (mask&(1<<(p-1))) != 0 {
-					return
-				}
-
-				var val uint64
-				for b := 0; b < 64; b++ {
-					if (mask & (1 << (b % p))) != 0 {
-						val |= (1 << b)
-					}
-				}
-
-				c := bits.OnesCount64(val)
-				if c >= minBits && c <= maxBits && !uniq[val] {
-					uniq[val] = true
-					candidates = append(candidates, pattern{val, c, getMinDist(mask, p)})
-				}
-			})
-			if len(candidates) > 10000 {
-				break
-			}
-		}
-		if len(candidates) > 10000 {
-			break
-		}
-	}
-
-	// 3. Сортировка по идеальной разряженности
-	sort.Slice(candidates, func(i, j int) bool {
-		if candidates[i].cnt != candidates[j].cnt {
-			return candidates[i].cnt < candidates[j].cnt
-		}
-		return candidates[i].minDst > candidates[j].minDst
-	})
-
-	if len(candidates) < targetCount {
-		return nil, errors.New("could not find enough periodic patterns to satisfy targetCount")
-	}
-
-	res := make([]uint64, targetCount)
-	for i := 0; i < targetCount; i++ {
-		res[i] = candidates[i].val
-	}
-	return res, nil
+	return res.String()
 }
 
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_063 |& tee log3.txt
@@ -1228,11 +1125,56 @@ func Test_Tst3_063(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 
-	res, err := GenerateSparsePatterns(1, 64, 256)
-	assert.NilError(t, err)
+	var result []uint64
 
-	for i, b := range res {
-		fmt.Fprintf(os.Stderr, "{A: %v, B: %v, C: %v, D: %v}, // %064b %064b\n", i, b, InvUint64(b), i%64, b, InvUint64(b))
+	// 1. Вес 1: Только самый первый бит (число 1)
+	// Это единственное нечетное число с минимальным весом 1
+	result = append(result, uint64(1))
+
+	// 2. Вес 2: Бит 0 + один четный бит (2, 4, ..., 62)
+	// Всего 31 вариант
+	for i := 1; i < 32; i++ {
+		val := uint64(1)<<(2*i) | 1
+		result = append(result, val)
+	}
+
+	// 3. Вес 3: Бит 0 + два четных бита.
+	// Чтобы они были "максимально не похожи", используем стратегию
+	// "максимального разлета" (Max-Distance First).
+
+	// Создаем список всех возможных пар четных индексов (от 1 до 31)
+	type pair struct {
+		i, j, dist int
+	}
+	var pairs []pair
+	for i := 1; i < 32; i++ {
+		for j := i + 1; j < 32; j++ {
+			pairs = append(pairs, pair{i, j, j - i})
+		}
+	}
+
+	// Сортируем пары по убыванию расстояния между битами.
+	// Таким образом, сначала пойдут самые "разряженные" комбинации.
+	for i := 0; i < len(pairs); i++ {
+		for j := i + 1; j < len(pairs); j++ {
+			if pairs[i].dist < pairs[j].dist {
+				pairs[i], pairs[j] = pairs[j], pairs[i]
+			}
+		}
+	}
+
+	// Добавляем пары в результат, пока не достигнем 256 элементов
+	for _, p := range pairs {
+		if len(result) >= 256 {
+			break
+		}
+		val := (uint64(1) << (2 * p.i)) | (uint64(1) << (2 * p.j)) | 1
+		result = append(result, val)
+	}
+
+	// Вывод результата
+	for i, b := range result {
+		fmt.Fprintf(os.Stderr, "{A: %3d, B: %20d, C: %20d, D: %3d}, // %064b %064b\n", i, b, InvUint64(b), i%64, b, InvUint64(b))
 	}
 }
 
