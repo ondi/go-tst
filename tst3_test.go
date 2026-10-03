@@ -12,7 +12,6 @@ import (
 	"math/rand/v2"
 	"os"
 	"runtime"
-	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -994,6 +993,7 @@ var in = []DebugState_t{
 	{A: "i*MM6Fu-r~/_", B: "y09Es3x&/$ys"},
 	{A: "wxi0I/p4lV/t5&R", B: "E---zg02Y_-UhK"},
 	{A: "W-aofQBytL&$", B: "aV*03u#MBr/PD~Q2c"},
+	{A: "Vx2F5wsZU9$qAXOgJg-^-AuZs1", B: "nDGTk5H1LP$V"},
 }
 
 type Res_t struct {
@@ -1101,24 +1101,6 @@ func Test_Tst3_06(t *testing.T) {
 	}
 }
 
-// formatBinary превращает число в строку вида 0b_00000000_...
-func formatBinary(n uint64) string {
-	// Получаем бинарное представление с ведущими нулями до 64 знаков
-	s := fmt.Sprintf("%064b", n)
-
-	var res strings.Builder
-	res.WriteString("0b_")
-
-	for i, char := range s {
-		// Добавляем подчеркивание каждые 8 бит
-		if i > 0 && i%8 == 0 {
-			res.WriteString("_")
-		}
-		res.WriteRune(char)
-	}
-	return res.String()
-}
-
 // go test -v -manual -count=1 -timeout=0 -run Test_Tst3_063 |& tee log3.txt
 func Test_Tst3_063(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
@@ -1129,14 +1111,14 @@ func Test_Tst3_063(t *testing.T) {
 
 	// 1. Вес 1: Только самый первый бит (число 1)
 	// Это единственное нечетное число с минимальным весом 1
-	result = append(result, uint64(1))
+	// result = append(result, uint64(1))
 
 	// 2. Вес 2: Бит 0 + один четный бит (2, 4, ..., 62)
 	// Всего 31 вариант
-	for i := 1; i < 32; i++ {
-		val := uint64(1)<<(2*i) | 1
-		result = append(result, val)
-	}
+	// for i := 1; i < 32; i++ {
+	// 	val := uint64(1)<<(2*i) | 1
+	// 	result = append(result, val)
+	// }
 
 	// 3. Вес 3: Бит 0 + два четных бита.
 	// Чтобы они были "максимально не похожи", используем стратегию
@@ -1174,7 +1156,7 @@ func Test_Tst3_063(t *testing.T) {
 
 	// Вывод результата
 	for i, b := range result {
-		fmt.Fprintf(os.Stderr, "{A: %3d, B: %20d, C: %20d, D: %3d}, // %064b %064b\n", i, b, InvUint64(b), i%64, b, InvUint64(b))
+		fmt.Fprintf(os.Stderr, "{A: %3d, B: %20d, C: %20d, D: %3d}, // %064b %064b\n", i, b, InvUint64(b), i%3+1, b, InvUint64(b))
 	}
 }
 
