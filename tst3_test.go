@@ -1107,8 +1107,8 @@ func Test_Tst3_06(t *testing.T) {
 	}
 }
 
-// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_062 |& tee log62.txt
-func Test_Tst3_062(t *testing.T) {
+// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07 |& tee log7.txt
+func Test_Tst3_07(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
@@ -1123,24 +1123,6 @@ func Test_Tst3_062(t *testing.T) {
 		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %v %v\n", k, b, c, d, b, c, b>>shift, c>>shift)
 	}
 	t.Logf("check_map=%v", len(check_map))
-}
-
-// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07 |& tee log.txt
-func Test_Tst3_07(t *testing.T) {
-	if flag_manual == nil || *flag_manual == false {
-		t.Skip("skipped, add -manual to run")
-	}
-	var a uint64
-	var b uint64 = 1
-	var c uint64
-	for a < 256 {
-		b += 2
-		c = InvUint64(b)
-		if c&bit_mask(b) == b {
-			a++
-			t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n", a, b, c, 1, b, c, c)
-		}
-	}
 }
 
 func msb_mask(x uint64) uint64 {
@@ -1216,132 +1198,4 @@ func check_bits(in uint64, ones_min int, seq_max int) bool {
 		return false
 	}
 	return true
-}
-
-func check_spaces(in uint64) bool {
-	for in > 0 {
-		if in&0xFF == 0 {
-			return false
-		}
-		in = in >> 8
-	}
-	return true
-}
-
-func by_mask(in uint64, mask uint64) (res uint64) {
-	var out int
-	for in > 0 && mask > 0 {
-		if mask&1 == 1 {
-			res |= (in & 1) << out
-			out++
-		}
-		in = in >> 1
-		mask = mask >> 1
-	}
-	return
-}
-
-type CheckAndAdd_t struct {
-	mx   sync.Mutex
-	bits map[uint64]uint64
-}
-
-func NewCheckAndAdd() (self *CheckAndAdd_t) {
-	return &CheckAndAdd_t{
-		bits: map[uint64]uint64{},
-	}
-}
-
-func (self *CheckAndAdd_t) Add(key uint64, check func(uint64) (uint64, bool)) bool {
-	self.mx.Lock()
-	add, ok := check(self.bits[key])
-	self.bits[key] += add
-	self.mx.Unlock()
-	return ok
-}
-
-func (self *CheckAndAdd_t) Len() (res int) {
-	self.mx.Lock()
-	res = len(self.bits)
-	self.mx.Unlock()
-	return
-}
-
-type Tests_t struct {
-	Begin uint64
-	End   uint64
-	Num   int
-}
-
-var (
-	MASK_0020 uint64 = 0b_00010000_00010000_00010000_00010000_00010000_00010000_00010000_00010001
-	MASK_0021 uint64 = 0b_00010000_00000000_00000000_00000000_00000000_00000000_00000000_00000000
-	MASK_0029 uint64 = 0b_00011111_11111111_11111111_11111111_11111111_11111111_11111111_11111111
-)
-
-// go test -v -manual -count=1 -timeout=0 -parallel 1024 -run Test_Tst3_09 |& tee log.txt
-func Test_Tst3_09(t *testing.T) {
-	if flag_manual == nil || *flag_manual == false {
-		t.Skip("skipped, add -manual to run")
-	}
-
-	CAA := NewCheckAndAdd()
-
-	var tests []Tests_t
-	var begin uint64 = MASK_0021
-	var length uint64 = MASK_0029 - begin
-	var parts uint64 = 1024
-	step := length / parts
-	rest := length - parts*step
-
-	for A, B := uint64(0), step; A < length; A, B = B, B+step {
-		if rest > 0 {
-			rest--
-			B++
-		}
-		test := Tests_t{
-			Begin: begin + A,
-			End:   begin + B,
-			Num:   len(tests),
-		}
-		tests = append(tests, test)
-	}
-
-	for _, v := range tests {
-		tt := v
-		t.Run(fmt.Sprintf("part-%04d", tt.Num), func(t *testing.T) {
-			t.Parallel()
-
-			var b, c uint64
-			var count, found int
-
-			if tt.Begin&1 == 1 {
-				b = tt.Begin
-			} else {
-				b = tt.Begin + 1
-			}
-
-			// t.Logf("START: part=%03d, start=%016X, end=%016X", tt.Num, tt.Begin, tt.End)
-
-			for {
-				found = CAA.Len()
-				if found == 256 || b > tt.End-2 {
-					break
-				}
-				b = b + 2
-				c = InvUint64(b)
-				assert.Assert(t, b*c == 1) // b*c mod 2^64, uint64 overflow = mod 2^64
-				if CAA.Add(b&MASK_0020, func(in uint64) (uint64, bool) {
-					if in < 10 && check_spaces(b) && check_bits(b, 1, 1) /*&& check_bits(c, 1, 2)*/ {
-						return 1, true
-					}
-					return 0, false
-				}) {
-					t.Logf("INV: {A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %d\n",
-						by_mask(b>>2, MASK_0020>>2), b, c, by_mask(b>>2, MASK_0020>>2)/4, b, c, count)
-				}
-				count++
-			}
-		})
-	}
 }
