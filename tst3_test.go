@@ -1112,14 +1112,15 @@ func Test_Tst3_062(t *testing.T) {
 	if flag_manual == nil || *flag_manual == false {
 		t.Skip("skipped, add -manual to run")
 	}
+	var shift uint64 = 56 // 48
 	check_map := map[uint64]uint64{}
 	for k := uint64(0); k < 256; k++ {
-		b := (1<<56)*k + 1
+		b := (1<<shift)*k + 1
 		c := InvUint64(b)
 		d := 8
 		check_map[b]++
 		check_map[c]++
-		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b\n", k, b, c, d, b, c)
+		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %v %v\n", k, b, c, d, b, c, b>>shift, c>>shift)
 	}
 	t.Logf("check_map=%v", len(check_map))
 }
