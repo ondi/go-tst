@@ -80,7 +80,7 @@ func (self *State256_t) Reset() {
 func (self *State256_t) StateAdd(c byte) uint64 {
 	self.a = (self.a + 1) & 0xFF
 	self.b = (self.a + (self.e+self.b+self.state[c].A)%255 + 1) & 0xFF
-	self.e = ROR64N(self.e^self.state[self.b].B, 15) * self.state[self.b].C
+	self.e = ROL64N(self.e^self.state[self.b].B, 16) * self.state[self.b].C
 	self.state[self.a], self.state[self.b] = self.state[self.b], self.state[self.a]
 	return self.e
 }

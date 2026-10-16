@@ -1101,15 +1101,15 @@ func Test_Tst3_07(t *testing.T) {
 		t.Skip("skipped, add -manual to run")
 	}
 	var k, count uint64
-	var shift uint64 = 56
-	// var shift uint64 = 48
+	// var shift uint64 = 56
+	var shift uint64 = 48
 	check_map := map[uint64]uint64{}
 	for count = 0; count < 256; count++ {
-		k = count
+		k = count + 1
 		b := (1<<shift)*k + 1
 		c := InvUint64(b)
 		assert.Assert(t, b*c == 1)
-		d := 15
+		d := 16
 		check_map[b]++
 		check_map[c]++
 		t.Logf("{A:%3d, B:%20d, C:0x%016X, D:%5d}, // %064b %064b %v %v\n", count, b, c, d, b, c, b>>shift, c>>shift)
