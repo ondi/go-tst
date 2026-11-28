@@ -87,7 +87,7 @@ func (self *State256_t) StateAdd(c byte) uint64 {
 	self.a = (self.a + 1) & 0xFF
 	self.b = (self.b + self.a + self.e + uint64(c) + 1) & 0xFF
 	v := Shifts[self.a%8]
-	B, C := CellBC(self.a%4, v.Bits, self.b)
+	B, C := CellBC03(v.Bits, self.b)
 	self.e = ROL64N(ROL64N(self.e^B, v.Bits)*C, v.Bits)
 	return self.e
 }
@@ -111,25 +111,31 @@ var Shifts = []Shift_t{
 	{Bits: 9},
 }
 
-func CellBC(v uint64, bits uint64, pos uint64) (b uint64, c uint64) {
-	switch v {
-	case 3:
-		// 1 255 -> 0
-		b = (0xFFFF_FFFF_FFFF_FFFF-pos)<<(64-bits) + 1
-		c = (pos+1)<<(64-bits) + 1
-	case 2:
-		// 0 1 -> 256
-		b = (pos+1)<<(64-bits) + 1
-		c = (0xFFFF_FFFF_FFFF_FFFF-pos)<<(64-bits) + 1
-	case 1:
-		// 1 0 -> 255
-		b = (0xFFFF_FFFF_FFFF_FF00+pos)<<(64-bits) + 1
-		c = (256-pos)<<(64-bits) + 1
-	default:
-		// 0 256 -> 1
-		b = (256-pos)<<(64-bits) + 1
-		c = (0xFFFF_FFFF_FFFF_FF00+pos)<<(64-bits) + 1
-	}
+// 1 255 -> 0
+func CellBC04(bits uint64, pos uint64) (b uint64, c uint64) {
+	b = (0xFFFF_FFFF_FFFF_FFFF-pos)<<(64-bits) + 1
+	c = (pos+1)<<(64-bits) + 1
+	return
+}
+
+// 0 1 -> 256
+func CellBC03(bits uint64, pos uint64) (b uint64, c uint64) {
+	b = (pos+1)<<(64-bits) + 1
+	c = (0xFFFF_FFFF_FFFF_FFFF-pos)<<(64-bits) + 1
+	return
+}
+
+// 1 0 -> 255
+func CellBC02(bits uint64, pos uint64) (b uint64, c uint64) {
+	b = (0xFFFF_FFFF_FFFF_FF00+pos)<<(64-bits) + 1
+	c = (256-pos)<<(64-bits) + 1
+	return
+}
+
+// 0 256 -> 1
+func CellBC01(bits uint64, pos uint64) (b uint64, c uint64) {
+	b = (256-pos)<<(64-bits) + 1
+	c = (0xFFFF_FFFF_FFFF_FF00+pos)<<(64-bits) + 1
 	return
 }
 

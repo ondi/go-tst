@@ -1041,6 +1041,7 @@ var in = []DebugState_t{
 	{A: "J0#sZICRvn~Tieo*T$en/2Lr", B: "HU9#umOczw1&qHJ6"},
 	{A: "&t9XB7@l#KrOwd_~LehRcla@uWl9c", B: "0&1S6B%e#a"},
 	{A: "0AjH%vZsboT4", B: "#G~yUbQwU-aXZEb0^zL*fJ@p#UZ"},
+	{A: "2&PpUKO@HnX6cwG", B: "1hXHAz%zd@IT5^zFCqiBN2TJ"},
 }
 
 type Res_t struct {
@@ -1151,7 +1152,7 @@ func Test_Tst3_06(t *testing.T) {
 		step := (max - min) / (256 - 1)
 		t.Logf("bits=%v, min=%v, max=%v, step=%v", v.Bits, min, max, step)
 		for pos := uint64(0); pos < 256; pos++ {
-			b, c := CellBC(1, v.Bits, pos)
+			b, c := CellBC03(v.Bits, pos)
 			c_test := InvUint64(b)
 			assert.Assert(t, c_test == c, fmt.Sprintf("\npos=%v\nb= %064b\nok=%064b\nc =%064b", pos, b, c_test, c))
 			assert.Assert(t, b*c == 1, fmt.Sprintf("\n%064b\n%064b", b, c))
@@ -1184,6 +1185,17 @@ func Test_Tst3_06(t *testing.T) {
 	}
 	t.Logf("count_total=%v", count_total)
 	t.Logf("check_total=%v", len(check_total))
+}
+
+// go test -v -manual -count=1 -timeout=0 -run Test_Tst3_07
+func Test_Tst3_07(t *testing.T) {
+	var i, bits uint64
+	for bits = 1; bits < 10; bits++ {
+		for i = 0; i < 1024; i++ {
+			b, c := CellBC03(bits, i)
+			assert.Assert(t, b*c == 1, fmt.Sprintf("\n%064b\n%064b", b, c))
+		}
+	}
 }
 
 func bits_required(in uint64) (res uint64) {
